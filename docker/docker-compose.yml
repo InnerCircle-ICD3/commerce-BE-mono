@@ -1,0 +1,13 @@
+services:
+  main-db:
+    image: postgres:17.4
+    container_name: commerce-main
+    restart: always
+    environment:
+      POSTGRES_USER: commerce
+      POSTGRES_PASSWORD: aa
+      POSTGRES_DB: commerce
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/main:/var/lib/postgresql/data
