@@ -1,0 +1,53 @@
+name: 📚 문서 작성 요청
+description: 새로운 문서가 필요할 때 이슈로 요청해주세요.
+title: "[docs] "
+labels: ["documentation"]
+body:
+  - type: textarea
+    id: doc-purpose
+    attributes:
+      label: 📌 문서 목적
+      description: 어떤 내용을 문서화하려고 하나요? 무엇을 설명하는 문서인가요?
+      placeholder: |
+        e.g.
+        - 상품 생성 API 흐름 설명
+        - 운영 서버 배포 절차 정리
+        - 인프라 구성도 및 네트워크 경로 정리
+    validations:
+      required: true
+
+  - type: textarea
+    id: required-contents
+    attributes:
+      label: 🧩 포함되어야 할 내용
+      description: 문서에 어떤 항목들이 반드시 들어가야 하나요?
+      placeholder: |
+        e.g.
+        - 주요 API 설명
+        - 예외 케이스 및 응답 구조
+        - 샘플 request/response
+    validations:
+      required: true
+
+  - type: textarea
+    id: related-info
+    attributes:
+      label: 🔗 참고 자료
+      description: 참고해야 할 기존 문서, 슬랙 대화, 코드 링크 등이 있다면 남겨주세요.
+      placeholder: |
+        e.g.
+        - 기존 Notion 문서: https://notion.so/...
+        - 관련 클래스: `ProductService.kt`
+        - 슬랙 논의 링크: ...
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-notes
+    attributes:
+      label: 💬 기타 메모
+      description: 문서 형식, 위치, 마감 기한 등 추가로 남길 정보가 있다면 적어주세요.
+      placeholder: |
+        e.g.
+        - 위키에 작성해주세요
+        - 이번 주 안으로 초안 완성되면 좋습니다

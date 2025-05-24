@@ -1,0 +1,3 @@
+#!/bin/sh
+echo "🧹 pre-push: ktlintFormat 실행 중..."
+./gradlew ktlintFormat || echo "⚠️ ktlintFormat 실패: 푸시는 계속 진행됨"
