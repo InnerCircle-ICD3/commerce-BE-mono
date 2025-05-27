@@ -154,20 +154,20 @@ comment on column inventory.quantity is '수량';
 alter table inventory
     owner to commerce;
 
-create table file_path_key (
+create table storage_context_key (
     id         uuid   not null primary key,
     admin_id   bigint not null,
     created_at timestamp(2) default current_timestamp(2)
 );
 
-comment on column file_path_key.admin_id is '관리자 아이디';
+comment on column storage_context_key.admin_id is '관리자 아이디';
 
-alter table file_path_key
+alter table storage_context_key
     owner to commerce;
 
 create table file_metadata (
     id                 bigserial primary key,
-    file_path_key_id   uuid         not null,
+    storage_context_key_id   uuid         not null,
     stored_path        varchar(255) not null,
     stored_file_name   varchar(255) not null,
     original_file_name varchar(255) not null,
@@ -243,8 +243,8 @@ create table reviews (
     id         bigserial primary key,
     user_id    bigint                     not null,
     product_id bigint                     not null,
-    order_id   bigint                     not null,
-    rating     smallint                   not null,
+    order_item_id   bigint                     not null,
+    rating     int                   not null,
     content    varchar(1000),
     is_deleted boolean      default false not null,
     created_at timestamp(2) default current_timestamp(2),
@@ -256,7 +256,7 @@ comment on column reviews.user_id is '회원 아이디';
 
 comment on column reviews.product_id is '상품 아이디';
 
-comment on column reviews.order_id is '주문 아이디';
+comment on column reviews.order_item_id is '주문 아이템 아이디';
 
 comment on column reviews.rating is '별점';
 
@@ -268,7 +268,7 @@ alter table reviews
 create table review_replies (
     id               bigserial primary key,
     review_id        bigint not null,
-    replier_admin_id bigint not null,
+    replier_id bigint not null,
     content          text   not null,
     created_at       timestamp(2) default current_timestamp(2),
     updated_at       timestamp(2) default current_timestamp(2),
@@ -277,7 +277,7 @@ create table review_replies (
 
 comment on column review_replies.review_id is '리뷰 아이디';
 
-comment on column review_replies.replier_admin_id is '답글 작성한 관리자 아이디';
+comment on column review_replies.replier_id is '답글 작성한 관리자 아이디';
 
 comment on column review_replies.content is '답글 내용';
 
@@ -380,6 +380,7 @@ create table order_items (
     order_id            bigint  not null,
     product_snapshot_id bigint  not null,
     quantity            integer not null,
+    unit_price            integer not null,
     created_at          timestamp(2) default current_timestamp(2),
     updated_at          timestamp(2) default current_timestamp(2),
     deleted_at          timestamp(2)
@@ -391,19 +392,21 @@ comment on column order_items.product_snapshot_id is '주문 당시 상품 스�
 
 comment on column order_items.quantity is '주문 수량';
 
+comment on column order_items.unit_price is '주문 당시 가격';
+
 alter table order_items
     owner to commerce;
 
 create table product_snapshots (
     id                  bigserial primary key,
-    original_product_id bigint       not null,
+    product_id bigint       not null,
     name                varchar(255) not null,
     price               integer      not null,
     thumbnail           varchar(255) not null,
     created_at          timestamp(2) default current_timestamp(2)
 );
 
-comment on column product_snapshots.original_product_id is '상품 아이디';
+comment on column product_snapshots.product_id is '상품 아이디';
 
 comment on column product_snapshots.name is '상품명';
 

@@ -79,7 +79,7 @@ Table "inventory" {
   "updated_at" timestamp(2) [default: `current_timestamp(2)`]
 }
 
-Table "file_path_key" {
+Table "storage_context_key" {
   "id" uuid [pk, not null]
   "admin_id" bigint [not null, note: '관리자 아이디']
   "created_at" timestamp(2) [default: `current_timestamp(2)`]
@@ -87,7 +87,7 @@ Table "file_path_key" {
 
 Table "file_metadata" {
   "id" bigserial [pk, increment]
-  "file_path_key_id" uuid [not null]
+  "storage_context_key_id" uuid [not null]
   "stored_path" varchar(255) [not null, note: '저장 경로']
   "stored_file_name" varchar(255) [not null, note: '저장된 파일명']
   "original_file_name" varchar(255) [not null, note: '원본 파일명']
@@ -129,8 +129,8 @@ Table "reviews" {
   "id" bigserial [pk, increment]
   "user_id" bigint [not null, note: '회원 아이디']
   "product_id" bigint [not null, note: '상품 아이디']
-  "order_id" bigint [not null, note: '주문 아이디']
-  "rating" smallint [not null, note: '별점']
+  "order_item_id" bigint [not null, note: '주문 아이템 아이디']
+  "rating" int [not null, note: '별점']
   "content" varchar(1000) [note: '리뷰 내용']
   "is_deleted" boolean [not null, default: false]
   "created_at" timestamp(2) [default: `current_timestamp(2)`]
@@ -141,7 +141,7 @@ Table "reviews" {
 Table "review_replies" {
   "id" bigserial [pk, increment]
   "review_id" bigint [not null, note: '리뷰 아이디']
-  "replier_admin_id" bigint [not null, note: '답글 작성한 관리자 아이디']
+  "replier_id" bigint [not null, note: '답글 작성한 관리자 아이디']
   "content" text [not null, note: '답글 내용']
   "created_at" timestamp(2) [default: `current_timestamp(2)`]
   "updated_at" timestamp(2) [default: `current_timestamp(2)`]
@@ -192,6 +192,7 @@ Table "order_items" {
   "order_id" bigint [not null, note: '주문 아이디']
   "product_snapshot_id" bigint [not null, note: '주문 당시 상품 스냅샷 아이디']
   "quantity" integer [not null, note: '주문 수량']
+  "unit_price" integer [not null, note: '주문 당시 가격']
   "created_at" timestamp(2) [default: `current_timestamp(2)`]
   "updated_at" timestamp(2) [default: `current_timestamp(2)`]
   "deleted_at" timestamp(2)
@@ -199,7 +200,7 @@ Table "order_items" {
 
 Table "product_snapshots" {
   "id" bigserial [pk, increment]
-  "original_product_id" bigint [not null, note: '상품 아이디']
+  "product_id" bigint [not null, note: '상품 아이디']
   "name" varchar(255) [not null, note: '상품명']
   "price" integer [not null, note: '상품 가격']
   "thumbnail" varchar(255) [not null, note: '상품 썸네일']
@@ -252,27 +253,13 @@ Ref "fk_user_role_connections_role":"roles"."id" < "user_role_connections"."role
 
 Ref "fk_user_addresses_user":"users"."id" < "user_addresses"."user_id"
 
-Ref "fk_inventory_product":"products"."id" < "inventory"."product_id"
-
-Ref "fk_file_path_key_admin":"users"."id" < "file_path_key"."admin_id"
-
-Ref "fk_file_metadata_key":"file_path_key"."id" < "file_metadata"."file_path_key_id"
-
-Ref "fk_categories_group":"category_groups"."id" < "categories"."group_id"
-
-Ref "fk_product_categories_product":"products"."id" < "product_categories"."product_id"
-
-Ref "fk_product_categories_category":"categories"."id" < "product_categories"."category_id"
-
 Ref "fk_reviews_user":"users"."id" < "reviews"."user_id"
 
 Ref "fk_reviews_product":"products"."id" < "reviews"."product_id"
 
-Ref "fk_reviews_order":"orders"."id" < "reviews"."order_id"
-
 Ref "fk_review_replies_review":"reviews"."id" < "review_replies"."review_id"
 
-Ref "fk_review_replies_admin":"users"."id" < "review_replies"."replier_admin_id"
+Ref "fk_review_replies_replier":"users"."id" < "review_replies"."replier_id"
 
 Ref "fk_cart_items_user":"users"."id" < "cart_items"."user_id"
 
@@ -284,11 +271,23 @@ Ref "fk_order_items_order":"orders"."id" < "order_items"."order_id"
 
 Ref "fk_order_items_product_snapshot":"product_snapshots"."id" < "order_items"."product_snapshot_id"
 
-Ref "fk_product_snapshots_original":"products"."id" < "product_snapshots"."original_product_id"
+Ref "fk_product_snapshots_product":"products"."id" < "product_snapshots"."product_id"
+
+Ref "fk_payments_user":"users"."id" < "payments"."user_id"
 
 Ref "fk_payments_order":"orders"."id" < "payments"."order_id"
 
-Ref "fk_payments_user":"users"."id" < "payments"."user_id"
+Ref "fk_inventory_product":"products"."id" < "inventory"."product_id"
+
+Ref "fk_product_categories_product":"products"."id" < "product_categories"."product_id"
+
+Ref "fk_product_categories_category":"categories"."id" < "product_categories"."category_id"
+
+Ref "fk_categories_group":"category_groups"."id" < "categories"."group_id"
+
+Ref "fk_storage_context_key_admin":"users"."id" < "storage_context_key"."admin_id"
+
+Ref "fk_file_metadata_context_key":"storage_context_key"."id" < "file_metadata"."storage_context_key_id"
 
 Ref "fk_chat_rooms_user":"users"."id" < "chat_rooms"."user_id"
 
@@ -296,5 +295,5 @@ Ref "fk_chat_rooms_admin":"users"."id" < "chat_rooms"."admin_id"
 
 Ref "fk_chat_rooms_product":"products"."id" < "chat_rooms"."product_id"
 
-Ref "fk_chat_messages_room":"chat_rooms"."id" < "chat_messages"."chat_room_id"
+Ref "fk_chat_messages_chat_room":"chat_rooms"."id" < "chat_messages"."chat_room_id"
 ```
