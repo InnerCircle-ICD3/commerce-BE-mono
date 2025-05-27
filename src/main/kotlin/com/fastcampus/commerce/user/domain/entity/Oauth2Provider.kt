@@ -1,4 +1,4 @@
-package com.fastcampus.commerce.auth.domain.entity
+package com.fastcampus.commerce.user.domain.entity
 
 import com.fastcampus.commerce.common.entity.BaseEntity
 import org.hibernate.annotations.SQLDelete
