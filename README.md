@@ -8,3 +8,15 @@
 ```bash
 ./scripts/install-hooks.sh
 ```
+
+## Swagger
+
+도커 실행 후 http://localhost:8082로 접속해주세요.
+```shell
+# 실행
+docker-compose -f docker/docker-compose.yml up -d swagger-ui swagger-api
+```
+```shell
+# 종료
+docker-compose -f docker/docker-compose.yml stop swagger-ui swagger-api
+```

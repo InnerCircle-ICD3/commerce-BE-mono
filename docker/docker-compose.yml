@@ -11,3 +11,33 @@ services:
       - "5432:5432"
     volumes:
       - ./db/main:/var/lib/postgresql/data
+
+  # Swagger UI
+  swagger-ui:
+    container_name: swagger-ui
+    image: swaggerapi/swagger-ui
+    ports:
+      - "8082:8080"
+    volumes:
+      - ../docs/api/swagger.yml:/swagger.json
+    environment:
+      SWAGGER_JSON: /swagger.json
+  # Swagger Mock Server
+  swagger-api:
+    platform: linux/amd64
+    container_name: swagger-api
+    image: danielgtaylor/apisprout
+    ports:
+      - "8081:8000"
+    volumes:
+      - ../docs/api/swagger.yml:/swagger.json
+    command: /swagger.json
+    networks:
+      swagger_link:
+        aliases:
+          - local.swagger.api
+
+networks:
+  swagger_link:
+    name: swagger_link
+    driver: bridge
