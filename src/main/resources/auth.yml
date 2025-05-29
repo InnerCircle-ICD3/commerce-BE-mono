@@ -1,0 +1,19 @@
+auth:
+  jwt:
+    issuer: fastcampus-commerce
+#    secret: ${SECRET_KEY}
+    secret: L1YzcO5NW5wOfD2O9Gke7+blGE1FdnOiL0klgjCgvHhDOjD8/c2c/R5Tn867m/rp4kyBQn/L6HjrtevIjF/QeA==
+    access-token-expire-minutes: 30 # 30분
+    refresh-token-expire-days: 14   # 2주
+
+  oauth2:
+    naver:
+      client-id: OFAjwhciHWlXDEPTzYGW
+#      client-secret: 1MF0BuXZ31
+      client-secret: MU1GMEJ1WFozMQ==
+      redirect-uri: http://localhost:8080/login/oauth2/code/naver
+      authorization-grant-type: authorization_code
+      scope:
+        - name
+        - email
+        - profile_image

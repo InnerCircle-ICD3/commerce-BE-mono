@@ -4,6 +4,7 @@ val kotestVersion: String by project
 val springKotestVersion: String by project
 val springMockkVersion: String by project
 val querydslVersion: String by project
+val jjwtVersion = "0.12.5"
 
 plugins {
     kotlin("jvm")
@@ -44,6 +45,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     testImplementation("org.springframework.security:spring-security-test")
 
+    // JWT support (via JJWT)
+    implementation("io.jsonwebtoken:jjwt-api:${jjwtVersion}")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:${jjwtVersion}")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:${jjwtVersion}")
+
     // database
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("io.github.openfeign.querydsl:querydsl-core:$querydslVersion")
@@ -72,6 +78,10 @@ dependencies {
     testImplementation("io.kotest:kotest-framework-datatest:$kotestVersion")
     testImplementation("io.kotest.extensions:kotest-extensions-spring:$springKotestVersion")
     testImplementation("com.ninja-squad:springmockk:$springMockkVersion")
+
+    // TODO: 로컬 실행을 위해 설정, 추후 제거 필요
+    runtimeOnly("com.h2database:h2")
+
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
