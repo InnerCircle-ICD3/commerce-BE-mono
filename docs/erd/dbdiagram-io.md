@@ -163,6 +163,7 @@ Table "orders" {
   "order_number" varchar(20) [unique, not null, note: '주문 번호(ORD + yyyyMMdd + 난수 9자리)']
   "user_id" bigint [not null, note: '회원 아이디']
   "total_amount" integer [not null, note: '총 주문 금액']
+  "delivery_amount" integer [not null, note: '배달비']
   "recipient_name" varchar(100) [not null, note: '받는사람 이름']
   "recipient_phone" varchar(20) [not null, note: '받는사람 연락처']
   "zip_code" varchar(10) [not null, note: '배송지 우편번호']
