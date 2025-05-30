@@ -22,7 +22,7 @@ class CartItem(
     @Column(name = "product_id", nullable = false)
     val productId: Long,
     @Column(nullable = false)
-    val quantity: Int,
+    var quantity: Int,
 ) : BaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
