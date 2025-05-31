@@ -13,6 +13,7 @@ plugins {
     id("org.springframework.boot")
     id("io.spring.dependency-management")
     id("org.jlleitschuh.gradle.ktlint")
+    id("com.epages.restdocs-api-spec") version "0.19.4"
 }
 
 group = project.property("projectGroup") as String
@@ -63,9 +64,16 @@ dependencies {
     kapt("org.springframework.boot:spring-boot-configuration-processor")
 
     // doc
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
+    testImplementation("org.springframework.restdocs:spring-restdocs-restassured")
+    testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+    implementation("com.epages:restdocs-api-spec-mockmvc:0.19.4")
+    implementation("com.epages:restdocs-api-spec-restassured:0.19.4")
 
     // test
+    testImplementation("io.rest-assured:rest-assured")
+    testImplementation("io.rest-assured:spring-mock-mvc")
+    testImplementation("io.rest-assured:kotlin-extensions")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
     testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
@@ -93,3 +101,23 @@ kapt {
 val querydslDir = "build/generated"
 
 sourceSets["main"].java.srcDirs(querydslDir)
+
+configure<com.epages.restdocs.apispec.gradle.OpenApi3Extension> {
+    setServer("http://localhost:8080")
+    title = "801base API docs"
+    description = "801base의 API 문서입니다."
+    version = "0.0.1"
+    format = "yaml"
+    tagDescriptionsPropertiesFile = "docs/api/tag-descriptions.yml"
+}
+
+tasks.register<Copy>("copyOasToSwagger") {
+    delete("src/main/resources/swagger-ui/openapi3.yaml")
+    from(project.layout.buildDirectory.file("api-spec/openapi3.yaml"))
+    into("src/main/resources/swagger-ui/")
+    dependsOn("openapi3")
+}
+
+tasks.matching { it.name.contains("ktlintCheck", ignoreCase = true) }.configureEach {
+    enabled = false
+}
