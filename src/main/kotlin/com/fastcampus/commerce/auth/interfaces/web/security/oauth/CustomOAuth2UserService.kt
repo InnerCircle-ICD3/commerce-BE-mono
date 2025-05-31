@@ -1,6 +1,5 @@
 package com.fastcampus.commerce.auth.interfaces.web.security.oauth
 
-import com.fastcampus.commerce.user.UserClient
 import com.fastcampus.commerce.user.api.controller.UserController
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest

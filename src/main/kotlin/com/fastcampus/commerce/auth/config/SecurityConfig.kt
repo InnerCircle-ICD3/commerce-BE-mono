@@ -23,7 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @ConfigurationProperties(prefix = "auth.cors")
 class CorsProperties {
     var allowedOrigins: List<String> = listOf("http://localhost:8080")
-    var allowedMethods: List<String> = listOf("GET", "POST", "PUT", "DELETE")
+    var allowedMethods: List<String> = listOf("GET", "POST", "PUT", "DELETE", "PATCH")
     var allowedHeaders: List<String> = listOf("Authorization", "Content-Type")
 }
 
