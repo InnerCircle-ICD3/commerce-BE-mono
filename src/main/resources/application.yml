@@ -1,1 +1,7 @@
-spring.application.name: commerce
+#spring.application.name: commerce
+spring:
+  application:
+    name: commerce
+  config:
+    import:
+      - auth.yml
