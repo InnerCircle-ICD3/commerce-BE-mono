@@ -1,3 +1,4 @@
 Product-Common: 상품 코드 API
 Product: 사용자 상품 API
 Admin-Product: 관리자 상품 API
+Admin-File: 관리자 파일업로드관련 API
