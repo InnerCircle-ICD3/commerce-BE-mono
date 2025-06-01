@@ -6,6 +6,7 @@ data class CartCreateRequest(
 )
 
 data class CartCreateResponse(
+    val quantity: Int,
     val stockQuantity: Int,
     val requiresQuantityAdjustment: Boolean
 )

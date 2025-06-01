@@ -38,6 +38,7 @@ class CartItemServiceTest {
 
         // Then
         verify(cartItemRepository).save(any(CartItem::class.java))
+        assertEquals(5, result.quantity)
         assertEquals(10, result.stockQuantity)
         assertEquals(false, result.requiresQuantityAdjustment)
     }
@@ -60,6 +61,7 @@ class CartItemServiceTest {
 
         // Then
         verify(cartItemRepository).save(any(CartItem::class.java))
+        assertEquals(5, result.quantity)
         assertEquals(10, result.stockQuantity)
         assertEquals(false, result.requiresQuantityAdjustment)
     }
@@ -80,6 +82,7 @@ class CartItemServiceTest {
 
         // Then
         verify(cartItemRepository).save(any(CartItem::class.java))
+        assertEquals(10, result.quantity)
         assertEquals(10, result.stockQuantity)
         assertEquals(true, result.requiresQuantityAdjustment)
     }

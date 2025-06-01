@@ -8,17 +8,16 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/cart/items")
 class CartItemController(
     private val cartItemService: CartItemService
 ) {
-    @GetMapping
+    @GetMapping("/cart/items")
     fun getCartItems(@RequestParam userId: Long): ResponseEntity<ApiResponse<List<CartItem>>> {
         val cartItems = cartItemService.getCartItems(userId)
         return ResponseEntity.ok(ApiResponse.success(cartItems))
     }
 
-    @PostMapping
+    @PostMapping("/cart/items")
     fun addToCart(
         @RequestParam userId: Long,
         @RequestBody request: CartCreateRequest

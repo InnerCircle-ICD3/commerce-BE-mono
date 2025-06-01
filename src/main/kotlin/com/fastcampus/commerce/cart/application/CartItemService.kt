@@ -42,6 +42,7 @@ class CartItemService(
         }
 
         return CartCreateResponse(
+            quantity = actualQuantity,
             stockQuantity = stockQuantity,
             requiresQuantityAdjustment = requiresQuantityAdjustment
         )
