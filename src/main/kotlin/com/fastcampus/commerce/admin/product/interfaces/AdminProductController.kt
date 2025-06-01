@@ -1,6 +1,7 @@
 package com.fastcampus.commerce.admin.product.interfaces
 
 import com.fastcampus.commerce.admin.product.domain.error.AdminProductErrorCode
+import com.fastcampus.commerce.admin.product.interfaces.dto.DeleteProductResponse
 import com.fastcampus.commerce.admin.product.interfaces.dto.ProductResponse
 import com.fastcampus.commerce.admin.product.interfaces.dto.RegisterProductRequest
 import com.fastcampus.commerce.admin.product.interfaces.dto.RegisterProductResponse
