@@ -218,6 +218,11 @@ class ResponseFieldBlock : DescriptorCollector<FieldDescriptor>() {
             .withExample(name, example)
     }
 
+    fun optionalField(name: String, description: String, example: Any? = null) {
+        descriptors += PayloadDocumentation.fieldWithPath(name).description(description).optional()
+            .withExample(name, example)
+    }
+
     fun ignoredField(path: String) {
         descriptors += PayloadDocumentation.subsectionWithPath(path).ignored()
     }
