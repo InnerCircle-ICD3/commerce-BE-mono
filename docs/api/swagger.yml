@@ -583,6 +583,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProductReviewListResponse'
+  /products/{productId}/reviews/rating:
+    get:
+      summary: 상품의 별점 통계
+      tags: [Review]
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 상품 리뷰 통계
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductReviewRatingResponse'
   /users/me/reviews:
     get:
       summary: 본인 작성 리뷰 목록
@@ -1226,13 +1243,6 @@ components:
     ProductReviewListResponse:
       type: object
       properties:
-        averageRating:
-          type: number
-          format: float
-        ratingDistribution:
-          type: object
-          additionalProperties:
-            type: integer
         reviews:
           type: array
           items:
@@ -1315,12 +1325,13 @@ components:
       properties:
         reviewId:
           type: integer
-        nickname:
-          type: string
         rating:
           type: integer
         content:
           type: string
+        createdAt:
+          type: string
+          format: date-time
         adminReply:
           $ref: '#/components/schemas/AdminReply'
     AdminReply:
@@ -1329,3 +1340,17 @@ components:
       properties:
         content:
           type: string
+        createdAt:
+          type: string
+          format: date-time
+    ProductReviewRatingResponse:
+      type: object
+      nullable: true
+      properties:
+        averageRating:
+          type: number
+          format: float
+        ratingDistribution:
+          type: object
+          additionalProperties:
+            type: integer
