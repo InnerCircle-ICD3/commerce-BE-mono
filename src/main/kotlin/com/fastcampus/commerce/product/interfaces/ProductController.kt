@@ -4,6 +4,8 @@ import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.common.response.CodeResponse
 import com.fastcampus.commerce.common.response.PagedData
 import com.fastcampus.commerce.product.domain.error.ProductErrorCode
+import com.fastcampus.commerce.product.interfaces.dto.MainProductResponse
+import com.fastcampus.commerce.product.interfaces.dto.MainProductResponses
 import com.fastcampus.commerce.product.interfaces.dto.ProductCategoryResponse
 import com.fastcampus.commerce.product.interfaces.dto.ProductResponse
 import com.fastcampus.commerce.product.interfaces.dto.SearchProductRequest
@@ -40,6 +42,34 @@ class ProductController {
                 CodeResponse(13, "150ml"),
                 CodeResponse(14, "230ml"),
                 CodeResponse(15, "355ml"),
+            ),
+        )
+    }
+
+    @GetMapping("/main")
+    fun getMainProducts(): MainProductResponses {
+        return MainProductResponses(
+            best = listOf(
+                MainProductResponse(
+                    id = 1,
+                    name = "스타벅스 캡슐커피",
+                    price = 10000,
+                    quantity = 10,
+                    thumbnail = "https://example.com/thumbnail.jpg",
+                    intensity = "1",
+                    cupSize = "25ml",
+                ),
+            ),
+            new = listOf(
+                MainProductResponse(
+                    id = 1,
+                    name = "스타벅스 캡슐커피",
+                    price = 10000,
+                    quantity = 10,
+                    thumbnail = "https://example.com/thumbnail.jpg",
+                    intensity = "1",
+                    cupSize = "25ml",
+                ),
             ),
         )
     }

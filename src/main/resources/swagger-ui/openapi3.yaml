@@ -212,10 +212,10 @@ paths:
                           "reviewId" : 1,
                           "rating" : 5,
                           "content" : "굿",
-                          "createdAt" : "2025-06-01T04:46:33.285407",
+                          "createdAt" : "2025-06-01T04:57:44.812195",
                           "adminReply" : {
                             "content" : "ㅎㅎ",
-                            "createdAt" : "2025-06-01T04:46:33.285645"
+                            "createdAt" : "2025-06-01T04:57:44.812368"
                           },
                           "productId" : 1,
                           "productName" : "스타벅스 캡슐",
@@ -826,6 +826,45 @@ paths:
                       },
                       "error" : null
                     }
+  /products/main:
+    get:
+      tags:
+      - Product
+      summary: 인기/최신 상품 조회
+      operationId: 상품 전시
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/products-main-1248237248"
+              examples:
+                상품 전시:
+                  value: |-
+                    {
+                      "data" : {
+                        "best" : [ {
+                          "id" : 1,
+                          "name" : "스타벅스 캡슐커피",
+                          "price" : 10000,
+                          "quantity" : 10,
+                          "thumbnail" : "https://example.com/thumbnail.jpg",
+                          "intensity" : "1",
+                          "cupSize" : "25ml"
+                        } ],
+                        "new" : [ {
+                          "id" : 1,
+                          "name" : "스타벅스 캡슐커피",
+                          "price" : 10000,
+                          "quantity" : 10,
+                          "thumbnail" : "https://example.com/thumbnail.jpg",
+                          "intensity" : "1",
+                          "cupSize" : "25ml"
+                        } ]
+                      },
+                      "error" : null
+                    }
   /products/{productId}:
     get:
       tags:
@@ -881,7 +920,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/products-productId-reviews1878564791"
+                $ref: "#/components/schemas/users-me-reviews1878564791"
               examples:
                 상품 리뷰목록 조회 성공:
                   value: |-
@@ -891,10 +930,10 @@ paths:
                           "reviewId" : 1,
                           "rating" : 5,
                           "content" : "굿",
-                          "createdAt" : "2025-06-01T04:46:34.500734",
+                          "createdAt" : "2025-06-01T04:57:46.016612",
                           "adminReply" : {
                             "content" : "ㅎㅎ",
-                            "createdAt" : "2025-06-01T04:46:34.500749"
+                            "createdAt" : "2025-06-01T04:57:46.016625"
                           },
                           "productId" : 1,
                           "productName" : "스타벅스 캡슐",
@@ -1181,7 +1220,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/products-productId-reviews1878564791"
+                $ref: "#/components/schemas/users-me-reviews1878564791"
               examples:
                 작성한 리뷰목록 조회 성공:
                   value: |-
@@ -1191,10 +1230,10 @@ paths:
                           "reviewId" : 2,
                           "rating" : 3,
                           "content" : "배송이 느렸어요 ㅠ",
-                          "createdAt" : "2025-06-01T04:46:34.443179",
+                          "createdAt" : "2025-06-01T04:57:45.970614",
                           "adminReply" : {
                             "content" : "죄송합니다.",
-                            "createdAt" : "2025-06-01T04:46:34.443831"
+                            "createdAt" : "2025-06-01T04:57:45.970978"
                           },
                           "productId" : 3,
                           "productName" : "할리스 캡슐",
@@ -1425,7 +1464,7 @@ components:
                   label:
                     type: string
                     description: 판매상태
-    products-productId-reviews1878564791:
+    users-me-reviews1878564791:
       type: object
       properties:
         data:
@@ -1658,38 +1697,6 @@ components:
         content:
           type: string
           description: 리뷰내용
-    admin-products-productId182916913:
-      required:
-      - cupSizeId
-      - detailImage
-      - intensityId
-      - name
-      - price
-      - quantity
-      - thumbnail
-      type: object
-      properties:
-        thumbnail:
-          type: string
-          description: 썸네일 url
-        intensityId:
-          type: number
-          description: 강도 카테고리 아이디
-        quantity:
-          type: number
-          description: 재고
-        price:
-          type: number
-          description: 가격
-        cupSizeId:
-          type: number
-          description: 컵사이즈 카테고리 아이디
-        name:
-          type: string
-          description: 상품명
-        detailImage:
-          type: string
-          description: 상세 이미지 url
     admin-reviews1537164265:
       type: object
       properties:
@@ -1758,6 +1765,38 @@ components:
             totalElements:
               type: number
               description: 총 수
+    admin-products-productId182916913:
+      required:
+      - cupSizeId
+      - detailImage
+      - intensityId
+      - name
+      - price
+      - quantity
+      - thumbnail
+      type: object
+      properties:
+        thumbnail:
+          type: string
+          description: 썸네일 url
+        intensityId:
+          type: number
+          description: 강도 카테고리 아이디
+        quantity:
+          type: number
+          description: 재고
+        price:
+          type: number
+          description: 가격
+        cupSizeId:
+          type: number
+          description: 컵사이즈 카테고리 아이디
+        name:
+          type: string
+          description: 상품명
+        detailImage:
+          type: string
+          description: 상세 이미지 url
     admin-products611185173:
       type: object
       properties:
@@ -1781,6 +1820,80 @@ components:
             message:
               type: string
               description: 에러 메시지
+    products-main-1248237248:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            new:
+              type: array
+              items:
+                required:
+                - cupSize
+                - id
+                - intensity
+                - name
+                - price
+                - quantity
+                - thumbnail
+                type: object
+                properties:
+                  intensity:
+                    type: string
+                    description: 최신상품 강도 카테고리명
+                  thumbnail:
+                    type: string
+                    description: 최신상품 썸네일
+                  quantity:
+                    type: number
+                    description: 최신상품 재고
+                  price:
+                    type: number
+                    description: 최신상품 가격
+                  name:
+                    type: string
+                    description: 최신상품명
+                  id:
+                    type: number
+                    description: 최신상품 아이디
+                  cupSize:
+                    type: string
+                    description: 최신상품 컵사이즈 카테고리명
+            best:
+              type: array
+              items:
+                required:
+                - cupSize
+                - id
+                - intensity
+                - name
+                - price
+                - quantity
+                - thumbnail
+                type: object
+                properties:
+                  intensity:
+                    type: string
+                    description: 인기상품 강도 카테고리명
+                  thumbnail:
+                    type: string
+                    description: 인기상품 썸네일
+                  quantity:
+                    type: number
+                    description: 인기상품 재고
+                  price:
+                    type: number
+                    description: 인기상품 가격
+                  name:
+                    type: string
+                    description: 인기상품명
+                  id:
+                    type: number
+                    description: 인기상품 아이디
+                  cupSize:
+                    type: string
+                    description: 인기상품 컵사이즈 카테고리명
     products-productId-reviews-rating257501732:
       type: object
       properties:

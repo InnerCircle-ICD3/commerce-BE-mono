@@ -50,6 +50,36 @@ class ProductControllerRestDocTest
                 }
             }
 
+            describe("GET /products/main - 메인 페이지의 인기/최신 상품 목록") {
+                it("인기/최신 상품을 조회할 수 있다.") {
+                    documentation(
+                        identifier = "상품 전시",
+                        tag = "Product",
+                        summary = "인기/최신 상품 조회",
+                    ) {
+                        requestLine(HttpMethod.GET, "/products/main")
+
+                        responseBody {
+                            field("data.best[0].id", "인기상품 아이디", 1)
+                            field("data.best[0].name", "인기상품명", "스타벅스 캡슐커피")
+                            field("data.best[0].price", "인기상품 가격", 10000)
+                            field("data.best[0].quantity", "인기상품 재고", 10)
+                            field("data.best[0].thumbnail", "인기상품 썸네일", "https://example.com/thumbnail.jpg")
+                            field("data.best[0].intensity", "인기상품 강도 카테고리명", "1")
+                            field("data.best[0].cupSize", "인기상품 컵사이즈 카테고리명", "25ml")
+                            field("data.new[0].id", "최신상품 아이디", 1)
+                            field("data.new[0].name", "최신상품명", "스타벅스 캡슐커피")
+                            field("data.new[0].price", "최신상품 가격", 10000)
+                            field("data.new[0].quantity", "최신상품 재고", 10)
+                            field("data.new[0].thumbnail", "최신상품 썸네일", "https://example.com/thumbnail.jpg")
+                            field("data.new[0].intensity", "최신상품 강도 카테고리명", "1")
+                            field("data.new[0].cupSize", "최신상품 컵사이즈 카테고리명", "25ml")
+                            ignoredField("error")
+                        }
+                    }
+                }
+            }
+
             describe("GET /products - 상품 검색") {
                 it("상품을 검색할 수 있다.") {
                     documentation(
