@@ -3,7 +3,6 @@ package com.fastcampus.commerce.cart.application
 import com.fastcampus.commerce.product.domain.entity.Inventory
 import org.springframework.stereotype.Service
 
-
 interface InventoryService {
     fun findInventoryByProductId(productId: Long): Inventory?
 }
@@ -16,7 +15,7 @@ class TemporaryInventoryService : InventoryService {
         return inventoryCache.computeIfAbsent(productId) { pid ->
             Inventory(
                 productId = pid,
-                quantity = 10
+                quantity = 10,
             )
         }
     }

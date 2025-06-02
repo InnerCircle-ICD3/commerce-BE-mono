@@ -2,7 +2,6 @@ package com.fastcampus.commerce.cart.application
 
 import com.fastcampus.commerce.cart.domain.entity.CartItem
 import com.fastcampus.commerce.cart.infrastructure.repository.CartItemRepository
-import com.fastcampus.commerce.cart.application.InventoryService
 import com.fastcampus.commerce.product.domain.entity.Inventory
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
 
 class CartItemServiceTest {
-
     private lateinit var cartItemRepository: CartItemRepository
     private lateinit var inventoryService: InventoryService
     private lateinit var cartItemService: CartItemService

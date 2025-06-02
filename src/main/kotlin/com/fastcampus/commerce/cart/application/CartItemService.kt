@@ -3,16 +3,15 @@ package com.fastcampus.commerce.cart.application
 import com.fastcampus.commerce.cart.domain.entity.CartItem
 import com.fastcampus.commerce.cart.infrastructure.repository.CartItemRepository
 import com.fastcampus.commerce.cart.interfaces.CartCreateResponse
-import com.fastcampus.commerce.cart.application.InventoryService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class CartItemService(
     private val cartItemRepository: CartItemRepository,
-    private val inventoryService: InventoryService
+    private val inventoryService: InventoryService,
 ) {
-  @Transactional
+    @Transactional
     fun addToCart(userId: Long, productId: Long, quantity: Int): CartCreateResponse {
         val userIdValue = userId
         val productIdValue = productId
@@ -36,7 +35,7 @@ class CartItemService(
             val cartItem = CartItem(
                 userId = userIdValue,
                 productId = productIdValue,
-                quantity = actualQuantity
+                quantity = actualQuantity,
             )
             cartItemRepository.save(cartItem)
         }
@@ -44,7 +43,7 @@ class CartItemService(
         return CartCreateResponse(
             quantity = actualQuantity,
             stockQuantity = stockQuantity,
-            requiresQuantityAdjustment = requiresQuantityAdjustment
+            requiresQuantityAdjustment = requiresQuantityAdjustment,
         )
     }
 }
