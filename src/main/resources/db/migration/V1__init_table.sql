@@ -173,6 +173,7 @@ create table file_metadata (
     original_file_name varchar(255) not null,
     content_type       varchar(20)  not null,
     file_size          integer      not null,
+    status             varchar(20)  not null default 'PENDING',
     created_at         timestamp(2) default current_timestamp(2)
 );
 
@@ -185,6 +186,8 @@ comment on column file_metadata.original_file_name is '원본 파일명';
 comment on column file_metadata.content_type is '파일타입';
 
 comment on column file_metadata.file_size is '파일크기';
+
+comment on column file_metadata.status is '파일업로드 상태(PENDING/SUCCESS)';
 
 alter table file_metadata
     owner to commerce;
