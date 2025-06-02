@@ -1,6 +1,7 @@
 package com.fastcampus.commerce.cart.interfaces
 
 import com.fastcampus.commerce.cart.application.CartItemService
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -35,5 +36,12 @@ class CartItemController(
         val userId = 1L
         val cartResponse = cartItemService.updateCartItem(userId,request)
         return cartResponse
+    }
+
+    @DeleteMapping("/carts")
+    fun deleteCartItems(@RequestBody request: CartDeleteRequest): CartDeleteResponse {
+        val deletedCount = cartItemService.deleteCartItems(request.productIds)
+        val response = CartDeleteResponse("Successfully deleted $deletedCount cart items")
+        return response
     }
 }
