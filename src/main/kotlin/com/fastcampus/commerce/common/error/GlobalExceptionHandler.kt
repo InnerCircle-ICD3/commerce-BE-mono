@@ -25,12 +25,6 @@ class GlobalExceptionHandler(
     @ExceptionHandler(BindException::class)
     fun handleBindException(e: BindException): ApiResponse<Nothing?> {
         log.error("BindException: {}", e.message, e)
-        /* TODO: 프론트와 에러 형식에 대해 상의 후 어떤 코드를 사용할지 결정한다.
-        val fieldErrors = e.bindingResult.fieldErrors.map {
-            FieldError(it.field, it.defaultMessage ?: "Invalid input")
-        }
-        return ApiResponse.error(ErrorMessage(CommonErrorCode.FIELD_ERROR, fieldErrors))
-         */
         val message = e.bindingResult.fieldErrors.first().defaultMessage
         return ApiResponse.error(ErrorMessage(CommonErrorCode.FIELD_ERROR, message))
     }

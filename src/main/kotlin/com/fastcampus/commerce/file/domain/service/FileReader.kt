@@ -12,7 +12,11 @@ class FileReader(
     private val storageContextKeyRepository: StorageContextKeyRepository,
 ) {
     fun getStorageContextKey(storageContextKey: String, adminId: Long): StorageContextKey {
-        val id = UUID.fromString(storageContextKey)
+        val id = try {
+            UUID.fromString(storageContextKey)
+        } catch (e: IllegalArgumentException) {
+            throw CoreException(FileErrorCode.INVALID_STORAGE_CONTEXT_KEY)
+        }
         return storageContextKeyRepository.findByIdAndAdminId(id, adminId)
             .orElseThrow { throw CoreException(FileErrorCode.INVALID_STORAGE_CONTEXT_KEY) }
     }
