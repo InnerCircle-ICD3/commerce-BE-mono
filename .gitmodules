@@ -1,0 +1,3 @@
+[submodule "src/main/resources/config/secret"]
+	path = src/main/resources/config/secret
+	url = https://github.com/InnerCircle-ICD3/commerce-BE-secret.git
