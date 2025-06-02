@@ -1,0 +1,31 @@
+cloud:
+  aws:
+    s3:
+      bucket: 801base
+      presign-ttl-ms: 3000
+    region.static: ap-northeast-2
+file:
+  policy:
+    default:
+      IMAGE:
+        max-size-mb: 1
+        allowed-extensions: [ jpg, jpeg, png ]
+      VIDEO:
+        max-size-mb: 10
+        allowed-extensions: [ mp4, avi, mov ]
+    override:
+      - domain: PRODUCT
+        context: thumbnail
+        fileTypes:
+          IMAGE:
+            max-size-mb: 5
+            allowed-extensions: [ jpg, jpeg, png ]
+          VIDEO:
+            max-size-mb: 20
+            allowed-extensions: [ mp4, avi, mov ]
+      - domain: PRODUCT
+        context: detail
+        fileTypes:
+          IMAGE:
+            max-size-mb: 10
+            allowed-extensions: [ jpg, jpeg, png ]

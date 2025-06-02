@@ -1,0 +1,29 @@
+spring:
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      default_batch_fetch_size: 100
+
+---
+spring.config.activate.on-profile: dev
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    # TODO: ERD가 1차 완성되면 설정
+    enabled: false
+    locations: classpath:db/migration
+    baseline-on-migrate: false
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/commerce
+    username: ${secrets.db.username}
+    password: ${secrets.db.password}
+
