@@ -8,4 +8,9 @@ data class ErrorMessage(
         code = errorCode.code,
         message = errorCode.message,
     )
+
+    constructor(errorCode: ErrorCode, message: String?) : this(
+        code = errorCode.code,
+        message = message ?: errorCode.message,
+    )
 }
