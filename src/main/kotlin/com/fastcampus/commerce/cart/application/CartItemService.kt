@@ -17,7 +17,7 @@ import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.product.domain.service.ProductReader
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-
+import com.fastcampus.commerce.common.error.CoreException
 @Service
 class CartItemService(
     private val cartItemRepository: CartItemRepository,
@@ -138,5 +138,21 @@ class CartItemService(
             stockQuantity = inventory.quantity,
             requiresQuantityAdjustment = requireQuantityAdjustment,
         )
+    }
+
+    @Transactional
+    fun deleteCartItems(productIds: List<Long>): Int {
+        if (productIds.isEmpty()) {
+            throw CoreException(CartErrorCode.EMPTY_PRODUCT_IDS)
+        }
+
+        val cartItems = cartItemRepository.findAllById(productIds)
+        if (cartItems.isEmpty()) {
+            throw CoreException(CartErrorCode.CART_ITEMS_NOT_FOUND)
+        }
+
+        cartItemRepository.softDeleteByProductIds(productIds)
+
+        return cartItems.size
     }
 }

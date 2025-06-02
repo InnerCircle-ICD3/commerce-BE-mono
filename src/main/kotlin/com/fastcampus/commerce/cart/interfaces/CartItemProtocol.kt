@@ -25,6 +25,14 @@ data class CartUpdateResponse(
     val requiresQuantityAdjustment: Boolean,
 )
 
+data class CartDeleteRequest(
+    val productIds: List<Long>
+)
+
+data class CartDeleteResponse(
+    val message: String
+)
+
 data class CartRetrievesResponse(
     val totalPrice: Int,
     val deliveryPrice: Int,
