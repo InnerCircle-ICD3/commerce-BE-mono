@@ -3,9 +3,15 @@ package com.fastcampus.commerce.common.error
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.clearMocks
+import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.slf4j.Logger
+import org.springframework.validation.BindException
+import org.springframework.validation.BindingResult
+import org.springframework.validation.FieldError
+import jakarta.validation.ConstraintViolation
+import jakarta.validation.ConstraintViolationException
 
 class GlobalExceptionHandlerTest : FunSpec(
     {
@@ -67,6 +73,50 @@ class GlobalExceptionHandlerTest : FunSpec(
                 handler.handleCoreException(exception)
 
                 verify { mockLogger.info("CoreException: {}", exception.message, exception) }
+            }
+        }
+
+        context("BindException 처리 시") {
+            test("ApiResponse.error 객체를 반환한다.") {
+                val expectedCode = CommonErrorCode.FIELD_ERROR
+                val expectedMessage = "이름이 비어있습니다."
+                val expectedError = ErrorMessage(expectedCode, expectedMessage)
+
+                val bindingResult = mockk<BindingResult>()
+                val fieldError = FieldError("testObject", "name", expectedMessage)
+                every { bindingResult.fieldErrors } returns listOf(fieldError)
+                val exception = BindException(bindingResult)
+
+                val sut = handler.handleBindException(exception)
+
+                sut.data shouldBe null
+                sut.error shouldBe expectedError
+                sut.error?.code shouldBe expectedError.code
+                sut.error?.message shouldBe expectedError.message
+
+                verify { mockLogger.error("BindException: {}", exception.message, exception) }
+            }
+        }
+
+        context("ConstraintViolationException 처리 시") {
+            test("ApiResponse.error 객체를 반환한다.") {
+                val expectedCode = CommonErrorCode.FIELD_ERROR
+                val expectedMessage = "이름이 비어있습니다."
+                val expectedError = ErrorMessage(expectedCode, expectedMessage)
+
+                val constraintViolation = mockk<ConstraintViolation<*>>()
+                every { constraintViolation.message } returns expectedMessage
+                every { constraintViolation.propertyPath.toString() } returns "name"
+                val exception = ConstraintViolationException(setOf(constraintViolation))
+
+                val sut = handler.handleConstraintViolation(exception)
+
+                sut.data shouldBe null
+                sut.error shouldBe expectedError
+                sut.error?.code shouldBe expectedError.code
+                sut.error?.message shouldBe expectedError.message
+
+                verify { mockLogger.error("ConstraintViolationException: {}", exception.message, exception) }
             }
         }
 

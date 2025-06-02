@@ -6,4 +6,6 @@ enum class CommonErrorCode(
     override val logLevel: LogLevel,
 ) : ErrorCode {
     SERVER_ERROR("SYS-001", "An unexpected error has occurred.", LogLevel.ERROR),
+
+    FIELD_ERROR("FED-001", "An unexpected error has occurred.", LogLevel.WARN),
 }
