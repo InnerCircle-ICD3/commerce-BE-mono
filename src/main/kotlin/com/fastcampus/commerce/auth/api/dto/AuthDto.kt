@@ -32,3 +32,7 @@ data class AuthResponse(
     val email: String?,
     val nickname: String
 )
+
+data class ReissueResponse(
+    val accessToken: String,
+)

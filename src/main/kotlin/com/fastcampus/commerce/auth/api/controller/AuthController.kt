@@ -3,6 +3,7 @@ package com.fastcampus.commerce.auth.api.controller
 import com.fastcampus.commerce.auth.api.dto.AuthResponse
 import com.fastcampus.commerce.auth.api.dto.LoginRequest
 import com.fastcampus.commerce.auth.api.dto.RegisterRequest
+import com.fastcampus.commerce.auth.api.dto.ReissueResponse
 import com.fastcampus.commerce.auth.api.service.AuthService
 import com.fastcampus.commerce.common.response.ApiResponse
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -24,7 +25,7 @@ class AuthController(
      * 토큰 재발급
      */
     @PostMapping("/reissue")
-    fun reissueToken(@RequestParam("refreshToken") refreshToken: String): ApiResponse<String> {
+    fun reissueToken(@RequestParam("refreshToken") refreshToken: String): ApiResponse<ReissueResponse> {
         return ApiResponse.success(authService.reissueToken(refreshToken))
     }
 
