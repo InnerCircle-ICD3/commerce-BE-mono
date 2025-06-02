@@ -46,9 +46,9 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
 
     // JWT support (via JJWT)
-    implementation("io.jsonwebtoken:jjwt-api:${jjwtVersion}")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:${jjwtVersion}")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:${jjwtVersion}")
+    implementation("io.jsonwebtoken:jjwt-api:$jjwtVersion")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:$jjwtVersion")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jjwtVersion")
 
     // database
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -81,7 +81,6 @@ dependencies {
 
     // TODO: 로컬 실행을 위해 설정, 추후 제거 필요
     runtimeOnly("com.h2database:h2")
-
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {

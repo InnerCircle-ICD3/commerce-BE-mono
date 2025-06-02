@@ -13,9 +13,8 @@ import org.springframework.stereotype.Service
 @Service
 class AuthService(
     private val tokenProvider: TokenProvider,
-    private val userController: UserController
+    private val userController: UserController,
 ) {
-
     /**
      * 액세스 토큰을 재발급합니다.
      *
@@ -52,7 +51,7 @@ class AuthService(
             refreshToken = refreshToken,
             userId = userDto.id,
             email = userDto.email,
-            nickname = userDto.nickname
+            nickname = userDto.nickname,
         )
     }
 
@@ -76,7 +75,7 @@ class AuthService(
             refreshToken = refreshToken,
             userId = userDto.id,
             email = userDto.email,
-            nickname = userDto.nickname
+            nickname = userDto.nickname,
         )
     }
 

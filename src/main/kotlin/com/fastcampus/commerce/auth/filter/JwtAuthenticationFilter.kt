@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse
 class JwtAuthenticationFilter(
     private val tokenProvider: TokenProvider,
 ) : OncePerRequestFilter() {
-
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
         val accessToken = request.getHeader(HttpHeaderKeys.ACCESS_TOKEN)
             ?: throw CoreException(AuthErrorCode.TOKEN_NOT_FOUND)
@@ -23,5 +22,4 @@ class JwtAuthenticationFilter(
 
         filterChain.doFilter(request, response)
     }
-
 }

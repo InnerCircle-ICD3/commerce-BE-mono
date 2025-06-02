@@ -13,13 +13,9 @@ private val log = LoggerFactory.getLogger(CustomOAuth2SuccessHandler::class.java
 
 @Component
 class CustomOAuth2SuccessHandler(
-    private val tokenProvider: TokenProvider
+    private val tokenProvider: TokenProvider,
 ) : AuthenticationSuccessHandler {
-    override fun onAuthenticationSuccess(
-        request: HttpServletRequest?,
-        response: HttpServletResponse?,
-        authentication: Authentication?,
-    ) {
+    override fun onAuthenticationSuccess(request: HttpServletRequest?, response: HttpServletResponse?, authentication: Authentication?) {
         if (authentication == null || response == null) return
         val user = authentication.principal as? CustomUserPrincipal ?: return
 

@@ -9,9 +9,8 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType
 
 @Configuration
 class OAuth2ClientRegistrationConfig(
-    private val naverProps: NaverOAuth2Properties
+    private val naverProps: NaverOAuth2Properties,
 ) {
-
     @Bean
     fun clientRegistrationRepository(): ClientRegistrationRepository {
         val naver = ClientRegistration.withRegistrationId("naver")

@@ -7,5 +7,5 @@ data class UserDto(
     val id: Long,
     val email: String?,
     val nickname: String,
-    val roles: List<String> = emptyList()
+    val roles: List<String> = emptyList(),
 )

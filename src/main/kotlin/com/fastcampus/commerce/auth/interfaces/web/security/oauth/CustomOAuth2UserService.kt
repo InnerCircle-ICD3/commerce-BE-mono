@@ -11,14 +11,13 @@ data class NaverUserResponse(
     val id: String,
     val email: String?,
     val nickname: String?,
-    val profileImage: String?
+    val profileImage: String?,
 )
 
 @Service
 class CustomOAuth2UserService(
     private val userController: UserController,
 ) : OAuth2UserService<OAuth2UserRequest, OAuth2User> {
-
     private val delegate = DefaultOAuth2UserService()
 
     override fun loadUser(userRequest: OAuth2UserRequest): OAuth2User {
@@ -30,7 +29,7 @@ class CustomOAuth2UserService(
             id = responseMap["id"]?.toString() ?: "",
             email = responseMap["email"]?.toString(),
             nickname = responseMap["nickname"]?.toString(),
-            profileImage = responseMap["profile_image"]?.toString()
+            profileImage = responseMap["profile_image"]?.toString(),
         )
 
         // User 모듈에 API to API 호출

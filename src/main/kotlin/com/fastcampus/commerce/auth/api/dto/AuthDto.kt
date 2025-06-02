@@ -11,7 +11,7 @@ data class RegisterRequest(
     val email: String,
     val password: String,
     val nickname: String,
-    val name: String? = null
+    val name: String? = null,
 )
 
 /**
@@ -19,7 +19,7 @@ data class RegisterRequest(
  */
 data class LoginRequest(
     val email: String,
-    val password: String
+    val password: String,
 )
 
 /**
@@ -30,7 +30,7 @@ data class AuthResponse(
     val refreshToken: String,
     val userId: Long,
     val email: String?,
-    val nickname: String
+    val nickname: String,
 )
 
 data class ReissueResponse(

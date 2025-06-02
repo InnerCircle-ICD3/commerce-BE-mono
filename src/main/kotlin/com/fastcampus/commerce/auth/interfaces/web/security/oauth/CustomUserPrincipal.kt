@@ -6,18 +6,18 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.oauth2.core.user.OAuth2User
 
 class CustomUserPrincipal(
-    private val user: UserDto
+    private val user: UserDto,
 ) : OAuth2User {
-
     override fun getName(): String = user.id.toString()
-    override fun getAttributes(): Map<String, Any> = mapOf(
-        "id" to user.id,
-        "email" to (user.email ?: ""),
-        "nickname" to (user.nickname ?: "")
-    )
 
-    override fun getAuthorities(): Collection<GrantedAuthority> =
-        user.roles.map { SimpleGrantedAuthority(it) }
+    override fun getAttributes(): Map<String, Any> =
+        mapOf(
+            "id" to user.id,
+            "email" to (user.email ?: ""),
+            "nickname" to (user.nickname ?: ""),
+        )
+
+    override fun getAuthorities(): Collection<GrantedAuthority> = user.roles.map { SimpleGrantedAuthority(it) }
 
     companion object {
         fun of(user: UserDto): CustomUserPrincipal = CustomUserPrincipal(user)

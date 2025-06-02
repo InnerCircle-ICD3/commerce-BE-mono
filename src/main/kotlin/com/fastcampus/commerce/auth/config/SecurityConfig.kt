@@ -35,12 +35,11 @@ class SecurityConfig(
     private val customOAuth2UserService: OAuth2UserService<OAuth2UserRequest, OAuth2User>,
     private val customSuccessHandler: AuthenticationSuccessHandler,
     private val customFailureHandler: AuthenticationFailureHandler,
-    private val tokenProvider: TokenProvider
+    private val tokenProvider: TokenProvider,
 ) {
-
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
-        //cors 모두 허용
+        // cors 모두 허용
         val config = CorsConfiguration().apply {
             allowedOrigins = corsProperties.allowedOrigins
             allowedMethods = corsProperties.allowedMethods
@@ -68,7 +67,7 @@ class SecurityConfig(
                     "/api/v1/auth/reissue",
                     "/api/v1/auth/register",
                     "/api/v1/auth/login",
-                    "/api/v1/auth/logout"
+                    "/api/v1/auth/logout",
                 ).permitAll()
                     .anyRequest().authenticated()
             }
@@ -87,7 +86,10 @@ class SecurityConfig(
                     .successHandler(customSuccessHandler) // 선택
                     .failureHandler(customFailureHandler) // 선택
             }
-            .addFilterBefore(jwtAuthenticationFilter(), org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(
+                jwtAuthenticationFilter(),
+                org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter::class.java,
+            )
         return http.build()
     }
 }

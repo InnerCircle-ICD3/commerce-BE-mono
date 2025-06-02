@@ -89,15 +89,10 @@ class TokenProvider(
      *
      * @return 생성된 JWT 토큰을 문자열 형태로 반환
      */
-    private fun createToken(
-        customizeClaims: (JwtBuilder) -> Unit,
-        expirationValueToAdd: Long,
-        expirationUnit: ChronoUnit,
-    ): String {
+    private fun createToken(customizeClaims: (JwtBuilder) -> Unit, expirationValueToAdd: Long, expirationUnit: ChronoUnit): String {
         val jwt: JwtBuilder = Jwts.builder()
             // header
             .header().type("JWT").and()
-
             // payload
             .issuer(jwtProperties.issuer)
             .issuedAt(Date.from(Instant.now()))

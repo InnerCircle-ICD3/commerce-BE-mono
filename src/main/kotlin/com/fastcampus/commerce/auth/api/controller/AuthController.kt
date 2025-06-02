@@ -20,12 +20,13 @@ import org.springframework.web.bind.annotation.RestController
 class AuthController(
     private val authService: AuthService,
 ) {
-
     /**
      * 토큰 재발급
      */
     @PostMapping("/reissue")
-    fun reissueToken(@RequestParam("refreshToken") refreshToken: String): ApiResponse<ReissueResponse> {
+    fun reissueToken(
+        @RequestParam("refreshToken") refreshToken: String,
+    ): ApiResponse<ReissueResponse> {
         return ApiResponse.success(authService.reissueToken(refreshToken))
     }
 
@@ -33,7 +34,9 @@ class AuthController(
      * 회원 가입
      */
     @PostMapping("/register")
-    fun register(@RequestBody request: RegisterRequest): ApiResponse<AuthResponse> {
+    fun register(
+        @RequestBody request: RegisterRequest,
+    ): ApiResponse<AuthResponse> {
         return ApiResponse.success(authService.register(request))
     }
 
@@ -41,7 +44,9 @@ class AuthController(
      * 로그인
      */
     @PostMapping("/login")
-    fun login(@RequestBody request: LoginRequest): ApiResponse<AuthResponse> {
+    fun login(
+        @RequestBody request: LoginRequest,
+    ): ApiResponse<AuthResponse> {
         return ApiResponse.success(authService.login(request))
     }
 
@@ -58,7 +63,9 @@ class AuthController(
      * 회원 탈퇴
      */
     @DeleteMapping("/account")
-    fun deleteAccount(@AuthenticationPrincipal principal: OAuth2User): ApiResponse<Unit> {
+    fun deleteAccount(
+        @AuthenticationPrincipal principal: OAuth2User,
+    ): ApiResponse<Unit> {
         val userId = principal.name.toLong()
         authService.deleteAccount(userId)
         return ApiResponse.success(Unit)
