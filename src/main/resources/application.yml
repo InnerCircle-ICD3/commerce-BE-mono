@@ -4,9 +4,9 @@ spring.profiles.active: dev
 spring:
   config:
     import:
-      - classpath:config/auth.yml
       - classpath:config/db.yml
       - classpath:config/file.yml
       - classpath:config/logging.yml
-      - classpath:config/secret.yml
       - classpath:config/web.yml
+      - classpath:config/secret/auth.yml
+      - classpath:config/secret/db.yml

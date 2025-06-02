@@ -1,8 +1,8 @@
 package com.fastcampus.commerce.common.config
 
-import org.springframework.boot.context.properties.EnableConfigurationProperties
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.context.annotation.Configuration
 
-@EnableConfigurationProperties
+@ConfigurationPropertiesScan(basePackages = ["com.fastcampus.commerce"])
 @Configuration
 class ConfigurationPropertiesConfig
