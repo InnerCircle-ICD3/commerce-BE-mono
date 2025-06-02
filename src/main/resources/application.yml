@@ -1,7 +1,12 @@
-#spring.application.name: commerce
+spring.application.name: commerce
+spring.profiles.active: dev
+
 spring:
-  application:
-    name: commerce
   config:
     import:
-      - auth.yml
+      - classpath:config/auth.yml
+      - classpath:config/db.yml
+      - classpath:config/file.yml
+      - classpath:config/logging.yml
+      - classpath:config/secret.yml
+      - classpath:config/web.yml

@@ -1,9 +1,12 @@
 package com.fastcampus.commerce.file.domain.entity
 
 import com.fastcampus.commerce.common.entity.BaseEntity
+import com.fastcampus.commerce.file.domain.model.FileStatus
 import java.util.UUID
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -24,6 +27,9 @@ class FileMetadata(
     val contentType: String,
     @Column(nullable = false)
     val fileSize: Int,
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    var status: FileStatus = FileStatus.PENDING,
 ) : BaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

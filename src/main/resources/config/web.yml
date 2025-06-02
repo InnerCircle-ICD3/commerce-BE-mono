@@ -1,0 +1,27 @@
+spring:
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true
+        default-page-size: 20
+        max-page-size: 50
+  jackson:
+    default-property-inclusion: always
+    date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
+    time-zone: Asia/Seoul
+  mvc:
+    contentnegotiation:
+      favor-parameter: false
+      default-content-types: application/json
+
+---
+spring.config.activate.on-profile: dev
+spring:
+  mvc:
+    log-request-details: true
+
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: on_param
