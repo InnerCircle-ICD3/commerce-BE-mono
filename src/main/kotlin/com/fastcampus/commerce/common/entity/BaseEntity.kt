@@ -12,5 +12,5 @@ import jakarta.persistence.MappedSuperclass
 abstract class BaseEntity {
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    val createdAt: LocalDateTime? = null
+    lateinit var createdAt: LocalDateTime
 }
