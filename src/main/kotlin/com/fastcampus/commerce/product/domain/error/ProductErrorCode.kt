@@ -9,6 +9,7 @@ enum class ProductErrorCode(
     override val logLevel: LogLevel,
 ) : ErrorCode {
     PRODUCT_NOT_FOUND("PRO-001", "상품을 찾을 수 없습니다.", LogLevel.WARN),
+    INVENTORY_NOT_FOUND("PRO-002","상품 재고를 찾을 수 없습니다.",LogLevel.WARN),
 
     PRODUCT_NAME_EMPTY("PRD-101", "상품명이 비어있습니다.", LogLevel.WARN),
     PRODUCT_NAME_TOO_LONG("PRD-102", "상품명이 너무 깁니다.", LogLevel.WARN),
