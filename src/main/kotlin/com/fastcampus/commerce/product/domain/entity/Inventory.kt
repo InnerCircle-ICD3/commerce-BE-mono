@@ -1,6 +1,8 @@
 package com.fastcampus.commerce.product.domain.entity
 
 import com.fastcampus.commerce.common.entity.BaseEntity
+import com.fastcampus.commerce.common.error.CoreException
+import com.fastcampus.commerce.product.domain.error.ProductErrorCode
 import org.springframework.data.annotation.LastModifiedDate
 import java.time.LocalDateTime
 import jakarta.persistence.Column
@@ -26,7 +28,22 @@ class Inventory(
     @Column(nullable = false)
     lateinit var updatedAt: LocalDateTime
 
+    init {
+        validate()
+    }
+
+    fun validate() {
+        validateQuantity()
+    }
+
+    private fun validateQuantity() {
+        if (quantity < 0) {
+            throw CoreException(ProductErrorCode.QUANTITY_NEGATIVE)
+        }
+    }
+
     fun updateQuantity(quantity: Int) {
         this.quantity = quantity
+        validate()
     }
 }
