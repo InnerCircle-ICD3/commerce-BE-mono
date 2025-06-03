@@ -18,7 +18,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import java.util.UUID
 
-class FileServiceTest : FunSpec(
+class FileCommandServiceTest : FunSpec(
     {
         val fileUploadPolicyValidator = mockk<FileUploadPolicyValidator>(relaxed = true)
         val fileStore = mockk<FileStore>()

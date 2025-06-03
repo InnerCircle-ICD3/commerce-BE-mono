@@ -9,7 +9,7 @@ import com.fastcampus.commerce.file.domain.validator.FileUploadPolicyValidator
 import org.springframework.stereotype.Service
 
 @Service
-class FileService(
+class FileCommandService(
     private val fileUploadPolicyValidator: FileUploadPolicyValidator,
     private val fileStore: FileStore,
     private val uploadUrlGenerator: UploadUrlGenerator,
