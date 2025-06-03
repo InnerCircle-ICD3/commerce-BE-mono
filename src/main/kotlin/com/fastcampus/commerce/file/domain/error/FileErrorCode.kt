@@ -20,4 +20,6 @@ enum class FileErrorCode(
     S3_ACCESS_DENIED("FIE-010", "업로드 서비스 처리 중 오류가 발생했습니다.", LogLevel.WARN),
     S3_SERVER_ERROR("FIE-011", "업로드 서비스 처리 중 오류가 발생했습니다.", LogLevel.WARN),
     FAIL_GENERATE_PRESIGNED_URL("FIE-012", "업로드 요청 중 오류가 발생했습니다.", LogLevel.WARN),
+
+    METADATA_NOW_FOUND("FIE-101", "파일 메타데이터를 찾을 수 없습니다.", LogLevel.WARN),
 }
