@@ -7,7 +7,7 @@ import com.fastcampus.commerce.file.domain.error.FileErrorCode
 import com.fastcampus.commerce.file.domain.model.DomainType
 import com.fastcampus.commerce.file.domain.model.FileType
 import com.fastcampus.commerce.file.domain.service.FileStore
-import com.fastcampus.commerce.file.domain.validator.FileValidator
+import com.fastcampus.commerce.file.domain.validator.FileUploadPolicyValidator
 import com.fastcampus.commerce.file.infrastructure.s3.PresignedUrlGenerator
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
@@ -20,11 +20,11 @@ import java.util.UUID
 
 class FileServiceTest : FunSpec(
     {
-        val fileValidator = mockk<FileValidator>(relaxed = true)
+        val fileUploadPolicyValidator = mockk<FileUploadPolicyValidator>(relaxed = true)
         val fileStore = mockk<FileStore>()
         val presignedUrlGenerator = mockk<PresignedUrlGenerator>()
-        val service = FileService(
-            fileValidator,
+        val service = FileCommandService(
+            fileUploadPolicyValidator,
             fileStore,
             presignedUrlGenerator,
         )
@@ -54,7 +54,7 @@ class FileServiceTest : FunSpec(
         val uploadUrl = "https://s3.com/presigned"
 
         beforeTest {
-            clearMocks(fileValidator, fileStore, presignedUrlGenerator)
+            clearMocks(fileUploadPolicyValidator, fileStore, presignedUrlGenerator)
         }
 
         test("Presigned URL 생성 흐름 전체를 정상 수행한다") {
@@ -67,38 +67,38 @@ class FileServiceTest : FunSpec(
             result.key shouldBe metadata.storedPath
             result.contextId shouldBe metadata.contextKey
 
-            verify(exactly = 1) { fileValidator.validate(request) }
+            verify(exactly = 1) { fileUploadPolicyValidator.validate(request) }
             verify(exactly = 1) { fileStore.prepareGeneratePresignedUrl(uploaderId, request) }
             verify(exactly = 1) { presignedUrlGenerator.generate(metadata) }
         }
 
         test("Validator에서 예외 발생 시 이후 단계는 호출되지 않는다") {
-            every { fileValidator.validate(request) } throws CoreException(FileErrorCode.FILE_NAME_EMPTY)
+            every { fileUploadPolicyValidator.validate(request) } throws CoreException(FileErrorCode.FILE_NAME_EMPTY)
 
             shouldThrow<CoreException> {
                 service.generatePresignedUrl(uploaderId, request)
             }.errorCode shouldBe FileErrorCode.FILE_NAME_EMPTY
 
-            verify(exactly = 1) { fileValidator.validate(request) }
+            verify(exactly = 1) { fileUploadPolicyValidator.validate(request) }
             verify(exactly = 0) { fileStore.prepareGeneratePresignedUrl(any(), any()) }
             verify(exactly = 0) { presignedUrlGenerator.generate(any()) }
         }
 
         test("FileStore에서 예외 발생 시 generator는 호출되지 않는다") {
-            every { fileValidator.validate(request) } returns Unit
+            every { fileUploadPolicyValidator.validate(request) } returns Unit
             every { fileStore.prepareGeneratePresignedUrl(uploaderId, request) } throws CoreException(FileErrorCode.S3_CLIENT_ERROR)
 
             shouldThrow<CoreException> {
                 service.generatePresignedUrl(uploaderId, request)
             }.errorCode shouldBe FileErrorCode.S3_CLIENT_ERROR
 
-            verify(exactly = 1) { fileValidator.validate(request) }
+            verify(exactly = 1) { fileUploadPolicyValidator.validate(request) }
             verify(exactly = 1) { fileStore.prepareGeneratePresignedUrl(uploaderId, request) }
             verify(exactly = 0) { presignedUrlGenerator.generate(any()) }
         }
 
         test("PresignedUrlGenerator에서 예외 발생 시 그대로 전파된다") {
-            every { fileValidator.validate(request) } returns Unit
+            every { fileUploadPolicyValidator.validate(request) } returns Unit
             every { fileStore.prepareGeneratePresignedUrl(uploaderId, request) } returns metadata
             every { presignedUrlGenerator.generate(metadata) } throws CoreException(FileErrorCode.S3_SERVER_ERROR)
 
@@ -106,7 +106,7 @@ class FileServiceTest : FunSpec(
                 service.generatePresignedUrl(uploaderId, request)
             }.errorCode shouldBe FileErrorCode.S3_SERVER_ERROR
 
-            verify(exactly = 1) { fileValidator.validate(request) }
+            verify(exactly = 1) { fileUploadPolicyValidator.validate(request) }
             verify(exactly = 1) { fileStore.prepareGeneratePresignedUrl(uploaderId, request) }
             verify(exactly = 1) { presignedUrlGenerator.generate(metadata) }
         }

@@ -4,7 +4,7 @@ import com.fastcampus.commerce.file.application.request.GeneratePresignedUrlRequ
 import org.springframework.stereotype.Component
 
 @Component
-class FileValidator(
+class FileUploadPolicyValidator(
     private val fileNameValidator: FileNameValidator,
     private val filePolicyValidator: FilePolicyValidator,
 ) {
