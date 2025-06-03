@@ -22,26 +22,43 @@ class CartItemService(
             ?: throw IllegalArgumentException("Product not found in inventory")
 
         val stockQuantity = inventory.quantity
-        val requiresQuantityAdjustment = quantity > stockQuantity
+        var requiresQuantityAdjustment = false
+        var finalQuantity: Int  // 실제로 장바구니에 담긴 최종 수량
 
-        val actualQuantity = if (requiresQuantityAdjustment) stockQuantity else quantity
         val existingCartItem = cartItemRepository.findByUserIdAndProductId(userIdValue, productIdValue)
-        if (existingCartItem != null) {
-            val updatedQuantity = existingCartItem.quantity + actualQuantity
 
-            existingCartItem.quantity = updatedQuantity
+        if (existingCartItem != null) {
+            // 기존 수량 + 추가 수량
+            val desiredQuantity = existingCartItem.quantity + quantity
+
+            if (desiredQuantity > stockQuantity) {
+                finalQuantity = stockQuantity
+                requiresQuantityAdjustment = true
+            } else {
+                finalQuantity = desiredQuantity
+            }
+
+            existingCartItem.quantity = finalQuantity
             cartItemRepository.save(existingCartItem)
         } else {
+            // 새로운 상품 추가
+            if (quantity > stockQuantity) {
+                finalQuantity = stockQuantity
+                requiresQuantityAdjustment = true
+            } else {
+                finalQuantity = quantity
+            }
+
             val cartItem = CartItem(
                 userId = userIdValue,
                 productId = productIdValue,
-                quantity = actualQuantity,
+                quantity = finalQuantity,
             )
             cartItemRepository.save(cartItem)
         }
 
         return CartCreateResponse(
-            quantity = actualQuantity,
+            quantity = finalQuantity,
             stockQuantity = stockQuantity,
             requiresQuantityAdjustment = requiresQuantityAdjustment,
         )
