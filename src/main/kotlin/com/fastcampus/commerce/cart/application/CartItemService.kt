@@ -4,7 +4,6 @@ import com.fastcampus.commerce.cart.domain.entity.CartItem
 import com.fastcampus.commerce.cart.infrastructure.repository.CartItemRepository
 import com.fastcampus.commerce.cart.interfaces.CartCreateResponse
 import com.fastcampus.commerce.product.domain.service.ProductReader
-import com.fastcampus.commerce.product.domain.repository.ProductRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -19,7 +18,7 @@ class CartItemService(
 
         val stockQuantity = inventory.quantity
         var requiresQuantityAdjustment = false
-        var finalQuantity: Int  // 실제로 장바구니에 담긴 최종 수량
+        var finalQuantity: Int // 실제로 장바구니에 담긴 최종 수량
 
         val existingCartItem = cartItemRepository.findByUserIdAndProductId(userId, productId)
 

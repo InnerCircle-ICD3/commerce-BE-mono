@@ -1,10 +1,10 @@
 package com.fastcampus.commerce.cart.interfaces
 
 import com.fastcampus.commerce.cart.application.CartItemService
-import com.fastcampus.commerce.cart.domain.entity.CartItem
-import com.fastcampus.commerce.common.response.ApiResponse
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class CartItemController(
