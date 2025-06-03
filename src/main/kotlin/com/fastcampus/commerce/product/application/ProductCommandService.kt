@@ -3,6 +3,7 @@ package com.fastcampus.commerce.product.application
 import com.fastcampus.commerce.product.domain.service.CategoryStore
 import com.fastcampus.commerce.product.domain.service.ProductStore
 import com.fastcampus.commerce.product.domain.service.dto.ProductRegister
+import com.fastcampus.commerce.product.domain.model.ProductRegister
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

@@ -4,7 +4,7 @@ import com.fastcampus.commerce.product.domain.entity.Inventory
 import com.fastcampus.commerce.product.domain.entity.Product
 import com.fastcampus.commerce.product.domain.repository.InventoryRepository
 import com.fastcampus.commerce.product.domain.repository.ProductRepository
-import com.fastcampus.commerce.product.domain.service.dto.ProductRegister
+import com.fastcampus.commerce.product.domain.model.ProductRegister
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.clearMocks

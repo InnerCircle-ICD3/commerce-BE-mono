@@ -2,9 +2,9 @@ package com.fastcampus.commerce.product.domain.service
 
 import com.fastcampus.commerce.product.domain.entity.Inventory
 import com.fastcampus.commerce.product.domain.entity.Product
+import com.fastcampus.commerce.product.domain.model.ProductRegister
 import com.fastcampus.commerce.product.domain.repository.InventoryRepository
 import com.fastcampus.commerce.product.domain.repository.ProductRepository
-import com.fastcampus.commerce.product.domain.service.dto.ProductRegister
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 

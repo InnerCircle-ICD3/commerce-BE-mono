@@ -1,6 +1,6 @@
 package com.fastcampus.commerce.admin.product.application.request
 
-import com.fastcampus.commerce.product.domain.service.dto.ProductRegister
+import com.fastcampus.commerce.product.domain.model.ProductRegister
 
 data class RegisterProductRequest(
     val name: String,

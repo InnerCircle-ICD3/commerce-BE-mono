@@ -1,9 +1,9 @@
 package com.fastcampus.commerce.product.application
 
 import com.fastcampus.commerce.product.domain.entity.Product
+import com.fastcampus.commerce.product.domain.model.ProductRegister
 import com.fastcampus.commerce.product.domain.service.CategoryStore
 import com.fastcampus.commerce.product.domain.service.ProductStore
-import com.fastcampus.commerce.product.domain.service.dto.ProductRegister
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every

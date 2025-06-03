@@ -1,4 +1,4 @@
-package com.fastcampus.commerce.product.domain.service.dto
+package com.fastcampus.commerce.product.domain.model
 
 import com.fastcampus.commerce.product.domain.entity.Product
 
