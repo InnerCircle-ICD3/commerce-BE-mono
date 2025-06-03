@@ -123,5 +123,32 @@ class ProductStoreTest : FunSpec(
 
             verify(exactly = 1) { productReader.getProductById(productId) }
         }
+
+        test("재고 수량 업데이트 시 해당 상품의 인벤토리를 조회하고 수량을 변경한다.") {
+            val productId = 1L
+            val originalQuantity = 100
+            val inventory = spyk(Inventory(productId = productId, quantity = originalQuantity))
+            every { productReader.getInventoryByProductIdForUpdate(productId) } returns inventory
+            val quantity = 50
+
+            productStore.updateQuantityByProductId(productId, quantity)
+
+            inventory.quantity shouldBe quantity
+
+            verify(exactly = 1) { productReader.getInventoryByProductIdForUpdate(productId) }
+            verify(exactly = 1) { inventory.updateQuantity(quantity) }
+        }
+
+        test("재고가 존재하지 않으면 INVENTORY_NOT_FOUND 예외가 발생한다.") {
+            val productId = 1L
+            val quantity = 10
+            every { productReader.getInventoryByProductIdForUpdate(productId) } throws CoreException(ProductErrorCode.INVENTORY_NOT_FOUND)
+
+            shouldThrow<CoreException> {
+                productStore.updateQuantityByProductId(productId, quantity)
+            }.errorCode shouldBe ProductErrorCode.INVENTORY_NOT_FOUND
+
+            verify(exactly = 1) { productReader.getInventoryByProductIdForUpdate(productId) }
+        }
     },
 )

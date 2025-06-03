@@ -15,7 +15,12 @@ class ProductReader(
 ) {
     fun getInventoryByProductId(productId: Long): Inventory {
         return inventoryRepository.findByProductId(productId)
-        .orElseThrow { CoreException(ProductErrorCode.INVENTORY_NOT_FOUND) }
+            .orElseThrow { CoreException(ProductErrorCode.INVENTORY_NOT_FOUND) }
+    }
+
+    fun getInventoryByProductIdForUpdate(productId: Long): Inventory {
+        return inventoryRepository.findByProductIdForUpdate(productId)
+            .orElseThrow { CoreException(ProductErrorCode.INVENTORY_NOT_FOUND) }
     }
 
     fun getProductById(productId: Long): Product {

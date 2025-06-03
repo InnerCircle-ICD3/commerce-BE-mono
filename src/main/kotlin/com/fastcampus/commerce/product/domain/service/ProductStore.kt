@@ -28,4 +28,10 @@ class ProductStore(
         val product = productReader.getProductById(command.id)
         product.update(command)
     }
+
+    @Transactional(readOnly = false)
+    fun updateQuantityByProductId(productId: Long, quantity: Int) {
+        val inventory = productReader.getInventoryByProductIdForUpdate(productId)
+        inventory.updateQuantity(quantity)
+    }
 }

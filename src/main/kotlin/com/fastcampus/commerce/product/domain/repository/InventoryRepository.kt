@@ -7,4 +7,6 @@ interface InventoryRepository {
     fun save(inventory: Inventory): Inventory
 
     fun findByProductId(productId: Long): Optional<Inventory>
+
+    fun findByProductIdForUpdate(productId: Long): Optional<Inventory>
 }

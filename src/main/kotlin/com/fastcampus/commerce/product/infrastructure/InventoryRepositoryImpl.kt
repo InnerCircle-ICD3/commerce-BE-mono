@@ -1,7 +1,6 @@
 package com.fastcampus.commerce.product.infrastructure
 
 import com.fastcampus.commerce.product.domain.entity.Inventory
-import com.fastcampus.commerce.product.domain.entity.QInventory.inventory
 import com.fastcampus.commerce.product.domain.repository.InventoryRepository
 import org.springframework.stereotype.Repository
 import java.util.Optional
@@ -18,4 +17,7 @@ class InventoryRepositoryImpl(
         return inventoryJpaRepository.findById(productId)
     }
 
+    override fun findByProductIdForUpdate(productId: Long): Optional<Inventory> {
+        return inventoryJpaRepository.findByProductidForUpdate(productId)
+    }
 }
