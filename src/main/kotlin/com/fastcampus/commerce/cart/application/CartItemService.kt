@@ -3,7 +3,7 @@ package com.fastcampus.commerce.cart.application
 import com.fastcampus.commerce.cart.domain.entity.CartItem
 import com.fastcampus.commerce.cart.infrastructure.repository.CartItemRepository
 import com.fastcampus.commerce.cart.interfaces.CartCreateResponse
-import com.fastcampus.commerce.product.domain.ProductReader
+import com.fastcampus.commerce.product.domain.service.ProductReader
 import com.fastcampus.commerce.product.domain.repository.ProductRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

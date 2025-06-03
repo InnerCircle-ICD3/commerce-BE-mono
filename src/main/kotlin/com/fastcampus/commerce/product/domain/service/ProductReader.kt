@@ -1,4 +1,4 @@
-package com.fastcampus.commerce.product.domain
+package com.fastcampus.commerce.product.domain.service
 
 import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.product.domain.entity.Inventory
