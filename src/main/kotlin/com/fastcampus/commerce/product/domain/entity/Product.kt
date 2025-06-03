@@ -3,6 +3,7 @@ package com.fastcampus.commerce.product.domain.entity
 import com.fastcampus.commerce.common.entity.BaseEntity
 import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.product.domain.error.ProductErrorCode
+import com.fastcampus.commerce.product.domain.model.ProductUpdater
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.annotation.LastModifiedDate
@@ -46,6 +47,7 @@ class Product(
 
     @Column
     var deletedAt: LocalDateTime? = null
+
     init {
         validate()
     }
@@ -68,6 +70,15 @@ class Product(
         if (price <= 0) {
             throw CoreException(ProductErrorCode.PRICE_NOT_POSITIVE)
         }
+    }
+
+    fun update(updater: ProductUpdater) {
+        this.name = updater.name
+        this.price = updater.price
+        this.thumbnail = updater.thumbnail
+        this.detailImage = updater.detailImage
+        this.status = updater.status
+        validate()
     }
 
     companion object {
