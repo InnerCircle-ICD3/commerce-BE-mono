@@ -34,4 +34,12 @@ class ProductStore(
         val inventory = productReader.getInventoryByProductIdForUpdate(productId)
         inventory.updateQuantity(quantity)
     }
+
+    @Transactional(readOnly = false)
+    fun deleteProductWithInventory(productId: Long) {
+        val product = productReader.getProductById(productId)
+        productRepository.delete(product)
+        val inventory = productReader.getInventoryByProductId(productId)
+        inventoryRepository.delete(inventory)
+    }
 }

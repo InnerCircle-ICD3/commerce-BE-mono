@@ -20,4 +20,8 @@ class InventoryRepositoryImpl(
     override fun findByProductIdForUpdate(productId: Long): Optional<Inventory> {
         return inventoryJpaRepository.findByProductidForUpdate(productId)
     }
+
+    override fun delete(inventory: Inventory) {
+        inventoryJpaRepository.delete(inventory)
+    }
 }

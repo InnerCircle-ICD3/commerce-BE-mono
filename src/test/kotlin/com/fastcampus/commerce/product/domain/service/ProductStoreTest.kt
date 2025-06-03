@@ -12,11 +12,14 @@ import com.fastcampus.commerce.product.domain.repository.ProductRepository
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.mockk.Runs
 import io.mockk.clearMocks
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
+import io.mockk.verifyOrder
 
 class ProductStoreTest : FunSpec(
     {
@@ -149,6 +152,25 @@ class ProductStoreTest : FunSpec(
             }.errorCode shouldBe ProductErrorCode.INVENTORY_NOT_FOUND
 
             verify(exactly = 1) { productReader.getInventoryByProductIdForUpdate(productId) }
+        }
+
+        test("상품과 재고를 삭제할 수 있다.") {
+            val productId = 1L
+            val product = mockk<Product>()
+            val inventory = mockk<Inventory>()
+            every { productReader.getProductById(productId) } returns product
+            every { productRepository.delete(product) } just Runs
+            every { productReader.getInventoryByProductId(productId) } returns inventory
+            every { inventoryRepository.delete(inventory) } just Runs
+
+            productStore.deleteProductWithInventory(productId)
+
+            verifyOrder {
+                productReader.getProductById(productId)
+                productRepository.delete(product)
+                productReader.getInventoryByProductId(productId)
+                inventoryRepository.delete(inventory)
+            }
         }
     },
 )

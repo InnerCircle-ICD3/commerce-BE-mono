@@ -16,4 +16,8 @@ class ProductRepositoryImpl(
     override fun findById(productId: Long): Optional<Product> {
         return productJpaRepository.findById(productId)
     }
+
+    override fun delete(product: Product) {
+        productJpaRepository.delete(product)
+    }
 }
