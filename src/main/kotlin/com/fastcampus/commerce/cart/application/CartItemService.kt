@@ -13,9 +13,6 @@ class CartItemService(
 ) {
     @Transactional
     fun addToCart(userId: Long, productId: Long, quantity: Int): CartCreateResponse {
-        val userIdValue = userId
-        val productIdValue = productId
-
         // 임시로 InventoryRepository 서비스를 만들어 구현했습니다.
         // 추후 재고 기능이 구현 되면 임시 서비스를 삭제하고 붙일 예정입니다.
         val inventory = inventoryService.findInventoryByProductId(productId)
@@ -25,7 +22,7 @@ class CartItemService(
         var requiresQuantityAdjustment = false
         var finalQuantity: Int  // 실제로 장바구니에 담긴 최종 수량
 
-        val existingCartItem = cartItemRepository.findByUserIdAndProductId(userIdValue, productIdValue)
+        val existingCartItem = cartItemRepository.findByUserIdAndProductId(userId, productId)
 
         if (existingCartItem != null) {
             // 기존 수량 + 추가 수량
@@ -50,8 +47,8 @@ class CartItemService(
             }
 
             val cartItem = CartItem(
-                userId = userIdValue,
-                productId = productIdValue,
+                userId = userId,
+                productId = productId,
                 quantity = finalQuantity,
             )
             cartItemRepository.save(cartItem)
