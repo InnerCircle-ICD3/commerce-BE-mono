@@ -3,11 +3,15 @@ package com.fastcampus.commerce.admin.product.interfaces
 import com.fastcampus.commerce.admin.product.application.AdminProductService
 import com.fastcampus.commerce.admin.product.application.response.SellingStatusResponse
 import com.fastcampus.commerce.admin.product.interfaces.request.RegisterProductApiRequest
+import com.fastcampus.commerce.admin.product.interfaces.request.UpdateProductApiRequest
+import com.fastcampus.commerce.product.domain.entity.SellingStatus
 import com.fastcampus.commerce.restdoc.documentation
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.restassured.module.mockmvc.RestAssuredMockMvc
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
@@ -103,6 +107,57 @@ class AdminProductControllerTest : DescribeSpec() {
 
                     responseBody {
                         field("data.productId", "생성된 상품 아이디", 10)
+                        ignoredField("error")
+                    }
+                }
+            }
+        }
+
+        describe("PUT /admin/products/{productId} - 상품 수정") {
+            val summary = "상품을 수정할 수 있다."
+
+            it("상품을 수정할 수 있다.") {
+                val productId = 10L
+                val request = UpdateProductApiRequest(
+                    name = "콜드브루",
+                    price = 3500,
+                    quantity = 100,
+                    thumbnail = "https://test.com/thumbnail.png",
+                    detailImage = "https://test.com/detailImage.png",
+                    intensityId = 1L,
+                    cupSizeId = 10L,
+                    status = SellingStatus.UNAVAILABLE,
+                )
+
+                every { adminProductService.update(any<Long>(), request.toServiceRequest(productId)) } just Runs
+
+                documentation(
+                    identifier = "상품_수정_성공",
+                    tag = tag,
+                    summary = summary,
+                    privateResource = privateResource,
+                ) {
+                    requestLine(HttpMethod.PUT, "/admin/products/{productId}") {
+                        pathVariable("productId", "상품 아이디", productId)
+                    }
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                    }
+
+                    requestBody {
+                        field("name", "상품명", request.name)
+                        field("price", "가격", request.price)
+                        field("quantity", "재고 수량", request.quantity)
+                        field("thumbnail", "썸네일 이미지", request.thumbnail)
+                        field("detailImage", "상세 이미지", request.detailImage)
+                        field("intensityId", "강도 카테고리 아이디", request.intensityId)
+                        field("cupSizeId", "컵사이즈 카테고리 아이디", request.cupSizeId)
+                        field("status", "판매상태 코드", request.status)
+                    }
+
+                    responseBody {
+                        field("data.productId", "수정된 상품 아이디", productId.toInt())
                         ignoredField("error")
                     }
                 }
