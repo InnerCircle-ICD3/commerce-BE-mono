@@ -1,6 +1,7 @@
 package com.fastcampus.commerce.admin.product.application
 
 import com.fastcampus.commerce.admin.product.application.request.RegisterProductRequest
+import com.fastcampus.commerce.admin.product.application.request.UpdateProductRequest
 import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.file.application.FileCommandService
 import com.fastcampus.commerce.file.domain.error.FileErrorCode
@@ -94,6 +95,55 @@ class AdminProductServiceTest : DescribeSpec(
 
                     verify(exactly = 1) { uploadedFileVerifier.verifyFileWithS3Urls(request.files) }
                     verify(exactly = 0) { productCommandService.register(request.toCommand(registerId)) }
+                    verify(exactly = 0) { fileCommandService.markFilesAsSuccess(request.files) }
+                }
+            }
+        }
+
+        describe("상품 수정") {
+            val updaterId = 1L
+            val productId = 1L
+            val request = UpdateProductRequest(
+                id = productId,
+                name = "상품A",
+                price = 10000,
+                quantity = 10,
+                thumbnail = "https://example-bucket.amazonaws.com/thumbnail.jpg",
+                detailImage = "https://example-bucket.amazonaws.com/detailImage.jpg",
+                intensityId = 1L,
+                cupSizeId = 10L,
+                status = SellingStatus.UNAVAILABLE,
+            )
+
+            it("상품을 수정할 수 있다.") {
+                every { uploadedFileVerifier.verifyFileWithS3Urls(any()) } returns Unit
+                every { productCommandService.updateProduct(any()) } returns Unit
+                every { productCommandService.updateInventory(any()) } returns Unit
+                every { fileCommandService.markFilesAsSuccess(any()) } returns Unit
+                every { transactionTemplate.execute(any<TransactionCallback<Unit>>()) } answers {
+                    val callback = it.invocation.args[0] as TransactionCallback<Unit>
+                    callback.doInTransaction(mockk(relaxed = true))
+                }
+
+                service.update(updaterId, request)
+
+                verify(exactly = 1) { uploadedFileVerifier.verifyFileWithS3Urls(request.files) }
+                verify(exactly = 1) { productCommandService.updateProduct(request.toCommand(updaterId)) }
+                verify(exactly = 1) { productCommandService.updateInventory(request.toCommand(updaterId)) }
+                verify(exactly = 1) { fileCommandService.markFilesAsSuccess(request.files) }
+            }
+
+            context("상품 수정 실패") {
+                it("업로드된 파일이 유효하지 않으면 예외가 발생한다.") {
+                    every { uploadedFileVerifier.verifyFileWithS3Urls(any()) } throws CoreException(FileErrorCode.FILE_NOT_MATCH)
+
+                    shouldThrow<CoreException> {
+                        service.update(updaterId, request)
+                    }.errorCode shouldBe FileErrorCode.FILE_NOT_MATCH
+
+                    verify(exactly = 1) { uploadedFileVerifier.verifyFileWithS3Urls(request.files) }
+                    verify(exactly = 0) { productCommandService.updateProduct(request.toCommand(updaterId)) }
+                    verify(exactly = 0) { productCommandService.updateInventory(request.toCommand(updaterId)) }
                     verify(exactly = 0) { fileCommandService.markFilesAsSuccess(request.files) }
                 }
             }
