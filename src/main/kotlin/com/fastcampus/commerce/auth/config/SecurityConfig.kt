@@ -64,10 +64,10 @@ class SecurityConfig(
             .authorizeHttpRequests {
                 it.requestMatchers(
                     "/oauth2/**",
-                    "/api/v1/auth/reissue",
-                    "/api/v1/auth/register",
-                    "/api/v1/auth/login",
-                    "/api/v1/auth/logout",
+                    "/auth/reissue",
+                    "/auth/register",
+                    "/auth/login",
+                    "/auth/logout",
                 ).permitAll()
                     .anyRequest().authenticated()
             }
