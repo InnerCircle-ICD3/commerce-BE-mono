@@ -7,6 +7,8 @@ import java.util.Optional
 import jakarta.persistence.LockModeType
 
 interface InventoryJpaRepository : JpaRepository<Inventory, Long> {
+    fun findByProductId(productId: Long): Optional<Inventory>
+  
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     fun findByProductIdForUpdate(productId: Long): Optional<Inventory>
 }
