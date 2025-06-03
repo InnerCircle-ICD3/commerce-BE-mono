@@ -4,4 +4,8 @@ import com.fastcampus.commerce.product.domain.entity.ProductCategory
 
 interface ProductCategoryRepository {
     fun saveAll(productCategories: List<ProductCategory>): List<ProductCategory>
+
+    fun getAllByProductId(productId: Long): List<ProductCategory>
+
+    fun deleteAll(productCategories: List<ProductCategory>)
 }

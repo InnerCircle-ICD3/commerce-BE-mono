@@ -9,8 +9,10 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import io.mockk.Runs
 import io.mockk.clearMocks
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 
@@ -81,6 +83,23 @@ class CategoryStoreTest : FunSpec(
 
                 verify(exactly = 1) { categoryReader.countCategoriesByIds(categoryIds) }
                 verify(exactly = 0) { productCategoryRepository.saveAll(any()) }
+            }
+        }
+
+        context("removeProductCategories") {
+            test("상품 ID로 연관된 카테고리들을 조회하고 모두 삭제할 수 있다.") {
+                val productId = 1L
+                val productCategories = listOf(
+                    ProductCategory(productId = productId, categoryId = 10L),
+                    ProductCategory(productId = productId, categoryId = 20L),
+                )
+                every { categoryReader.getAllProductCategoriesByProductId(productId) } returns productCategories
+                every { productCategoryRepository.deleteAll(productCategories) } just Runs
+
+                categoryStore.removeProductCategories(productId)
+
+                verify(exactly = 1) { categoryReader.getAllProductCategoriesByProductId(productId) }
+                verify(exactly = 1) { productCategoryRepository.deleteAll(productCategories) }
             }
         }
     },

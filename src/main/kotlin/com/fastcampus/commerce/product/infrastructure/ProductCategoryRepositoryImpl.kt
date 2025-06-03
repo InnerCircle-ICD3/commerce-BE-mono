@@ -11,4 +11,12 @@ class ProductCategoryRepositoryImpl(
     override fun saveAll(productCategories: List<ProductCategory>): List<ProductCategory> {
         return productCategoryJpaRepository.saveAll(productCategories)
     }
+
+    override fun getAllByProductId(productId: Long): List<ProductCategory> {
+        return productCategoryJpaRepository.findAllByProductId(productId)
+    }
+
+    override fun deleteAll(productCategories: List<ProductCategory>) {
+        productCategoryJpaRepository.deleteAll(productCategories)
+    }
 }
