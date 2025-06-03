@@ -1,6 +1,8 @@
 package com.fastcampus.commerce.review.domain.entity
 
 import com.fastcampus.commerce.common.entity.BaseEntity
+import com.fastcampus.commerce.common.error.CoreException
+import com.fastcampus.commerce.review.domain.error.ReviewErrorCode
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.annotation.LastModifiedDate
@@ -41,4 +43,38 @@ class Review(
 
     @Column
     var deletedAt: LocalDateTime? = null
+
+    init {
+        validate()
+    }
+
+    private fun validate() {
+        validateContent()
+        validateRating()
+    }
+
+    private fun validateContent() {
+        if (this.content.isBlank()) {
+            throw CoreException(ReviewErrorCode.CONTENT_EMPTY)
+        }
+    }
+
+    private fun validateRating() {
+        if (rating < 1 || rating > 5) {
+            throw CoreException(ReviewErrorCode.INVALID_RATING)
+        }
+    }
+
+    companion object {
+        const val MAX_WRITTEN_DATE = 30L
+
+        fun validateReviewWrittenDate(now: LocalDateTime, deliveredAt: LocalDateTime?) {
+            if (deliveredAt == null) {
+                throw CoreException(ReviewErrorCode.ORDER_NOT_DELIVERED)
+            }
+            if (deliveredAt.isBefore(now.minusDays(MAX_WRITTEN_DATE))) {
+                throw CoreException(ReviewErrorCode.TOO_LATE)
+            }
+        }
+    }
 }
