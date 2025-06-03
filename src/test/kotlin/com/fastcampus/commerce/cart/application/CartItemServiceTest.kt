@@ -4,8 +4,10 @@ import com.fastcampus.commerce.cart.domain.entity.CartItem
 import com.fastcampus.commerce.cart.infrastructure.repository.CartItemRepository
 import com.fastcampus.commerce.product.domain.entity.Inventory
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.*
 
 class CartItemServiceTest {
@@ -59,7 +61,7 @@ class CartItemServiceTest {
 
         // Then
         verify(cartItemRepository).save(any(CartItem::class.java))
-        assertEquals(5, result.quantity)
+        assertEquals(8, result.quantity)
         assertEquals(10, result.stockQuantity)
         assertEquals(false, result.requiresQuantityAdjustment)
     }
@@ -80,6 +82,32 @@ class CartItemServiceTest {
 
         // Then
         verify(cartItemRepository).save(any(CartItem::class.java))
+        assertEquals(10, result.quantity)
+        assertEquals(10, result.stockQuantity)
+        assertEquals(true, result.requiresQuantityAdjustment)
+    }
+
+    @Test
+    fun `기존 상품 수량과 추가 수량의 합이 재고를 초과하는 경우`() {
+        // Given
+        val userId = 1L
+        val productId = 2L
+        val quantity = 8
+        val existingQuantity = 5
+        val inventory = Inventory(productId, 10)
+        val existingCartItem = CartItem(userId, productId, existingQuantity)
+
+        `when`(inventoryService.findInventoryByProductId(productId)).thenReturn(inventory)
+        `when`(cartItemRepository.findByUserIdAndProductId(userId, productId)).thenReturn(existingCartItem)
+
+        // When
+        val result = cartItemService.addToCart(userId, productId, quantity)
+
+        // Then
+        val cartItemCaptor = ArgumentCaptor.forClass(CartItem::class.java)
+        verify(cartItemRepository).save(cartItemCaptor.capture())
+
+        assertEquals(10, cartItemCaptor.value.quantity)  // 재고 수량만큼만
         assertEquals(10, result.quantity)
         assertEquals(10, result.stockQuantity)
         assertEquals(true, result.requiresQuantityAdjustment)
