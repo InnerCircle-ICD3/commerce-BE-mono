@@ -14,8 +14,8 @@ class CartItemController(
     fun addToCart(
         @RequestParam userId: Long,
         @RequestBody request: CartCreateRequest,
-    ): ResponseEntity<ApiResponse<CartCreateResponse>> {
+    ): CartCreateResponse {
         val response = cartItemService.addToCart(userId, request.productId, request.quantity)
-        return ResponseEntity.ok(ApiResponse.success(response))
+        return response
     }
 }
