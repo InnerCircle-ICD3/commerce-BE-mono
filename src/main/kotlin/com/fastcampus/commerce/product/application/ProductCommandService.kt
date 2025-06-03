@@ -29,4 +29,10 @@ class ProductCommandService(
     fun updateInventory(command: ProductUpdater) {
         productStore.updateQuantityByProductId(command.id, command.quantity)
     }
+
+    @Transactional(readOnly = false)
+    fun deleteProduct(productId: Long) {
+        productStore.deleteProductWithInventory(productId)
+        categoryStore.removeProductCategories(productId)
+    }
 }

@@ -95,5 +95,17 @@ class ProductCommandServiceTest : FunSpec(
 
             verify(exactly = 1) { productStore.updateQuantityByProductId(updater.id, updater.quantity) }
         }
+
+        test("상품 ID를 기반으로 상품, 재고, 카테고리 매핑 정보를 함께 삭제할 수 있다.") {
+            val productId = 1L
+
+            every { productStore.deleteProductWithInventory(productId) } just Runs
+            every { categoryStore.removeProductCategories(productId) } just Runs
+
+            productCommandService.deleteProduct(productId)
+
+            verify(exactly = 1) { productStore.deleteProductWithInventory(productId) }
+            verify(exactly = 1) { categoryStore.removeProductCategories(productId) }
+        }
     },
 )

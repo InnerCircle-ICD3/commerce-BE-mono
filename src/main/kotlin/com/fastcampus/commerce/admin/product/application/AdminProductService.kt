@@ -48,4 +48,15 @@ class AdminProductService(
             productCommandService.updateInventory(command)
         }
     }
+
+    fun delete(adminId: Long, productId: Long) {
+        // TODO:
+        //  FileMetadata 삭제
+        //  이를 위해서는 File <-> Domain 매핑하는 매핑 테이블을 만들고,
+        //  fileCommandService.markFilesAsSuccess 에서 매핑테이블에 넣어야함.
+        //  작업량이 많을 것으로 예상되어 우선 상품 삭제기능만 추가.
+        transactionTemplate.execute {
+            productCommandService.deleteProduct(productId)
+        }
+    }
 }

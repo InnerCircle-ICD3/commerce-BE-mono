@@ -148,5 +148,22 @@ class AdminProductServiceTest : DescribeSpec(
                 }
             }
         }
+
+        describe("상품 삭제") {
+            val deleterId = 1L
+            val productId = 1L
+
+            it("상품을 삭제할 수 있다.") {
+                every { productCommandService.deleteProduct(productId) } returns Unit
+                every { transactionTemplate.execute(any<TransactionCallback<Unit>>()) } answers {
+                    val callback = it.invocation.args[0] as TransactionCallback<Unit>
+                    callback.doInTransaction(mockk(relaxed = true))
+                }
+
+                service.delete(deleterId, productId)
+
+                verify(exactly = 1) { productCommandService.deleteProduct(productId) }
+            }
+        }
     },
 )
