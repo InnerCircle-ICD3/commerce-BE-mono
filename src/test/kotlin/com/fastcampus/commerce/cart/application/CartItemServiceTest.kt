@@ -2,6 +2,7 @@ package com.fastcampus.commerce.cart.application
 
 import com.fastcampus.commerce.cart.domain.entity.CartItem
 import com.fastcampus.commerce.cart.infrastructure.repository.CartItemRepository
+import com.fastcampus.commerce.product.domain.service.ProductReader
 import com.fastcampus.commerce.product.domain.entity.Inventory
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -12,14 +13,14 @@ import org.mockito.Mockito.*
 
 class CartItemServiceTest {
     private lateinit var cartItemRepository: CartItemRepository
-    private lateinit var inventoryService: InventoryService
+    private lateinit var productReader: ProductReader
     private lateinit var cartItemService: CartItemService
 
     @BeforeEach
     fun setUp() {
         cartItemRepository = mock(CartItemRepository::class.java)
-        inventoryService = mock(InventoryService::class.java)
-        cartItemService = CartItemService(cartItemRepository, inventoryService)
+        productReader = mock(ProductReader::class.java)
+        cartItemService = CartItemService(cartItemRepository, productReader)
     }
 
     @Test
@@ -30,7 +31,7 @@ class CartItemServiceTest {
         val quantity = 5
         val inventory = Inventory(productId, 10)
 
-        `when`(inventoryService.findInventoryByProductId(productId)).thenReturn(inventory)
+        `when`(productReader.getInventoryByProductId(productId)).thenReturn(inventory)
         `when`(cartItemRepository.findByUserIdAndProductId(userId, productId)).thenReturn(null)
 
         // When
@@ -53,7 +54,7 @@ class CartItemServiceTest {
         val inventory = Inventory(productId, 10)
         val existingCartItem = CartItem(userId, productId, existingQuantity)
 
-        `when`(inventoryService.findInventoryByProductId(productId)).thenReturn(inventory)
+        `when`(productReader.getInventoryByProductId(productId)).thenReturn(inventory)
         `when`(cartItemRepository.findByUserIdAndProductId(userId, productId)).thenReturn(existingCartItem)
 
         // When
@@ -74,7 +75,7 @@ class CartItemServiceTest {
         val quantity = 15
         val inventory = Inventory(productId, 10)
 
-        `when`(inventoryService.findInventoryByProductId(productId)).thenReturn(inventory)
+        `when`(productReader.getInventoryByProductId(productId)).thenReturn(inventory)
         `when`(cartItemRepository.findByUserIdAndProductId(userId, productId)).thenReturn(null)
 
         // When
@@ -97,7 +98,7 @@ class CartItemServiceTest {
         val inventory = Inventory(productId, 10)
         val existingCartItem = CartItem(userId, productId, existingQuantity)
 
-        `when`(inventoryService.findInventoryByProductId(productId)).thenReturn(inventory)
+        `when`(productReader.getInventoryByProductId(productId)).thenReturn(inventory)
         `when`(cartItemRepository.findByUserIdAndProductId(userId, productId)).thenReturn(existingCartItem)
 
         // When
