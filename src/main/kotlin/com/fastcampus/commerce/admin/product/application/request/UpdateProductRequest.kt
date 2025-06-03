@@ -17,7 +17,7 @@ data class UpdateProductRequest(
     val categoryIds get() = listOf(intensityId, cupSizeId)
     val files get() = listOf(detailImage, thumbnail)
 
-    fun toCommand(registerId: Long): ProductUpdater =
+    fun toCommand(updaterId: Long): ProductUpdater =
         ProductUpdater(
             id = id,
             name = name,
