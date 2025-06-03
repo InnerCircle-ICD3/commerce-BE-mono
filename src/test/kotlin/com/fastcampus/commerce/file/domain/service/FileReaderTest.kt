@@ -72,7 +72,7 @@ class FileReaderTest : FunSpec(
 
                 shouldThrow<CoreException> {
                     fileReader.getFileMetadataByStoredPath(storedPath)
-                }.errorCode shouldBe FileErrorCode.METADATA_NOW_FOUND
+                }.errorCode shouldBe FileErrorCode.METADATA_NOT_FOUND
             }
         }
     },

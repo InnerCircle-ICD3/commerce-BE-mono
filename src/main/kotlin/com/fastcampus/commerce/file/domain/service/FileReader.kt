@@ -26,6 +26,6 @@ class FileReader(
 
     fun getFileMetadataByStoredPath(storedPath: String): FileMetadata {
         return fileMetadataRepository.findByStoredPath(storedPath)
-            .orElseThrow { throw CoreException(FileErrorCode.METADATA_NOW_FOUND) }
+            .orElseThrow { throw CoreException(FileErrorCode.METADATA_NOT_FOUND) }
     }
 }

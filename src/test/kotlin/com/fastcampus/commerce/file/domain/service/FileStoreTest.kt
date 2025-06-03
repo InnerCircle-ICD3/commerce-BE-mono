@@ -128,12 +128,12 @@ class FileStoreTest : FunSpec(
 
             test("존재하지 않는 파일 메타데이터의 상태를 SUCCESS로 변경하려고하면 METADATA_NOW_FOUND 예외가 발생한다.") {
                 val storedPath = "product/uuid/test.png"
-                every { fileReader.getFileMetadataByStoredPath(storedPath) } throws CoreException(FileErrorCode.METADATA_NOW_FOUND)
+                every { fileReader.getFileMetadataByStoredPath(storedPath) } throws CoreException(FileErrorCode.METADATA_NOT_FOUND)
                 val uploadUrl = UploadUrl("https://test-bucket.amazon.com/$storedPath")
 
                 shouldThrow<CoreException> {
                     fileStore.markFilesAsSuccess(listOf(uploadUrl))
-                }.errorCode shouldBe FileErrorCode.METADATA_NOW_FOUND
+                }.errorCode shouldBe FileErrorCode.METADATA_NOT_FOUND
             }
         }
     },
