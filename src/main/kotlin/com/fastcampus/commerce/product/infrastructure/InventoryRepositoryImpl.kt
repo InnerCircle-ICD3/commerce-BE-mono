@@ -1,0 +1,14 @@
+package com.fastcampus.commerce.product.infrastructure
+
+import com.fastcampus.commerce.product.domain.entity.Inventory
+import com.fastcampus.commerce.product.domain.repository.InventoryRepository
+import org.springframework.stereotype.Repository
+
+@Repository
+class InventoryRepositoryImpl(
+    private val inventoryJpaRepository: InventoryJpaRepository,
+) : InventoryRepository {
+    override fun save(inventory: Inventory): Inventory {
+        return inventoryJpaRepository.save(inventory)
+    }
+}

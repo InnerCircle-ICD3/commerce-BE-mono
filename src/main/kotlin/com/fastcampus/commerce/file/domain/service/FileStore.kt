@@ -3,6 +3,7 @@ package com.fastcampus.commerce.file.domain.service
 import com.fastcampus.commerce.file.application.request.GeneratePresignedUrlRequest
 import com.fastcampus.commerce.file.domain.entity.FileMetadata
 import com.fastcampus.commerce.file.domain.entity.StorageContextKey
+import com.fastcampus.commerce.file.domain.model.UploadUrl
 import com.fastcampus.commerce.file.domain.repository.FileMetadataRepository
 import com.fastcampus.commerce.file.domain.repository.StorageContextKeyRepository
 import org.springframework.stereotype.Component
@@ -35,5 +36,14 @@ class FileStore(
                 fileSize = request.fileSize,
             ),
         )
+    }
+
+    @Transactional(readOnly = false)
+    fun markFilesAsSuccess(uploadUrls: List<UploadUrl>) {
+        uploadUrls.forEach {
+            val storedPath = it.storedPath
+            val metadata = fileReader.getFileMetadataByStoredPath(storedPath)
+            metadata.success()
+        }
     }
 }

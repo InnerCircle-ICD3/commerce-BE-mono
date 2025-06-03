@@ -5,6 +5,7 @@ pluginManagement {
     val springBootVersion: String by settings
     val springDependencyManagementVersion: String by settings
     val ktlintVersion: String by settings
+    val restdocsApiSpecVersion: String by settings
 
     plugins {
         kotlin("jvm") version kotlinVersion
@@ -14,5 +15,6 @@ pluginManagement {
         id("org.springframework.boot") version springBootVersion
         id("io.spring.dependency-management") version springDependencyManagementVersion
         id("org.jlleitschuh.gradle.ktlint") version ktlintVersion
+        id("com.epages.restdocs-api-spec") version restdocsApiSpecVersion
     }
 }

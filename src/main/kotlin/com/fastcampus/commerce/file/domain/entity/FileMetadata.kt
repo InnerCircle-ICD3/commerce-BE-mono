@@ -34,4 +34,8 @@ class FileMetadata(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
+
+    fun success() {
+        this.status = FileStatus.SUCCESS
+    }
 }

@@ -1,7 +1,7 @@
 package com.fastcampus.commerce.file.interfaces
 
 import com.fastcampus.commerce.common.error.CommonErrorCode
-import com.fastcampus.commerce.file.application.FileService
+import com.fastcampus.commerce.file.application.FileCommandService
 import com.fastcampus.commerce.file.application.response.GeneratePresignedUrlResponse
 import com.fastcampus.commerce.file.interfaces.request.GeneratePresignedUrlApiRequest
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -23,11 +23,11 @@ import java.util.UUID
 class FileControllerTest(
     @Autowired private val mockMvc: MockMvc,
     @Autowired private val objectMapper: ObjectMapper,
-    @MockkBean private val fileService: FileService,
+    @MockkBean private val fileCommandService: FileCommandService,
 ) : DescribeSpec(
         {
             beforeEach {
-                clearMocks(fileService)
+                clearMocks(fileCommandService)
             }
 
             describe("POST /files/presigned-url") {
@@ -46,7 +46,7 @@ class FileControllerTest(
                         val contextId = UUID.randomUUID()
                         val serviceRequest = request.toServiceRequest()
                         every {
-                            fileService.generatePresignedUrl(any<Long>(), serviceRequest)
+                            fileCommandService.generatePresignedUrl(any<Long>(), serviceRequest)
                         } returns GeneratePresignedUrlResponse(
                             uploadUrl = uploadUrl,
                             key = key,
@@ -64,7 +64,7 @@ class FileControllerTest(
                             jsonPath("$.error") { isNull() }
                         }.andDo { print() }
 
-                        verify(exactly = 1) { fileService.generatePresignedUrl(any<Long>(), serviceRequest) }
+                        verify(exactly = 1) { fileCommandService.generatePresignedUrl(any<Long>(), serviceRequest) }
                     }
                 }
 
@@ -89,7 +89,7 @@ class FileControllerTest(
                             jsonPath("$.error.message") { isNotEmpty() }
                         }.andDo { print() }
 
-                        verify { fileService wasNot called }
+                        verify { fileCommandService wasNot called }
                     }
                 }
             }

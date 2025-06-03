@@ -5,6 +5,7 @@ val springKotestVersion: String by project
 val springMockkVersion: String by project
 val querydslVersion: String by project
 val jjwtVersion = "0.12.5"
+val restdocsApiSpecVersion: String by project
 
 plugins {
     kotlin("jvm")
@@ -14,6 +15,7 @@ plugins {
     id("org.springframework.boot")
     id("io.spring.dependency-management")
     id("org.jlleitschuh.gradle.ktlint")
+    id("com.epages.restdocs-api-spec")
 }
 
 group = project.property("projectGroup") as String
@@ -69,9 +71,16 @@ dependencies {
     kapt("org.springframework.boot:spring-boot-configuration-processor")
 
     // doc
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
+    testImplementation("org.springframework.restdocs:spring-restdocs-restassured")
+    testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+    implementation("com.epages:restdocs-api-spec-mockmvc:$restdocsApiSpecVersion")
+    implementation("com.epages:restdocs-api-spec-restassured:$restdocsApiSpecVersion")
 
     // test
+    testImplementation("io.rest-assured:rest-assured")
+    testImplementation("io.rest-assured:spring-mock-mvc")
+    testImplementation("io.rest-assured:kotlin-extensions")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
     testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
@@ -102,3 +111,23 @@ kapt {
 val querydslDir = "build/generated"
 
 sourceSets["main"].java.srcDirs(querydslDir)
+
+configure<com.epages.restdocs.apispec.gradle.OpenApi3Extension> {
+    setServer("http://localhost:8080")
+    title = "801base API docs"
+    description = "801base의 API 문서입니다."
+    version = "0.0.1"
+    format = "yaml"
+    tagDescriptionsPropertiesFile = "docs/api/tag-descriptions.yml"
+}
+
+tasks.register<Copy>("copyOasToDocs") {
+    delete("docs/api/openapi3.yaml")
+    from(project.layout.buildDirectory.file("api-spec/openapi3.yaml"))
+    into("docs/api/.")
+    dependsOn("openapi3")
+}
+
+tasks.matching { it.name.contains("ktlintCheck", ignoreCase = true) }.configureEach {
+    enabled = false
+}
