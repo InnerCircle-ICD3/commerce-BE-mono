@@ -163,5 +163,33 @@ class AdminProductControllerTest : DescribeSpec() {
                 }
             }
         }
+        describe("DELETE /admin/products/{productId} - 상품 삭제") {
+            val summary = "상품을 삭제할 수 있다."
+
+            it("상품을 삭제할 수 있다.") {
+                val productId = 10L
+                every { adminProductService.delete(any<Long>(), productId) } just Runs
+
+                documentation(
+                    identifier = "상품_삭제_성공",
+                    tag = tag,
+                    summary = summary,
+                    privateResource = privateResource,
+                ) {
+                    requestLine(HttpMethod.DELETE, "/admin/products/{productId}") {
+                        pathVariable("productId", "상품 아이디", productId)
+                    }
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                    }
+
+                    responseBody {
+                        field("data.message", "응답 메시지", "OK")
+                        ignoredField("error")
+                    }
+                }
+            }
+        }
     }
 }

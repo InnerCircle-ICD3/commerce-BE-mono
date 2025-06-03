@@ -3,9 +3,11 @@ package com.fastcampus.commerce.admin.product.interfaces
 import com.fastcampus.commerce.admin.product.application.AdminProductService
 import com.fastcampus.commerce.admin.product.interfaces.request.RegisterProductApiRequest
 import com.fastcampus.commerce.admin.product.interfaces.request.UpdateProductApiRequest
+import com.fastcampus.commerce.admin.product.interfaces.response.DeleteProductApiResponse
 import com.fastcampus.commerce.admin.product.interfaces.response.RegisterProductApiResponse
 import com.fastcampus.commerce.admin.product.interfaces.response.UpdateProductApiResponse
 import com.fastcampus.commerce.common.response.EnumResponse
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -43,5 +45,14 @@ class AdminProductController(
         val adminId = 1L
         adminProductService.update(adminId, request.toServiceRequest(productId))
         return UpdateProductApiResponse(productId)
+    }
+
+    @DeleteMapping("/{productId}")
+    fun deleteProduct(
+        @PathVariable productId: Long,
+    ): DeleteProductApiResponse {
+        val adminId = 1L
+        adminProductService.delete(adminId, productId)
+        return DeleteProductApiResponse()
     }
 }
