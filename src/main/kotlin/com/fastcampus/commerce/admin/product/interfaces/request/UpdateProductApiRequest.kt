@@ -22,7 +22,7 @@ data class UpdateProductApiRequest(
     val intensityId: Long,
     @field:NotNull(message = "컵사이즈 카테고리 아이디가 비어있습니다.")
     val cupSizeId: Long,
-    @field:NotNull(message = "ㅁㄴㅇㄹ")
+    @field:NotNull(message = "판매 상태 값이 비어있습니다.")
     val status: SellingStatus,
 ) {
     fun toServiceRequest(productId: Long): UpdateProductRequest =
