@@ -74,7 +74,7 @@ class SecurityConfig(
             }
             .oauth2Login { oauth2 ->
                 oauth2
-                    .loginPage("/api/v1/auth/login") // 커스텀 로그인 페이지가 있다면 설정
+                    .loginPage("/auth/login") // 커스텀 로그인 페이지가 있다면 설정
                     .authorizationEndpoint { auth ->
                         auth.baseUri("/oauth2/authorization") // ex) /oauth2/authorization/naver
                     }
