@@ -52,7 +52,6 @@ class CartItemService(
         val totalPrice = cartItemRetrieveList
             .filter { it.isAvailable }
             .sumOf { it.price * it.quantity }
-            .toInt()
 
         val deliveryPrice = if (totalPrice >= 30000) 0 else 3000
 
