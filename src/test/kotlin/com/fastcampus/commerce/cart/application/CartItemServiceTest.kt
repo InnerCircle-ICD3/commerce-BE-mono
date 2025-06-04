@@ -21,14 +21,12 @@ class CartItemServiceTest {
     private lateinit var cartItemRepository: CartItemRepository
     private lateinit var productReader: ProductReader
     private lateinit var cartItemService: CartItemService
-    private lateinit var deliveryPolicy: DeliveryPolicy
 
     @BeforeEach
     fun setUp() {
         cartItemRepository = mock(CartItemRepository::class.java)
         productReader = mock(ProductReader::class.java)
-        deliveryPolicy = DeliveryPolicy()
-        cartItemService = CartItemService(cartItemRepository, productReader, deliveryPolicy)
+        cartItemService = CartItemService(cartItemRepository, productReader)
     }
 
     @Test
