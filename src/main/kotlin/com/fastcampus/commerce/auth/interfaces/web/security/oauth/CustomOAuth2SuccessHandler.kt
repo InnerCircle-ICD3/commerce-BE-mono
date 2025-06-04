@@ -38,5 +38,6 @@ class CustomOAuth2SuccessHandler(
         response.addCookie(cookie)
 
         log.info("Successfully authenticated user: ${user.getName()}")
+        log.info("response: ${response}")
     }
 }
