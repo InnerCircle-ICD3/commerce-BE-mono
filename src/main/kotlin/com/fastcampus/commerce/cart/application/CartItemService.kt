@@ -4,6 +4,9 @@ import com.fastcampus.commerce.cart.domain.entity.CartItem
 import com.fastcampus.commerce.cart.domain.error.CartErrorCode
 import com.fastcampus.commerce.cart.infrastructure.repository.CartItemRepository
 import com.fastcampus.commerce.cart.interfaces.CartCreateResponse
+import com.fastcampus.commerce.cart.interfaces.CartItemRetrieve
+import com.fastcampus.commerce.cart.interfaces.CartRetrievesResponse
+import com.fastcampus.commerce.product.domain.entity.SellingStatus
 import com.fastcampus.commerce.cart.interfaces.CartUpdateRequest
 import com.fastcampus.commerce.cart.interfaces.CartUpdateResponse
 import com.fastcampus.commerce.common.error.CoreException
@@ -16,6 +19,51 @@ class CartItemService(
     private val cartItemRepository: CartItemRepository,
     private val productReader: ProductReader,
 ) {
+    fun getCarts(userId: Long) : CartRetrievesResponse{
+        val cartItems = cartItemRepository.findAllByUserId(userId) ?: emptyList()
+
+        if (cartItems.isEmpty()) {
+            return CartRetrievesResponse(
+                totalPrice = 0,
+                deliveryPrice = 0,
+                cartItems = emptyList()
+            )
+        }
+
+        val cartItemRetrieveList = cartItems.map { cartItem ->
+            val product = productReader.getProductById(cartItem.productId)
+            val inventory = productReader.getInventoryByProductId(cartItem.productId)
+
+            val isAvailable = product.status != SellingStatus.UNAVAILABLE
+
+            CartItemRetrieve(
+                cartItemId = cartItem.id!!,
+                productId = product.id!!,
+                productName = product.name,
+                quantity = cartItem.quantity,
+                price = product.price.toLong(),
+                stockQuantity = inventory.quantity,
+                thumbnail = product.thumbnail,
+                isAvailable = isAvailable
+            )
+        }
+
+        // 구매 가능한 상품들의 총 가격 계산
+        val totalPrice = cartItemRetrieveList
+            .filter { it.isAvailable }
+            .sumOf { it.price * it.quantity }
+            .toInt()
+
+        val deliveryPrice = if (totalPrice >= 30000) 0 else 3000
+
+        return CartRetrievesResponse(
+            totalPrice = totalPrice,
+            deliveryPrice = deliveryPrice,
+            cartItems = cartItemRetrieveList
+        )
+    }
+
+
     @Transactional
     fun addToCart(userId: Long, productId: Long, quantity: Int): CartCreateResponse {
         val inventory = productReader.getInventoryByProductId(productId)
