@@ -7,7 +7,9 @@ import com.fastcampus.commerce.review.interfaces.request.UpdateReviewApiRequest
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.restassured.module.mockmvc.RestAssuredMockMvc
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
@@ -109,6 +111,36 @@ class ReviewControllerRestDocTest : DescribeSpec() {
 
                     responseBody {
                         field("data.reviewId", "수정된 리뷰 아이디", reviewId.toInt())
+                        ignoredField("error")
+                    }
+                }
+            }
+        }
+
+        describe("DELETE /reviews/{reviewId} - 리뷰 삭제") {
+            val summary = "리뷰를 삭제할 수 있다."
+
+            it("리뷰를 삭제할 수 있다.") {
+                val userId = 1L
+                val reviewId = 10L
+
+                every { reviewCommandService.deleteReview(userId, reviewId) } just Runs
+
+                documentation(
+                    identifier = "리뷰_삭제_성공",
+                    tag = tag,
+                    summary = summary,
+                ) {
+                    requestLine(HttpMethod.DELETE, "/reviews/{reviewId}") {
+                        pathVariable("reviewId", "리뷰 아이디", reviewId)
+                    }
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                    }
+
+                    responseBody {
+                        field("data.message", "응답 메시지", "OK")
                         ignoredField("error")
                     }
                 }

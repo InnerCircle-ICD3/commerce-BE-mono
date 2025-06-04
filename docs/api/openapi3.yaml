@@ -6,8 +6,6 @@ info:
 servers:
 - url: http://localhost:8080
 tags:
-- name: Cart
-  description: 사용자 장바구니 API
 - name: Review
   description: 사용자 리뷰 API
 - name: Admin-File
@@ -312,13 +310,48 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/reviews-reviewId-168857718"
+                $ref: "#/components/schemas/reviews-reviewId-215377401"
               examples:
                 리뷰_수정_성공:
                   value: |-
                     {
                       "data" : {
                         "reviewId" : 10
+                      },
+                      "error" : null
+                    }
+    delete:
+      tags:
+      - Review
+      summary: 리뷰를 삭제할 수 있다.
+      operationId: 리뷰_삭제_성공
+      parameters:
+      - name: reviewId
+        in: path
+        description: 리뷰 아이디
+        required: true
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/admin-products-productId1686665306"
+              examples:
+                리뷰_삭제_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "message" : "OK"
                       },
                       "error" : null
                     }
@@ -444,17 +477,6 @@ components:
         content:
           type: string
           description: 리뷰 내용
-    reviews-reviewId-168857718:
-      type: object
-      properties:
-        data:
-          required:
-          - reviewId
-          type: object
-          properties:
-            reviewId:
-              type: number
-              description: 수정된 리뷰 아이디
     admin-products-247955186:
       required:
       - cupSizeId
@@ -543,3 +565,14 @@ components:
             productId:
               type: number
               description: 수정된 상품 아이디
+    reviews-reviewId-215377401:
+      type: object
+      properties:
+        data:
+          required:
+          - reviewId
+          type: object
+          properties:
+            reviewId:
+              type: number
+              description: 수정된 리뷰 아이디

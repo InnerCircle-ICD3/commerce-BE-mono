@@ -34,4 +34,13 @@ class ReviewStore(
         }
         review.update(command)
     }
+
+    @Transactional(readOnly = false)
+    fun delete(userId: Long, reviewId: Long) {
+        val review = reviewReader.getReviewById(reviewId)
+        if (review.userId != userId) {
+            throw CoreException(ReviewErrorCode.UNAUTHORIZED_REVIEW_DELETE)
+        }
+        reviewRepository.delete(review)
+    }
 }

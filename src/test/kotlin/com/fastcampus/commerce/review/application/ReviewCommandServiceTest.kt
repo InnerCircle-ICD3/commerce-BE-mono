@@ -88,4 +88,16 @@ class ReviewCommandServiceTest : FunSpec({
             verify(exactly = 1) { reviewStore.update(command) }
         }
     }
+    context("deleteReview") {
+        val userId = 1L
+        val reviewId = 1L
+
+        test("리뷰 삭제 요청 시 ReviewStore.delete가 호출된다") {
+            every { reviewStore.delete(userId, reviewId) } just Runs
+
+            reviewCommandService.deleteReview(userId, reviewId)
+
+            verify(exactly = 1) { reviewStore.delete(userId, reviewId) }
+        }
+    }
 })
