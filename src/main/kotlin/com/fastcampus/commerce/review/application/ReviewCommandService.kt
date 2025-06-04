@@ -21,4 +21,8 @@ class ReviewCommandService(
         reviewStore.update(request.toCommand(userId, reviewId))
         return reviewId
     }
+
+    fun deleteReview(userId: Long, reviewId: Long) {
+        reviewStore.delete(reviewId, userId)
+    }
 }
