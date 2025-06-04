@@ -16,16 +16,24 @@ class UserController(
     fun registerUser(request: RegisterRequest): UserDto {
         return UserDto(
             id = "",
+            externalId = "",
+            name = "",
             email = request.email,
-            nickname = request.nickname,
+            nickname = "User",
+            profileImage = "",
+            roles = emptyList(),
         )
     }
 
     fun loginUser(request: LoginRequest): UserDto {
         return UserDto(
             id = "",
+            externalId = "",
+            name = "",
             email = request.email,
             nickname = "User",
+            profileImage = "",
+            roles = emptyList(),
         )
     }
 
@@ -35,11 +43,13 @@ class UserController(
 
     fun saveOrUpdateUser(naverUser: NaverUserResponse): UserDto {
         return UserDto(
-            id = naverUser.id,
-            name = naverUser.name,
+            id = "",
+            externalId = "",
+            name = "",
             email = naverUser.email,
-            nickname = naverUser.nickname,
-            profileImage = naverUser.profileImage,
+            nickname = "User",
+            profileImage = "",
+            roles = emptyList(),
         )
     }
 }

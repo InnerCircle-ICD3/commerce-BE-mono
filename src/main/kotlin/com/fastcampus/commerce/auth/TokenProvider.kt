@@ -111,6 +111,18 @@ class TokenProvider(
     }
 
     /**
+     * JWT 토큰에서 external ID를 추출한다.
+     *
+     * @param token JWT 토큰
+     *
+     * @return external ID
+     */
+    fun extractExternalIdFromToken(token: String): Long {
+        val claims = parseClaims(token)
+        return claims[EXTERNAL_ID] as Long
+    }
+
+    /**
      * 주어진 연산을 사용하여 지정된 클레임들로 JWT 토큰을 생성한다.
      *
      * @param customizeClaims `JwtBuilder` 객체를 매개변수로 받고, 토큰에 추가 클레임들을 설정하는 람다 함수
