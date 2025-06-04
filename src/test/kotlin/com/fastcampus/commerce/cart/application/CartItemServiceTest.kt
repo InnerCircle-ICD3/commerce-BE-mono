@@ -2,8 +2,12 @@ package com.fastcampus.commerce.cart.application
 
 import com.fastcampus.commerce.cart.domain.entity.CartItem
 import com.fastcampus.commerce.cart.infrastructure.repository.CartItemRepository
+import com.fastcampus.commerce.cart.interfaces.CartItemRetrieve
+import com.fastcampus.commerce.cart.interfaces.CartRetrievesResponse
 import com.fastcampus.commerce.cart.interfaces.CartUpdateRequest
 import com.fastcampus.commerce.product.domain.entity.Inventory
+import com.fastcampus.commerce.product.domain.entity.Product
+import com.fastcampus.commerce.product.domain.entity.SellingStatus
 import com.fastcampus.commerce.product.domain.service.ProductReader
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -191,5 +195,73 @@ class CartItemServiceTest {
         assertEquals(inventoryQuantity, result.quantity)
         assertEquals(inventoryQuantity, result.stockQuantity)
         assertTrue(result.requiresQuantityAdjustment)
+    }
+
+    @Test
+    fun `해당 유저의 상품 전체 조회가 가능해야 한다`(){
+        // Given
+        val userId = 1L
+        val cartItems = listOf(
+            CartItem(userId, 1L, 2),
+            CartItem(userId, 2L, 3)
+        )
+
+        // Set IDs for cart items
+        cartItems[0].id = 101L
+        cartItems[1].id = 102L
+
+        // Create products
+        val product1 = Product(
+            name = "Product 1",
+            price = 10000,
+            thumbnail = "thumbnail1.jpg",
+            detailImage = "detail1.jpg"
+        )
+        product1.id = 1L
+        product1.status = SellingStatus.UNAVAILABLE // Set to UNAVAILABLE to make isAvailable true
+
+        val product2 = Product(
+            name = "Product 2",
+            price = 20000,
+            thumbnail = "thumbnail2.jpg",
+            detailImage = "detail2.jpg"
+        )
+        product2.id = 2L
+        product2.status = SellingStatus.UNAVAILABLE // Set to UNAVAILABLE to make isAvailable true
+
+        val inventory1 = Inventory(1L, 10)
+        val inventory2 = Inventory(2L, 5)
+
+        `when`(cartItemRepository.findAllByUserId(userId)).thenReturn(cartItems)
+        `when`(productReader.getProductById(1L)).thenReturn(product1)
+        `when`(productReader.getProductById(2L)).thenReturn(product2)
+        `when`(productReader.getInventoryByProductId(1L)).thenReturn(inventory1)
+        `when`(productReader.getInventoryByProductId(2L)).thenReturn(inventory2)
+
+        // When
+        val result = cartItemService.getCarts(userId)
+
+        // Then
+        assertEquals(2, result.cartItems.size)
+        assertEquals(80000, result.totalPrice) // (10000 * 2) + (20000 * 3) = 80000
+        assertEquals(0, result.deliveryPrice) // 총 가격이 30000원 이상이므로 배송비 무료
+
+        val firstCartItem = result.cartItems[0]
+        assertEquals(1L, firstCartItem.productId)
+        assertEquals("Product 1", firstCartItem.productName)
+        assertEquals(2, firstCartItem.quantity)
+        assertEquals(10000L, firstCartItem.price)
+        assertEquals(10, firstCartItem.stockQuantity)
+        assertEquals("thumbnail1.jpg", firstCartItem.thumbnail)
+        assertEquals(true, firstCartItem.isAvailable) // Now true because status is UNAVAILABLE
+
+        val secondCartItem = result.cartItems[1]
+        assertEquals(2L, secondCartItem.productId)
+        assertEquals("Product 2", secondCartItem.productName)
+        assertEquals(3, secondCartItem.quantity)
+        assertEquals(20000L, secondCartItem.price)
+        assertEquals(5, secondCartItem.stockQuantity)
+        assertEquals("thumbnail2.jpg", secondCartItem.thumbnail)
+        assertEquals(true, secondCartItem.isAvailable) // Now true because status is UNAVAILABLE
     }
 }
