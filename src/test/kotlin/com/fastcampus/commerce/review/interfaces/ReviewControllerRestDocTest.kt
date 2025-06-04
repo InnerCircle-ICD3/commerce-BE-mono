@@ -108,7 +108,7 @@ class ReviewControllerRestDocTest : DescribeSpec() {
                     }
 
                     responseBody {
-                        field("data.reviewId", "수저된 리뷰 아이디", reviewId.toInt())
+                        field("data.reviewId", "수정된 리뷰 아이디", reviewId.toInt())
                         ignoredField("error")
                     }
                 }

@@ -454,7 +454,7 @@ components:
           properties:
             reviewId:
               type: number
-              description: 수저된 리뷰 아이디
+              description: 수정된 리뷰 아이디
     admin-products-247955186:
       required:
       - cupSizeId
