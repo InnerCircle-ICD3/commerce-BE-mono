@@ -77,11 +77,11 @@ class FileControllerRestDocTest: DescribeSpec() {
                     }
 
                     requestBody {
-                        field("fileName", "상품명", request.fileName)
-                        field("contentType", "가격", request.contentType)
-                        field("fileSize", "재고 수량", request.fileSize)
-                        field("domainType", "썸네일 이미지", request.domainType)
-                        field("domainContext", "상세 이미지", request.domainContext)
+                        field("fileName", "파일명", request.fileName)
+                        field("contentType", "파일 Content-Type", request.contentType)
+                        field("fileSize", "파일 크기(Byte)", request.fileSize)
+                        field("domainType", "도메인 타입(PRODUCT 고정)", request.domainType)
+                        field("domainContext", "파일 컨텍스트(thumbnail/detailImage 고정)", request.domainContext)
                         optionalField("contextId", "업로드 세션 ID", request.contextId)
                     }
 
