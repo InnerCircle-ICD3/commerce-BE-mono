@@ -63,11 +63,11 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                     summary = summary,
                     privateResource = privateResource,
                 ) {
-                    requestLine(HttpMethod.POST, "/cart/items") {
-                    }
+                    requestLine(HttpMethod.POST, "/cart/items")
 
                     requestHeaders {
                         header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                        header("X-User-Token", "사용자 ID", userId.toString())
                     }
 
                     requestBody {
@@ -148,6 +148,62 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                         field("data.stockQuantity", "재고 수량", response.stockQuantity)
                         field("data.requiresQuantityAdjustment", "수량 변경 여부", response.requiresQuantityAdjustment)
                         ignoredField("error")
+                    }
+                }
+            }
+        }
+
+        describe("GET /carts - 장바구니 상품 목록 조회"){
+            val summary = "장바구니에 담긴 상품 목록을 조회할 수 있다."
+            it("장바구니에 담긴 상품 목록을 조회할 수 있다."){
+                documentation(
+                    identifier = "장바구니_상품_목록_조회_성공",
+                    tag = tag,
+                    summary = summary,
+                    privateResource = privateResource,
+                ){
+                    requestLine(HttpMethod.GET, "/carts")
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                    }
+
+                    responseBody {
+                        // 최상위 필드들
+                        field("totalPrice", "총 상품 금액 (배송비 제외)", 80000)
+                        field("deliveryPrice", "배송비", 0)
+                        field("cartItems", "장바구니 상품 목록", listOf(
+                            mapOf(
+                                "cartItemId" to 101,
+                                "productId" to 1,
+                                "productName" to "Product 1",
+                                "quantity" to 2,
+                                "price" to 10000,
+                                "stockQuantity" to 10,
+                                "thumbnail" to "thumbnail1.jpg",
+                                "isAvailable" to true
+                            ),
+                            mapOf(
+                                "cartItemId" to 102,
+                                "productId" to 2,
+                                "productName" to "Product 2",
+                                "quantity" to 3,
+                                "price" to 20000,
+                                "stockQuantity" to 5,
+                                "thumbnail" to "thumbnail2.jpg",
+                                "isAvailable" to true
+                            )
+                        ))
+
+                        // cartItems 배열 내부 필드들
+                        field("cartItems[].cartItemId", "장바구니 아이템 ID", 101)
+                        field("cartItems[].productId", "상품 ID", 1)
+                        field("cartItems[].productName", "상품명", "Product 1")
+                        field("cartItems[].quantity", "수량", 2)
+                        field("cartItems[].price", "상품 단가", 10000)
+                        field("cartItems[].stockQuantity", "재고 수량", 10)
+                        field("cartItems[].thumbnail", "상품 썸네일 이미지 URL", "thumbnail1.jpg")
+                        field("cartItems[].isAvailable", "구매 가능 여부", true)
                     }
                 }
             }
