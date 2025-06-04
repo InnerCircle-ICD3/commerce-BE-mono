@@ -1,0 +1,18 @@
+package com.fastcampus.commerce.review.application
+
+import com.fastcampus.commerce.order.application.review.OrderReviewService
+import com.fastcampus.commerce.review.application.request.RegisterReviewRequest
+import com.fastcampus.commerce.review.domain.service.ReviewStore
+import org.springframework.stereotype.Service
+
+@Service
+class ReviewCommandService(
+    private val orderReviewService: OrderReviewService,
+    private val reviewStore: ReviewStore,
+) {
+    fun registerReview(userId: Long, request: RegisterReviewRequest): Long {
+        val info = orderReviewService.getReviewInfo(request.orderNumber, request.orderItemId)
+        val review = reviewStore.register(request.toCommand(userId, info))
+        return review.id!!
+    }
+}
