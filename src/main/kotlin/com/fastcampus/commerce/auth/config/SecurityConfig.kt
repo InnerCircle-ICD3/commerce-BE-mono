@@ -65,7 +65,7 @@ class SecurityConfig(
             .csrf { it.disable() }
             .authorizeHttpRequests {
                 it
-                .requestMatchers(HttpMethod.GET, "/", "/home", "/products", "/products/**", "/categories/**", "/search", "/products/search").permitAll()
+                .requestMatchers(HttpMethod.GET, "/admin/products/selling-status").permitAll()
                 .requestMatchers(
                     "/oauth2/**",
                     "/auth/reissue",
@@ -73,7 +73,7 @@ class SecurityConfig(
                     "/auth/login",
                     "/auth/logout",
                 ).permitAll()
-                    .anyRequest().authenticated()
+                .anyRequest().permitAll()
             }
             .oauth2Login { oauth2 ->
                 oauth2
