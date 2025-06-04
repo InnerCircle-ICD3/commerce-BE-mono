@@ -5,6 +5,7 @@ package com.fastcampus.commerce.user.api.dto
  */
 data class UserDto(
     val id: String? = null,
+    val externalId: String? = null,
     val name: String? = null,
     val email: String?,
     val nickname: String?,
