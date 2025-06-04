@@ -14,8 +14,8 @@ interface CartItemRepository : JpaRepository<CartItem, Long> {
     fun findByUserIdAndProductId(userId: Long, productId: Long): CartItem?
 
     @Modifying
-    @Query("UPDATE CartItem c SET c.deletedAt = :now WHERE c.productId IN :productIds")
-    fun softDeleteByProductIds(productIds: List<Long>, now: LocalDateTime = LocalDateTime.now())
+    @Query("UPDATE CartItem c SET c.deletedAt = :now WHERE c.id IN :cartItemIds")
+    fun softDeleteByIds(cartItemIds: List<Long>, now: LocalDateTime = LocalDateTime.now())
 
     fun findAllByUserId(userId: Long): List<CartItem>?
 

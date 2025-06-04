@@ -151,7 +151,7 @@ class CartItemService(
             throw CoreException(CartErrorCode.CART_ITEMS_NOT_FOUND)
         }
 
-        cartItemRepository.softDeleteByProductIds(productIds)
+        cartItemRepository.softDeleteByIds(productIds)
 
         return cartItems.size
     }
