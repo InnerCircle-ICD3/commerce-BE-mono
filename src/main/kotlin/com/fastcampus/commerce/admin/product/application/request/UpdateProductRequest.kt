@@ -27,6 +27,6 @@ data class UpdateProductRequest(
             detailImage = detailImage,
             categoryIds = categoryIds,
             status = status,
-            updaterId = registerId,
+            updaterId = updaterId,
         )
 }
