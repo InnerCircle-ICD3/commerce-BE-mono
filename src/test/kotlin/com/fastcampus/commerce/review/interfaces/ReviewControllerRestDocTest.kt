@@ -3,6 +3,7 @@ package com.fastcampus.commerce.review.interfaces
 import com.fastcampus.commerce.restdoc.documentation
 import com.fastcampus.commerce.review.application.ReviewCommandService
 import com.fastcampus.commerce.review.interfaces.request.RegisterReviewApiRequest
+import com.fastcampus.commerce.review.interfaces.request.UpdateReviewApiRequest
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
@@ -69,6 +70,45 @@ class ReviewControllerRestDocTest : DescribeSpec() {
 
                     responseBody {
                         field("data.reviewId", "생성된 리뷰 아이디", 10)
+                        ignoredField("error")
+                    }
+                }
+            }
+        }
+
+        describe("PUT /reviews/{reviewId} - 리뷰 수정") {
+            val summary = "리뷰를 수정할 수 있다."
+
+            it("리뷰를 수정할 수 있다.") {
+                val reviewId = 10L
+                val userId = 1L
+                val request = UpdateReviewApiRequest(
+                    rating = 3,
+                    content = "좋습니다.",
+                )
+
+                every { reviewCommandService.updateReview(userId, reviewId, request.toServiceRequest()) } returns reviewId
+
+                documentation(
+                    identifier = "리뷰_수정_성공",
+                    tag = tag,
+                    summary = summary,
+                ) {
+                    requestLine(HttpMethod.PUT, "/reviews/{reviewId}") {
+                        pathVariable("reviewId", "리뷰 아이디", reviewId)
+                    }
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                    }
+
+                    requestBody {
+                        field("rating", "별점", request.rating)
+                        field("content", "리뷰 내용", request.content)
+                    }
+
+                    responseBody {
+                        field("data.reviewId", "수저된 리뷰 아이디", reviewId.toInt())
                         ignoredField("error")
                     }
                 }
