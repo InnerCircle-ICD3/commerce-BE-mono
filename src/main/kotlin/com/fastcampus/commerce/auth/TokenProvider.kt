@@ -16,6 +16,7 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
 
 private const val USER_ID = "user_id"
+private const val EXTERNAL_ID = "external_id"
 
 @Component
 class TokenProvider(
@@ -33,9 +34,11 @@ class TokenProvider(
      *
      * @return 생성된 액세스 토큰
      */
-    fun createAccessToken(userId: Long): String {
+    fun createAccessToken(userId: String, externalId: String): String {
         return createToken(
-            { jwt -> jwt.claim(USER_ID, userId) },
+            { jwt ->
+                jwt.subject(externalId)
+                jwt.claim(USER_ID, userId) },
             jwtProperties.accessTokenExpireMinutes,
             ChronoUnit.MINUTES,
         )
@@ -48,9 +51,11 @@ class TokenProvider(
      *
      * @return 생성된 리프레시 토큰
      */
-    fun createRefreshToken(userId: Long): String {
+    fun createRefreshToken(userId: String, externalId: String): String {
         return createToken(
-            { jwt -> jwt.claim(USER_ID, userId) },
+            { jwt ->
+                jwt.subject(externalId)
+                jwt.claim(USER_ID, userId) },
             jwtProperties.refreshTokenExpireDays,
             ChronoUnit.DAYS,
         )
@@ -78,6 +83,18 @@ class TokenProvider(
     fun extractUserIdFromToken(token: String): Long {
         val claims = parseClaims(token)
         return claims[USER_ID] as Long
+    }
+
+    /**
+     * JWT 토큰에서 external ID를 추출한다.
+     *
+     * @param token JWT 토큰
+     *
+     * @return external ID
+     */
+    fun extractExternalIdFromToken(token: String): Long {
+        val claims = parseClaims(token)
+        return claims[EXTERNAL_ID] as Long
     }
 
     /**

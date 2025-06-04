@@ -28,7 +28,7 @@ data class LoginRequest(
 data class AuthResponse(
     val accessToken: String,
     val refreshToken: String,
-    val userId: Long,
+    val userId: String,
     val email: String?,
     val nickname: String,
 )

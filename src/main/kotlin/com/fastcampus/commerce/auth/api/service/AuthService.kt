@@ -42,8 +42,8 @@ class AuthService(
         val userDto = userController.registerUser(registerRequest)
 
         // 토큰 생성
-        val accessToken = tokenProvider.createAccessToken(userDto.id)
-        val refreshToken = tokenProvider.createRefreshToken(userDto.id)
+        val accessToken = tokenProvider.createAccessToken(userDto.id, userDto.externalId)
+        val refreshToken = tokenProvider.createRefreshToken(userDto.id, userDto.externalId)
 
         // 인증 응답 반환
         return AuthResponse(
@@ -66,8 +66,8 @@ class AuthService(
         val userDto = userController.loginUser(loginRequest)
 
         // 토큰 생성
-        val accessToken = tokenProvider.createAccessToken(userDto.id)
-        val refreshToken = tokenProvider.createRefreshToken(userDto.id)
+        val accessToken = tokenProvider.createAccessToken(userDto.id, userDto.externalId)
+        val refreshToken = tokenProvider.createRefreshToken(userDto.id, userDto.externalId)
 
         // 인증 응답 반환
         return AuthResponse(

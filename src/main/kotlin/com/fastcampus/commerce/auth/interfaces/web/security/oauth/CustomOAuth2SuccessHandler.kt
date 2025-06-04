@@ -21,8 +21,8 @@ class CustomOAuth2SuccessHandler(
 
         // JWT 토큰 발급
         val userId = user.getName().toLong()
-        val accessToken = tokenProvider.createAccessToken(userId)
-        val refreshToken = tokenProvider.createRefreshToken(userId)
+        val accessToken = tokenProvider.createAccessToken(userId.toString(), user.externalId)
+        val refreshToken = tokenProvider.createRefreshToken(userId.toString(), user.externalId)
 
         // 헤더에 토큰 추가
         response.addHeader(HttpHeaderKeys.ACCESS_TOKEN, accessToken)
