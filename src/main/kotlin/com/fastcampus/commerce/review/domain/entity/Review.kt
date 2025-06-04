@@ -3,6 +3,7 @@ package com.fastcampus.commerce.review.domain.entity
 import com.fastcampus.commerce.common.entity.BaseEntity
 import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.review.domain.error.ReviewErrorCode
+import com.fastcampus.commerce.review.domain.model.ReviewUpdater
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.annotation.LastModifiedDate
@@ -63,6 +64,12 @@ class Review(
         if (rating < 1 || rating > 5) {
             throw CoreException(ReviewErrorCode.INVALID_RATING)
         }
+    }
+
+    fun update(updater: ReviewUpdater) {
+        this.rating = updater.rating
+        this.content = updater.content
+        validate()
     }
 
     companion object {

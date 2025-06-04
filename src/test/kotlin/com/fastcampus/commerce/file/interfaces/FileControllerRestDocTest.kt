@@ -1,17 +1,12 @@
 package com.fastcampus.commerce.file.interfaces
 
-import com.fastcampus.commerce.admin.product.application.AdminProductService
-import com.fastcampus.commerce.admin.product.interfaces.AdminProductController
-import com.fastcampus.commerce.admin.product.interfaces.request.RegisterProductApiRequest
 import com.fastcampus.commerce.file.application.FileCommandService
 import com.fastcampus.commerce.file.application.response.GeneratePresignedUrlResponse
 import com.fastcampus.commerce.file.interfaces.request.GeneratePresignedUrlApiRequest
 import com.fastcampus.commerce.restdoc.documentation
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.spring.SpringExtension
-import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.restassured.module.mockmvc.RestAssuredMockMvc
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,7 +21,7 @@ import java.util.UUID
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
 @WebMvcTest(FileController::class)
-class FileControllerRestDocTest: DescribeSpec() {
+class FileControllerRestDocTest : DescribeSpec() {
     override fun extensions() = listOf(SpringExtension)
 
     @Autowired
@@ -56,7 +51,7 @@ class FileControllerRestDocTest: DescribeSpec() {
                     contextId = "6d851850-3b6f-4230-97fe-1a55b44fc862",
                 )
 
-                val response =  GeneratePresignedUrlResponse(
+                val response = GeneratePresignedUrlResponse(
                     uploadUrl = "https://test-801base-bucket.com/product/6d851850-3b6f-4230-97fe-1a55b44fc862/thumbnail-uuid.jpg",
                     key = "product/6d851850-3b6f-4230-97fe-1a55b44fc862/thumbnail-uuid.jpg",
                     contextId = UUID.fromString("6d851850-3b6f-4230-97fe-1a55b44fc862"),
