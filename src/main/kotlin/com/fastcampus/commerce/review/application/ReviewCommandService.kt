@@ -23,6 +23,6 @@ class ReviewCommandService(
     }
 
     fun deleteReview(userId: Long, reviewId: Long) {
-        reviewStore.delete(reviewId, userId)
+        reviewStore.delete(userId, reviewId)
     }
 }

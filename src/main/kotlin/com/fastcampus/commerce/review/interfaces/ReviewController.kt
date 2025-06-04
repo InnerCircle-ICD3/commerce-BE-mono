@@ -39,7 +39,7 @@ class ReviewController(
     }
 
     @DeleteMapping("/{reviewId}")
-    fun updateReview(
+    fun deleteReview(
         @PathVariable reviewId: Long,
     ): DeleteReviewApiResponse {
         val userId = 1L
