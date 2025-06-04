@@ -1,13 +1,20 @@
 package com.fastcampus.commerce.cart.application
 
 import com.fastcampus.commerce.cart.domain.entity.CartItem
+import com.fastcampus.commerce.cart.domain.error.CartErrorCode
 import com.fastcampus.commerce.cart.infrastructure.repository.CartItemRepository
 import com.fastcampus.commerce.common.policy.DeliveryPolicy
 import com.fastcampus.commerce.cart.interfaces.CartUpdateRequest
+import com.fastcampus.commerce.cart.application.InventoryService
+import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.product.domain.entity.Inventory
 import com.fastcampus.commerce.product.domain.service.ProductReader
+import io.kotest.assertions.eq.eq
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -16,6 +23,13 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
+import org.mockito.ArgumentMatchers.anyList
+import org.mockito.ArgumentMatchers.argThat
+import org.mockito.ArgumentMatchers.eq
+import org.mockito.Mockito.doNothing
+import org.mockito.Mockito.never
+import org.mockito.Mockito.times
+import java.time.LocalDateTime
 
 class CartItemServiceTest {
     private lateinit var cartItemRepository: CartItemRepository
@@ -327,5 +341,32 @@ class CartItemServiceTest {
         // Then
         assertEquals(20000, result.totalPrice) // UNAVAILABLE 상품 제외
         assertEquals(3000, result.deliveryPrice) // 30,000원 미만이므로 배송비 부과
+    }
+
+    @Test
+    fun `장바구니 삭제 시 논리적 삭제로 deletedAt이 null에서 현재 시간으로 update 된다`() {
+        // Given
+        val productId1 = 1L
+        val productId2 = 2L
+        val productIds = listOf(productId1, productId2)
+
+        val cartItem1 = CartItem(userId = 1L, productId = productId1, quantity = 2)
+        val cartItem2 = CartItem(userId = 1L, productId = productId2, quantity = 3)
+        val cartItems = listOf(cartItem1, cartItem2)
+
+        // findAllById 메서드가 호출되면 cartItems를 반환하도록 설정
+        `when`(cartItemRepository.findAllById(productIds)).thenReturn(cartItems)
+
+        // When
+        val result = cartItemService.deleteCartItems(productIds)
+
+        // Then
+        // 삭제된 아이템 수 확인
+        assertEquals(2, result)
+
+        // 논리적 삭제 확인 - CartItemService.deleteCartItems 메서드가
+        // cartItemRepository.softDeleteByIds를 호출했는지 확인
+        // 두 번째 인자는 시간이므로 any()를 사용하여 무시
+        verify(cartItemRepository).softDeleteByIds(eq(productIds), any(LocalDateTime::class.java))
     }
 }
