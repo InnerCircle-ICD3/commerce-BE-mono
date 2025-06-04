@@ -5,8 +5,6 @@ import com.fastcampus.commerce.cart.infrastructure.repository.CartItemRepository
 import com.fastcampus.commerce.common.policy.DeliveryPolicy
 import com.fastcampus.commerce.cart.interfaces.CartUpdateRequest
 import com.fastcampus.commerce.product.domain.entity.Inventory
-import com.fastcampus.commerce.product.domain.entity.Product
-import com.fastcampus.commerce.product.domain.entity.SellingStatus
 import com.fastcampus.commerce.product.domain.service.ProductReader
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
