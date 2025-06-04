@@ -6,6 +6,7 @@ import com.fastcampus.commerce.cart.infrastructure.repository.CartItemRepository
 import com.fastcampus.commerce.cart.interfaces.CartCreateResponse
 import com.fastcampus.commerce.cart.interfaces.CartItemRetrieve
 import com.fastcampus.commerce.cart.interfaces.CartRetrievesResponse
+import com.fastcampus.commerce.common.policy.DeliveryPolicy
 import com.fastcampus.commerce.product.domain.entity.SellingStatus
 import com.fastcampus.commerce.cart.interfaces.CartUpdateRequest
 import com.fastcampus.commerce.cart.interfaces.CartUpdateResponse
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional
 class CartItemService(
     private val cartItemRepository: CartItemRepository,
     private val productReader: ProductReader,
+    private val deliveryPolicy: DeliveryPolicy
 ) {
     fun getCarts(userId: Long) : CartRetrievesResponse{
         val cartItems = cartItemRepository.findAllByUserId(userId) ?: emptyList()
@@ -53,7 +55,7 @@ class CartItemService(
             .filter { it.isAvailable }
             .sumOf { it.price * it.quantity }
 
-        val deliveryPrice = if (totalPrice >= 30000) 0 else 3000
+        val deliveryPrice = deliveryPolicy.calculateDeliveryFee(totalPrice)
 
         return CartRetrievesResponse(
             totalPrice = totalPrice,
