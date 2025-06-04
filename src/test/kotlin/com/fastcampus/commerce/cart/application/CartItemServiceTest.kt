@@ -4,6 +4,7 @@ import com.fastcampus.commerce.cart.domain.entity.CartItem
 import com.fastcampus.commerce.cart.infrastructure.repository.CartItemRepository
 import com.fastcampus.commerce.cart.interfaces.CartItemRetrieve
 import com.fastcampus.commerce.cart.interfaces.CartRetrievesResponse
+import com.fastcampus.commerce.common.policy.DeliveryPolicy
 import com.fastcampus.commerce.cart.interfaces.CartUpdateRequest
 import com.fastcampus.commerce.product.domain.entity.Inventory
 import com.fastcampus.commerce.product.domain.entity.Product
@@ -24,12 +25,14 @@ class CartItemServiceTest {
     private lateinit var cartItemRepository: CartItemRepository
     private lateinit var productReader: ProductReader
     private lateinit var cartItemService: CartItemService
+    private lateinit var deliveryPolicy: DeliveryPolicy
 
     @BeforeEach
     fun setUp() {
         cartItemRepository = mock(CartItemRepository::class.java)
         productReader = mock(ProductReader::class.java)
-        cartItemService = CartItemService(cartItemRepository, productReader)
+        deliveryPolicy = DeliveryPolicy()
+        cartItemService = CartItemService(cartItemRepository, productReader, deliveryPolicy)
     }
 
     @Test
