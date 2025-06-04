@@ -6,10 +6,12 @@ info:
 servers:
 - url: http://localhost:8080
 tags:
-- name: Admin-Product
-  description: 관리자 상품 API
 - name: Review
   description: 사용자 리뷰 API
+- name: Admin-File
+  description: 관리자 파일 업로드 API
+- name: Admin-Product
+  description: 관리자 상품 API
 paths:
   /admin/products:
     post:
@@ -178,6 +180,54 @@ paths:
                       },
                       "error" : null
                     }
+  /files/presigned-url:
+    post:
+      tags:
+      - Admin-File
+      summary: Presigned URL을 발급받을 수 있다.
+      operationId: PresignedURL_발급_성공
+      parameters:
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/files-presigned-url-1375438577"
+            examples:
+              PresignedURL_발급_성공:
+                value: |-
+                  {
+                    "fileName" : "사진입니다.jpg",
+                    "contentType" : "image/jpeg",
+                    "fileSize" : 1048576,
+                    "domainType" : "PRODUCT",
+                    "domainContext" : "thumbnail",
+                    "contextId" : "6d851850-3b6f-4230-97fe-1a55b44fc862"
+                  }
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/files-presigned-url-2064193514"
+              examples:
+                PresignedURL_발급_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "uploadUrl" : "https://test-801base-bucket.com/product/6d851850-3b6f-4230-97fe-1a55b44fc862/thumbnail-uuid.jpg",
+                        "key" : "product/6d851850-3b6f-4230-97fe-1a55b44fc862/thumbnail-uuid.jpg",
+                        "contextId" : "6d851850-3b6f-4230-97fe-1a55b44fc862"
+                      },
+                      "error" : null
+                    }
   /reviews:
     post:
       tags:
@@ -235,6 +285,25 @@ components:
             productId:
               type: number
               description: 생성된 상품 아이디
+    files-presigned-url-2064193514:
+      type: object
+      properties:
+        data:
+          required:
+          - contextId
+          - key
+          - uploadUrl
+          type: object
+          properties:
+            uploadUrl:
+              type: string
+              description: 업로드 경로
+            contextId:
+              type: string
+              description: 업로드 세션 ID
+            key:
+              type: string
+              description: S3 Object Key
     reviews1890941445:
       required:
       - content
@@ -362,6 +431,34 @@ components:
               label:
                 type: string
                 description: 판매상태
+    files-presigned-url-1375438577:
+      required:
+      - contentType
+      - domainContext
+      - domainType
+      - fileName
+      - fileSize
+      type: object
+      properties:
+        domainContext:
+          type: string
+          description: 파일 컨텍스트(thumbnail/detailImage 고정)
+        fileName:
+          type: string
+          description: 파일명
+        domainType:
+          type: string
+          description: 도메인 타입(PRODUCT 고정)
+        fileSize:
+          type: number
+          description: 파일 크기(Byte)
+        contextId:
+          type: string
+          description: 업로드 세션 ID
+          nullable: true
+        contentType:
+          type: string
+          description: 파일 Content-Type
     admin-products-productId-1712578160:
       type: object
       properties:

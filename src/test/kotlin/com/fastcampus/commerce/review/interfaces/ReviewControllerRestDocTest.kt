@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.MockMvc
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
 @WebMvcTest(ReviewController::class)
-class ReviewControllerTest : DescribeSpec() {
+class ReviewControllerRestDocTest : DescribeSpec() {
     override fun extensions() = listOf(SpringExtension)
 
     @Autowired
