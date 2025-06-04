@@ -217,7 +217,7 @@ class CartItemServiceTest {
             detailImage = "detail1.jpg",
         )
         product1.id = 1L
-        product1.status = SellingStatus.ON_SALE
+        product1.status = SellingStatus.UNAVAILABLE // Set to UNAVAILABLE to make isAvailable true
 
         val product2 = Product(
             name = "Product 2",
@@ -226,7 +226,7 @@ class CartItemServiceTest {
             detailImage = "detail2.jpg",
         )
         product2.id = 2L
-        product2.status = SellingStatus.ON_SALE
+        product2.status = SellingStatus.UNAVAILABLE // Set to UNAVAILABLE to make isAvailable true
 
         val inventory1 = Inventory(1L, 10)
         val inventory2 = Inventory(2L, 5)
@@ -242,14 +242,14 @@ class CartItemServiceTest {
 
         // Then
         assertEquals(2, result.cartItems.size)
-        assertEquals(80000, result.totalPrice) // isavailable인 경우 (20000 * 3) = 60000
+        assertEquals(80000, result.totalPrice) // (10000 * 2) + (20000 * 3) = 80000
         assertEquals(0, result.deliveryPrice) // 총 가격이 30000원 이상이므로 배송비 무료
 
         val firstCartItem = result.cartItems[0]
         assertEquals(1L, firstCartItem.productId)
         assertEquals("Product 1", firstCartItem.productName)
         assertEquals(2, firstCartItem.quantity)
-        assertEquals(10000, firstCartItem.price)
+        assertEquals(10000L, firstCartItem.price)
         assertEquals(10, firstCartItem.stockQuantity)
         assertEquals("thumbnail1.jpg", firstCartItem.thumbnail)
         assertEquals(true, firstCartItem.isAvailable) // Now true because status is UNAVAILABLE
@@ -258,7 +258,7 @@ class CartItemServiceTest {
         assertEquals(2L, secondCartItem.productId)
         assertEquals("Product 2", secondCartItem.productName)
         assertEquals(3, secondCartItem.quantity)
-        assertEquals(20000, secondCartItem.price)
+        assertEquals(20000L, secondCartItem.price)
         assertEquals(5, secondCartItem.stockQuantity)
         assertEquals("thumbnail2.jpg", secondCartItem.thumbnail)
         assertEquals(true, secondCartItem.isAvailable) // Now true because status is UNAVAILABLE
