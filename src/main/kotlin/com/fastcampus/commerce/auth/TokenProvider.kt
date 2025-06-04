@@ -70,7 +70,8 @@ class TokenProvider(
      */
     fun refreshAccessToken(refreshToken: String): String {
         val userId = extractUserIdFromToken(refreshToken)
-        return createAccessToken(userId)
+        val externalId = extractExternalIdFromToken(refreshToken)
+        return createAccessToken(userId, externalId)
     }
 
     /**
@@ -80,9 +81,9 @@ class TokenProvider(
      *
      * @return 회원 ID
      */
-    fun extractUserIdFromToken(token: String): Long {
+    fun extractUserIdFromToken(token: String): String {
         val claims = parseClaims(token)
-        return claims[USER_ID] as Long
+        return claims[USER_ID] as String
     }
 
     /**
@@ -92,9 +93,9 @@ class TokenProvider(
      *
      * @return external ID
      */
-    fun extractExternalIdFromToken(token: String): Long {
+    fun extractExternalIdFromToken(token: String): String {
         val claims = parseClaims(token)
-        return claims[EXTERNAL_ID] as Long
+        return claims[EXTERNAL_ID] as String
     }
 
     /**
