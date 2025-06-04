@@ -13,12 +13,13 @@ class JwtAuthenticationFilter(
     private val tokenProvider: TokenProvider,
 ) : OncePerRequestFilter() {
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
-        val accessToken = request.getHeader(HttpHeaderKeys.ACCESS_TOKEN)
+        //TODO: 이후 token 인증 로직 수정 필요
+        /*val accessToken = request.getHeader(HttpHeaderKeys.ACCESS_TOKEN)
             ?: throw CoreException(AuthErrorCode.TOKEN_NOT_FOUND)
 
         val userId = tokenProvider.extractUserIdFromToken(accessToken)
 
-        response.setHeader(HttpHeaderKeys.USER_ID, userId.toString())
+        response.setHeader(HttpHeaderKeys.USER_ID, userId.toString())*/
 
         filterChain.doFilter(request, response)
     }

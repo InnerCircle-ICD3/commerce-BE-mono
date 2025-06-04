@@ -7,6 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
@@ -45,6 +46,7 @@ class SecurityConfig(
             allowedMethods = corsProperties.allowedMethods
             allowedHeaders = corsProperties.allowedHeaders
             allowCredentials = true
+            exposedHeaders = listOf("Access-Token", "User-Id") //response.headers.get("Access-Token"); 허용 처리
         }
         return UrlBasedCorsConfigurationSource().apply {
             registerCorsConfiguration("/**", config)
@@ -62,18 +64,20 @@ class SecurityConfig(
             .cors { it.configurationSource(corsConfigurationSource) }
             .csrf { it.disable() }
             .authorizeHttpRequests {
-                it.requestMatchers(
+                it
+                .requestMatchers(HttpMethod.GET, "/admin/products/selling-status").permitAll()
+                .requestMatchers(
                     "/oauth2/**",
-                    "/api/v1/auth/reissue",
-                    "/api/v1/auth/register",
-                    "/api/v1/auth/login",
-                    "/api/v1/auth/logout",
+                    "/auth/reissue",
+                    "/auth/register",
+                    "/auth/login",
+                    "/auth/logout",
                 ).permitAll()
-                    .anyRequest().authenticated()
+                .anyRequest().permitAll()
             }
             .oauth2Login { oauth2 ->
                 oauth2
-                    .loginPage("/api/v1/auth/login") // 커스텀 로그인 페이지가 있다면 설정
+                    .loginPage("/auth/login") // 커스텀 로그인 페이지가 있다면 설정
                     .authorizationEndpoint { auth ->
                         auth.baseUri("/oauth2/authorization") // ex) /oauth2/authorization/naver
                     }

@@ -8,13 +8,18 @@ import org.springframework.security.oauth2.core.user.OAuth2User
 class CustomUserPrincipal(
     private val user: UserDto,
 ) : OAuth2User {
+
+    val externalId: String
+        get() = user.externalId ?: ""
+
     override fun getName(): String = user.id.toString()
 
     override fun getAttributes(): Map<String, Any> =
         mapOf(
-            "id" to user.id,
+            "id" to (user.id ?: 0L),
+            "externalId" to (user.externalId ?: ""),
             "email" to (user.email ?: ""),
-            "nickname" to (user.nickname ?: ""),
+            "nickname" to (user.nickname ?: "")
         )
 
     override fun getAuthorities(): Collection<GrantedAuthority> = user.roles.map { SimpleGrantedAuthority(it) }
