@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.MockMvc
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
 @WebMvcTest(AdminProductController::class)
-class AdminProductControllerTest : DescribeSpec() {
+class AdminProductControllerRestDocTest : DescribeSpec() {
     override fun extensions() = listOf(SpringExtension)
 
     @Autowired
