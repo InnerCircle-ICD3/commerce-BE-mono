@@ -37,7 +37,7 @@ data class CartItemRetrieve(
     val productId: Long,
     val productName: String,
     val quantity: Int,
-    val price: Long,
+    val price: Int,
     val stockQuantity: Int,
     val thumbnail: String,
     val isAvailable: Boolean,

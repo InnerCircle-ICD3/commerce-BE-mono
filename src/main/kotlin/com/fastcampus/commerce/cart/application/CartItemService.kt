@@ -41,7 +41,7 @@ class CartItemService(
                 productId = product.id!!,
                 productName = product.name,
                 quantity = cartItem.quantity,
-                price = product.price.toLong(),
+                price = product.price,
                 stockQuantity = inventory.quantity,
                 thumbnail = product.thumbnail,
                 isAvailable = isAvailable
