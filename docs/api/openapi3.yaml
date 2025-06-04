@@ -6,6 +6,8 @@ info:
 servers:
 - url: http://localhost:8080
 tags:
+- name: Cart
+  description: 사용자 장바구니 API
 - name: Review
   description: 사용자 리뷰 API
 - name: Admin-File
@@ -272,6 +274,54 @@ paths:
                       },
                       "error" : null
                     }
+  /reviews/{reviewId}:
+    put:
+      tags:
+      - Review
+      summary: 리뷰를 수정할 수 있다.
+      operationId: 리뷰_수정_성공
+      parameters:
+      - name: reviewId
+        in: path
+        description: 리뷰 아이디
+        required: true
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/reviews-reviewId480882763"
+            examples:
+              리뷰_수정_성공:
+                value: |-
+                  {
+                    "rating" : 3,
+                    "content" : "좋습니다."
+                  }
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/reviews-reviewId-168857718"
+              examples:
+                리뷰_수정_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "reviewId" : 10
+                      },
+                      "error" : null
+                    }
 components:
   schemas:
     admin-products9820101:
@@ -382,6 +432,29 @@ components:
             message:
               type: string
               description: 응답 메시지
+    reviews-reviewId480882763:
+      required:
+      - content
+      - rating
+      type: object
+      properties:
+        rating:
+          type: number
+          description: 별점
+        content:
+          type: string
+          description: 리뷰 내용
+    reviews-reviewId-168857718:
+      type: object
+      properties:
+        data:
+          required:
+          - reviewId
+          type: object
+          properties:
+            reviewId:
+              type: number
+              description: 수저된 리뷰 아이디
     admin-products-247955186:
       required:
       - cupSizeId
