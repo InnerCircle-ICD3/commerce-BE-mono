@@ -38,6 +38,7 @@ class CartItemControllerTest : DescribeSpec(){
         describe("POST /carts/items - 장바구니에 상품 등록") {
             val summary = "사용자의 장바구니에 상품을 추가할 수 있다."
             it("사용자의 장바구니에 상품을 추가할 수 있다."){
+                val userId = 1L
                 val request = CartCreateRequest(
                     productId = 1L,
                     quantity = 100
@@ -49,7 +50,7 @@ class CartItemControllerTest : DescribeSpec(){
                     requiresQuantityAdjustment = true
                 )
 
-                every { cartItemService.addToCart(any<Long>(),request.productId,request.quantity) } returns response
+                every { cartItemService.addToCart(userId,request.productId,request.quantity) } returns response
 
                 documentation(
                     identifier = "장바구니에_상품_추가_성공",
@@ -61,6 +62,7 @@ class CartItemControllerTest : DescribeSpec(){
 
                     requestHeaders {
                         header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                        header("X-User-Token","사용자 ID",userId.toString())
                     }
 
                     requestBody {
