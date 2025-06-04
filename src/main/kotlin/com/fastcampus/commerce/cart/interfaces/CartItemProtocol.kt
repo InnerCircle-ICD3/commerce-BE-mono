@@ -25,3 +25,20 @@ data class CartUpdateResponse(
     val stockQuantity: Int,
     val requiresQuantityAdjustment: Boolean,
 )
+
+data class CartRetrievesResponse(
+    val totalPrice: Int,
+    val deliveryPrice: Int,
+    val cartItems: List<CartItemRetrieve>
+)
+
+data class CartItemRetrieve(
+    val cartItemId: Long,
+    val productId: Long,
+    val productName: String,
+    val quantity: Int,
+    val price: Long,
+    val stockQuantity: Int,
+    val thumbnail: String,
+    val isAvailable: Boolean,
+)
