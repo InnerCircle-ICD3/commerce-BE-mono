@@ -13,7 +13,7 @@ private val log = LoggerFactory.getLogger(CustomOAuth2UserService::class.java)
 
 data class NaverUserResponse(
     val id: String,
-    val email: String,
+    val email: String?,
     val nickname: String?,
     val name: String?,
     val profileImage: String?,
@@ -33,7 +33,7 @@ class CustomOAuth2UserService(
         val naverUser = NaverUserResponse(
             id = responseMap["id"]?.toString() ?: "",
             name = responseMap["name"]?.toString(),
-            email = responseMap["email"].toString(),
+            email = responseMap["email"]?.toString(),
             nickname = responseMap["nickname"]?.toString(),
             profileImage = responseMap["profile_image"]?.toString(),
         )
