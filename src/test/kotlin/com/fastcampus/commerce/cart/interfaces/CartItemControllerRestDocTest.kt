@@ -40,6 +40,51 @@ class CartItemControllerRestDocTest : DescribeSpec() {
             RestAssuredMockMvc.mockMvc(mockMvc)
         }
 
+        describe("POST /carts/items - 장바구니에 상품 등록") {
+            val summary = "사용자의 장바구니에 상품을 추가할 수 있다."
+            it("사용자의 장바구니에 상품을 추가할 수 있다.") {
+                val userId = 1L
+                val request = CartCreateRequest(
+                    productId = 1L,
+                    quantity = 100,
+                )
+
+                val response = CartCreateResponse(
+                    quantity = 80,
+                    stockQuantity = 80,
+                    requiresQuantityAdjustment = true,
+                )
+
+                every { cartItemService.addToCart(userId, request.productId, request.quantity) } returns response
+
+                documentation(
+                    identifier = "장바구니에_상품_추가_성공",
+                    tag = tag,
+                    summary = summary,
+                    privateResource = privateResource,
+                ) {
+                    requestLine(HttpMethod.POST, "/cart/items")
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                        header("X-User-Token", "사용자 ID", userId.toString())
+                    }
+
+                    requestBody {
+                        field("productId", "상품Id", request.productId)
+                        field("quantity", "상품수량", request.quantity)
+                    }
+
+                    responseBody {
+                        field("data.quantity", "상품 수량", request.quantity)
+                        field("data.stockQuantity", "재고 수량", 80)
+                        field("data.requiresQuantityAdjustment", "상품 수량이 재고 수량을 초과함", true)
+                        ignoredField("error")
+                    }
+                }
+            }
+        }
+
         describe("PATCH /cart/items - 장바구니 내의 상품 수량 변경") {
             val summary = "장바구니 내 상품의 수량을 변경할 수 있다."
             it("장바구니 내 상품의 수량을 변경할 수 있다.") {
