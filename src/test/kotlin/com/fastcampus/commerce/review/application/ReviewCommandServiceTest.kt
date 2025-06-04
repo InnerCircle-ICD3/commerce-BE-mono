@@ -5,13 +5,17 @@ import com.fastcampus.commerce.order.application.review.OrderReview
 import com.fastcampus.commerce.order.application.review.OrderReviewService
 import com.fastcampus.commerce.order.domain.error.OrderErrorCode
 import com.fastcampus.commerce.review.application.request.RegisterReviewRequest
+import com.fastcampus.commerce.review.application.request.UpdateReviewRequest
 import com.fastcampus.commerce.review.domain.entity.Review
 import com.fastcampus.commerce.review.domain.service.ReviewStore
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.verify
 import java.time.LocalDateTime
 
 class ReviewCommandServiceTest : FunSpec({
@@ -63,6 +67,25 @@ class ReviewCommandServiceTest : FunSpec({
             shouldThrow<CoreException> {
                 reviewCommandService.registerReview(userId, request)
             }.errorCode shouldBe OrderErrorCode.ORDER_DATA_FOR_REVIEW_NOT_FOUND
+        }
+    }
+
+    context("updateReview") {
+        val reviewId = 1L
+        val updateRequest = UpdateReviewRequest(
+            rating = 4,
+            content = "별로였어요.",
+        )
+        val command = updateRequest.toCommand(userId, reviewId)
+
+        test("리뷰 수정 요청 시 ReviewStore.update가 호출되고 reviewId를 반환한다") {
+            every { reviewStore.update(command) } just Runs
+
+            val result = reviewCommandService.updateReview(userId, reviewId, updateRequest)
+
+            result shouldBe reviewId
+
+            verify(exactly = 1) { reviewStore.update(command) }
         }
     }
 })
