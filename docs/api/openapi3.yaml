@@ -1,0 +1,375 @@
+openapi: 3.0.1
+info:
+  title: 801base API docs
+  description: 801base의 API 문서입니다.
+  version: 0.0.1
+servers:
+- url: http://localhost:8080
+tags:
+- name: Admin-Product
+  description: 관리자 상품 API
+- name: Review
+  description: 사용자 리뷰 API
+paths:
+  /admin/products:
+    post:
+      tags:
+      - Admin-Product
+      summary: 상품을 등록할 수 있다.
+      operationId: 상품_등록_성공
+      parameters:
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/admin-products-247955186"
+            examples:
+              상품_등록_성공:
+                value: |-
+                  {
+                    "name" : "콜드브루",
+                    "price" : 3500,
+                    "quantity" : 100,
+                    "thumbnail" : "https://test.com/thumbnail.png",
+                    "detailImage" : "https://test.com/detailImage.png",
+                    "intensityId" : 1,
+                    "cupSizeId" : 10
+                  }
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/admin-products9820101"
+              examples:
+                상품_등록_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "productId" : 10
+                      },
+                      "error" : null
+                    }
+  /admin/products/selling-status:
+    get:
+      tags:
+      - Admin-Product
+      summary: 상품 판매상태 목록을 조회할 수 있다.
+      operationId: 상품_판매상태_조회_성공
+      parameters:
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/admin-products-selling-status-152159338"
+              examples:
+                상품_판매상태_조회_성공:
+                  value: |-
+                    {
+                      "data" : [ {
+                        "code" : "ON_SALE",
+                        "label" : "판매중"
+                      } ],
+                      "error" : null
+                    }
+  /admin/products/{productId}:
+    put:
+      tags:
+      - Admin-Product
+      summary: 상품을 수정할 수 있다.
+      operationId: 상품_수정_성공
+      parameters:
+      - name: productId
+        in: path
+        description: 상품 아이디
+        required: true
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/admin-products-productId-1789436874"
+            examples:
+              상품_수정_성공:
+                value: |-
+                  {
+                    "name" : "콜드브루",
+                    "price" : 3500,
+                    "quantity" : 100,
+                    "thumbnail" : "https://test.com/thumbnail.png",
+                    "detailImage" : "https://test.com/detailImage.png",
+                    "intensityId" : 1,
+                    "cupSizeId" : 10,
+                    "status" : "UNAVAILABLE"
+                  }
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/admin-products-productId-1712578160"
+              examples:
+                상품_수정_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "productId" : 10
+                      },
+                      "error" : null
+                    }
+    delete:
+      tags:
+      - Admin-Product
+      summary: 상품을 삭제할 수 있다.
+      operationId: 상품_삭제_성공
+      parameters:
+      - name: productId
+        in: path
+        description: 상품 아이디
+        required: true
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/admin-products-productId1686665306"
+              examples:
+                상품_삭제_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "message" : "OK"
+                      },
+                      "error" : null
+                    }
+  /reviews:
+    post:
+      tags:
+      - Review
+      summary: 배송완료된 상품에 리뷰를 등록할 수 있다.
+      operationId: 리뷰_등록_성공
+      parameters:
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/reviews1890941445"
+            examples:
+              리뷰_등록_성공:
+                value: |-
+                  {
+                    "orderNumber" : "ORDER1234",
+                    "orderItemId" : 10,
+                    "rating" : 3,
+                    "content" : "좋습니다."
+                  }
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/reviews-1411419170"
+              examples:
+                리뷰_등록_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "reviewId" : 10
+                      },
+                      "error" : null
+                    }
+components:
+  schemas:
+    admin-products9820101:
+      type: object
+      properties:
+        data:
+          required:
+          - productId
+          type: object
+          properties:
+            productId:
+              type: number
+              description: 생성된 상품 아이디
+    reviews1890941445:
+      required:
+      - content
+      - orderItemId
+      - orderNumber
+      - rating
+      type: object
+      properties:
+        orderNumber:
+          type: string
+          description: 주문번호
+        orderItemId:
+          type: number
+          description: 주문 아이템 아이디
+        rating:
+          type: number
+          description: 별점
+        content:
+          type: string
+          description: 리뷰 내용
+    admin-products-productId-1789436874:
+      required:
+      - cupSizeId
+      - detailImage
+      - intensityId
+      - name
+      - price
+      - quantity
+      - status
+      - thumbnail
+      type: object
+      properties:
+        thumbnail:
+          type: string
+          description: 썸네일 이미지
+        intensityId:
+          type: number
+          description: 강도 카테고리 아이디
+        quantity:
+          type: number
+          description: 재고 수량
+        price:
+          type: number
+          description: 가격
+        cupSizeId:
+          type: number
+          description: 컵사이즈 카테고리 아이디
+        name:
+          type: string
+          description: 상품명
+        status:
+          type: string
+          description: 판매상태 코드
+        detailImage:
+          type: string
+          description: 상세 이미지
+    reviews-1411419170:
+      type: object
+      properties:
+        data:
+          required:
+          - reviewId
+          type: object
+          properties:
+            reviewId:
+              type: number
+              description: 생성된 리뷰 아이디
+    admin-products-productId1686665306:
+      type: object
+      properties:
+        data:
+          required:
+          - message
+          type: object
+          properties:
+            message:
+              type: string
+              description: 응답 메시지
+    admin-products-247955186:
+      required:
+      - cupSizeId
+      - detailImage
+      - intensityId
+      - name
+      - price
+      - quantity
+      - thumbnail
+      type: object
+      properties:
+        thumbnail:
+          type: string
+          description: 썸네일 이미지
+        intensityId:
+          type: number
+          description: 강도 카테고리 아이디
+        quantity:
+          type: number
+          description: 재고 수량
+        price:
+          type: number
+          description: 가격
+        cupSizeId:
+          type: number
+          description: 컵사이즈 카테고리 아이디
+        name:
+          type: string
+          description: 상품명
+        detailImage:
+          type: string
+          description: 상세 이미지
+    admin-products-selling-status-152159338:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            required:
+            - code
+            - label
+            type: object
+            properties:
+              code:
+                type: string
+                description: 판매상태 코드
+              label:
+                type: string
+                description: 판매상태
+    admin-products-productId-1712578160:
+      type: object
+      properties:
+        data:
+          required:
+          - productId
+          type: object
+          properties:
+            productId:
+              type: number
+              description: 수정된 상품 아이디
