@@ -7,6 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
@@ -63,7 +64,9 @@ class SecurityConfig(
             .cors { it.configurationSource(corsConfigurationSource) }
             .csrf { it.disable() }
             .authorizeHttpRequests {
-                it.requestMatchers(
+                it
+                .requestMatchers(HttpMethod.GET, "/", "/home", "/products", "/products/**", "/categories/**", "/search", "/products/search").permitAll()
+                .requestMatchers(
                     "/oauth2/**",
                     "/auth/reissue",
                     "/auth/register",
