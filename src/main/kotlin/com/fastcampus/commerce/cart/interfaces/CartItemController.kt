@@ -1,6 +1,7 @@
 package com.fastcampus.commerce.cart.interfaces
 
 import com.fastcampus.commerce.cart.application.CartItemService
+import org.springframework.web.bind.annotation.GetMapping
 import com.fastcampus.commerce.user.domain.entity.User
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.PatchMapping
@@ -13,6 +14,13 @@ import org.springframework.web.bind.annotation.RestController
 class CartItemController(
     private val cartItemService: CartItemService,
 ) {
+    @GetMapping("/carts")
+    fun getCarts(
+        @RequestParam userId: Long,
+    ) : CartRetrievesResponse {
+        return cartItemService.getCarts(userId)
+    }
+
     @PostMapping("/cart/items")
     fun addToCart(
         @RequestBody request: CartCreateRequest,
