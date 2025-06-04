@@ -218,7 +218,7 @@ class CartItemServiceTest {
             detailImage = "detail1.jpg"
         )
         product1.id = 1L
-        product1.status = SellingStatus.UNAVAILABLE // Set to UNAVAILABLE to make isAvailable true
+        product1.status = SellingStatus.ON_SALE
 
         val product2 = Product(
             name = "Product 2",
@@ -227,7 +227,7 @@ class CartItemServiceTest {
             detailImage = "detail2.jpg"
         )
         product2.id = 2L
-        product2.status = SellingStatus.UNAVAILABLE // Set to UNAVAILABLE to make isAvailable true
+        product2.status = SellingStatus.ON_SALE
 
         val inventory1 = Inventory(1L, 10)
         val inventory2 = Inventory(2L, 5)
@@ -243,14 +243,14 @@ class CartItemServiceTest {
 
         // Then
         assertEquals(2, result.cartItems.size)
-        assertEquals(80000, result.totalPrice) // (10000 * 2) + (20000 * 3) = 80000
+        assertEquals(80000, result.totalPrice) // isavailable인 경우 (20000 * 3) = 60000
         assertEquals(0, result.deliveryPrice) // 총 가격이 30000원 이상이므로 배송비 무료
 
         val firstCartItem = result.cartItems[0]
         assertEquals(1L, firstCartItem.productId)
         assertEquals("Product 1", firstCartItem.productName)
         assertEquals(2, firstCartItem.quantity)
-        assertEquals(10000L, firstCartItem.price)
+        assertEquals(10000, firstCartItem.price)
         assertEquals(10, firstCartItem.stockQuantity)
         assertEquals("thumbnail1.jpg", firstCartItem.thumbnail)
         assertEquals(true, firstCartItem.isAvailable) // Now true because status is UNAVAILABLE
@@ -259,9 +259,76 @@ class CartItemServiceTest {
         assertEquals(2L, secondCartItem.productId)
         assertEquals("Product 2", secondCartItem.productName)
         assertEquals(3, secondCartItem.quantity)
-        assertEquals(20000L, secondCartItem.price)
+        assertEquals(20000, secondCartItem.price)
         assertEquals(5, secondCartItem.stockQuantity)
         assertEquals("thumbnail2.jpg", secondCartItem.thumbnail)
         assertEquals(true, secondCartItem.isAvailable) // Now true because status is UNAVAILABLE
+    }
+
+    @Test
+    fun `장바구니가 비어있을 때 빈 리스트와 0원을 반환해야 한다`() {
+        // Given
+        val userId = 1L
+        `when`(cartItemRepository.findAllByUserId(userId)).thenReturn(emptyList())
+
+        // When
+        val result = cartItemService.getCarts(userId)
+
+        // Then
+        assertEquals(0, result.cartItems.size)
+        assertEquals(0, result.totalPrice)
+        assertEquals(0, result.deliveryPrice)  // 빈 장바구니는 배송비 무료
+    }
+
+    @Test
+    fun `UNAVAILABLE 상품은 총 가격 계산에서 제외되어야 한다`() {
+        // Given
+        val userId = 1L
+        val cartItems = listOf(
+            CartItem(userId, 1L, 2),  // 10,000원 x 2 = 20,000원 (AVAILABLE)
+            CartItem(userId, 2L, 3)   // 5,000원 x 3 = 15,000원 (UNAVAILABLE)
+        )
+
+        // CartItem ID 설정
+        cartItems[0].id = 101L
+        cartItems[1].id = 102L
+
+        val product1 = Product(
+            name = "Product 1",
+            price = 10000,
+            thumbnail = "thumbnail1.jpg",
+            detailImage = "detail1.jpg"
+        )
+
+        val product2 = Product(
+            name = "Product 2",
+            price = 20000,
+            thumbnail = "thumbnail2.jpg",
+            detailImage = "detail2.jpg"
+        )
+
+        product1.id = 1L
+        product2.id = 2L
+
+        // product1은 AVAILABLE, product2는 UNAVAILABLE로 설정
+        product1.status = SellingStatus.ON_SALE
+        product2.status = SellingStatus.UNAVAILABLE
+
+        val inventory1 = Inventory(1L, 10)
+        val inventory2 = Inventory(2L, 5)
+
+        // Mock 설정 추가
+        `when`(cartItemRepository.findAllByUserId(userId)).thenReturn(cartItems)
+        `when`(productReader.getProductById(1L)).thenReturn(product1)
+        `when`(productReader.getProductById(2L)).thenReturn(product2)
+        `when`(productReader.getInventoryByProductId(1L)).thenReturn(inventory1)
+        `when`(productReader.getInventoryByProductId(2L)).thenReturn(inventory2)
+
+        // When
+        val result = cartItemService.getCarts(userId)
+
+        // Then
+        assertEquals(20000, result.totalPrice)  // UNAVAILABLE 상품 제외
+        assertEquals(3000, result.deliveryPrice)  // 30,000원 미만이므로 배송비 부과
     }
 }
