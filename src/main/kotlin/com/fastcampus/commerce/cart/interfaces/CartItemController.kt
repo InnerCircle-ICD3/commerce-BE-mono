@@ -17,7 +17,7 @@ class CartItemController(
     @GetMapping("/carts")
     fun getCarts(
         @RequestParam userId: Long,
-    ) : CartRetrievesResponse {
+    ): CartRetrievesResponse {
         return cartItemService.getCarts(userId)
     }
 

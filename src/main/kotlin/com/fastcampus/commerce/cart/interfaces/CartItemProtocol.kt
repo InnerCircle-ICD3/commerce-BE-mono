@@ -29,7 +29,7 @@ data class CartUpdateResponse(
 data class CartRetrievesResponse(
     val totalPrice: Int,
     val deliveryPrice: Int,
-    val cartItems: List<CartItemRetrieve>
+    val cartItems: List<CartItemRetrieve>,
 )
 
 data class CartItemRetrieve(

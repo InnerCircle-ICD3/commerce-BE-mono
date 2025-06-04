@@ -2,8 +2,6 @@ package com.fastcampus.commerce.cart.application
 
 import com.fastcampus.commerce.cart.domain.entity.CartItem
 import com.fastcampus.commerce.cart.infrastructure.repository.CartItemRepository
-import com.fastcampus.commerce.cart.interfaces.CartItemRetrieve
-import com.fastcampus.commerce.cart.interfaces.CartRetrievesResponse
 import com.fastcampus.commerce.common.policy.DeliveryPolicy
 import com.fastcampus.commerce.cart.interfaces.CartUpdateRequest
 import com.fastcampus.commerce.product.domain.entity.Inventory
@@ -201,12 +199,12 @@ class CartItemServiceTest {
     }
 
     @Test
-    fun `해당 유저의 상품 전체 조회가 가능해야 한다`(){
+    fun `해당 유저의 상품 전체 조회가 가능해야 한다`()  {
         // Given
         val userId = 1L
         val cartItems = listOf(
             CartItem(userId, 1L, 2),
-            CartItem(userId, 2L, 3)
+            CartItem(userId, 2L, 3),
         )
 
         // Set IDs for cart items
@@ -218,7 +216,7 @@ class CartItemServiceTest {
             name = "Product 1",
             price = 10000,
             thumbnail = "thumbnail1.jpg",
-            detailImage = "detail1.jpg"
+            detailImage = "detail1.jpg",
         )
         product1.id = 1L
         product1.status = SellingStatus.ON_SALE
@@ -227,7 +225,7 @@ class CartItemServiceTest {
             name = "Product 2",
             price = 20000,
             thumbnail = "thumbnail2.jpg",
-            detailImage = "detail2.jpg"
+            detailImage = "detail2.jpg",
         )
         product2.id = 2L
         product2.status = SellingStatus.ON_SALE
@@ -280,7 +278,7 @@ class CartItemServiceTest {
         // Then
         assertEquals(0, result.cartItems.size)
         assertEquals(0, result.totalPrice)
-        assertEquals(0, result.deliveryPrice)  // 빈 장바구니는 배송비 무료
+        assertEquals(0, result.deliveryPrice) // 빈 장바구니는 배송비 무료
     }
 
     @Test
@@ -288,8 +286,8 @@ class CartItemServiceTest {
         // Given
         val userId = 1L
         val cartItems = listOf(
-            CartItem(userId, 1L, 2),  // 10,000원 x 2 = 20,000원 (AVAILABLE)
-            CartItem(userId, 2L, 3)   // 5,000원 x 3 = 15,000원 (UNAVAILABLE)
+            CartItem(userId, 1L, 2), // 10,000원 x 2 = 20,000원 (AVAILABLE)
+            CartItem(userId, 2L, 3), // 5,000원 x 3 = 15,000원 (UNAVAILABLE)
         )
 
         // CartItem ID 설정
@@ -300,14 +298,14 @@ class CartItemServiceTest {
             name = "Product 1",
             price = 10000,
             thumbnail = "thumbnail1.jpg",
-            detailImage = "detail1.jpg"
+            detailImage = "detail1.jpg",
         )
 
         val product2 = Product(
             name = "Product 2",
             price = 20000,
             thumbnail = "thumbnail2.jpg",
-            detailImage = "detail2.jpg"
+            detailImage = "detail2.jpg",
         )
 
         product1.id = 1L
@@ -331,7 +329,7 @@ class CartItemServiceTest {
         val result = cartItemService.getCarts(userId)
 
         // Then
-        assertEquals(20000, result.totalPrice)  // UNAVAILABLE 상품 제외
-        assertEquals(3000, result.deliveryPrice)  // 30,000원 미만이므로 배송비 부과
+        assertEquals(20000, result.totalPrice) // UNAVAILABLE 상품 제외
+        assertEquals(3000, result.deliveryPrice) // 30,000원 미만이므로 배송비 부과
     }
 }

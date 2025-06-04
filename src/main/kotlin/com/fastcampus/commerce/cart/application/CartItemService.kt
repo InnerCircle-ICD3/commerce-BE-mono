@@ -19,16 +19,16 @@ import org.springframework.transaction.annotation.Transactional
 class CartItemService(
     private val cartItemRepository: CartItemRepository,
     private val productReader: ProductReader,
-    private val deliveryPolicy: DeliveryPolicy
+    private val deliveryPolicy: DeliveryPolicy,
 ) {
-    fun getCarts(userId: Long) : CartRetrievesResponse{
+    fun getCarts(userId: Long): CartRetrievesResponse  {
         val cartItems = cartItemRepository.findAllByUserId(userId) ?: emptyList()
 
         if (cartItems.isEmpty()) {
             return CartRetrievesResponse(
                 totalPrice = 0,
                 deliveryPrice = 0,
-                cartItems = emptyList()
+                cartItems = emptyList(),
             )
         }
 
@@ -46,7 +46,7 @@ class CartItemService(
                 price = product.price,
                 stockQuantity = inventory.quantity,
                 thumbnail = product.thumbnail,
-                isAvailable = isAvailable
+                isAvailable = isAvailable,
             )
         }
 
@@ -60,10 +60,9 @@ class CartItemService(
         return CartRetrievesResponse(
             totalPrice = totalPrice,
             deliveryPrice = deliveryPrice,
-            cartItems = cartItemRetrieveList
+            cartItems = cartItemRetrieveList,
         )
     }
-
 
     @Transactional
     fun addToCart(userId: Long, productId: Long, quantity: Int): CartCreateResponse {
