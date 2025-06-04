@@ -14,4 +14,5 @@ enum class ReviewErrorCode(
     TOO_LATE("RVW-004", "배송완료 후 30일 이내의 주문건에 대해서만 리뷰를 작성 및 수정할 수 있습니다.", LogLevel.WARN),
     ALREADY_WRITE("RVW-005", "리뷰는 주문 당 한번만 작성가능합니다.", LogLevel.WARN),
     REVIEW_NOT_FOUND("RVW-006", "리뷰를 찾을 수 없습니다.", LogLevel.WARN),
+    UNAUTHORIZED_REVIEW_UPDATE("RVW-007", "다른 사람의 리뷰를 수정할 수 없습니다", LogLevel.WARN),
 }

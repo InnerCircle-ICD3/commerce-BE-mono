@@ -5,6 +5,7 @@ import com.fastcampus.commerce.common.util.TimeProvider
 import com.fastcampus.commerce.review.domain.entity.Review
 import com.fastcampus.commerce.review.domain.error.ReviewErrorCode
 import com.fastcampus.commerce.review.domain.model.ReviewRegister
+import com.fastcampus.commerce.review.domain.model.ReviewUpdater
 import com.fastcampus.commerce.review.domain.repository.ReviewRepository
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -23,5 +24,14 @@ class ReviewStore(
             throw CoreException(ReviewErrorCode.ALREADY_WRITE)
         }
         return reviewRepository.save(register.toReview())
+    }
+
+    @Transactional(readOnly = false)
+    fun update(command: ReviewUpdater) {
+        val review = reviewReader.getReviewById(command.id)
+        if (review.userId != command.userId) {
+            throw CoreException(ReviewErrorCode.UNAUTHORIZED_REVIEW_UPDATE)
+        }
+        review.update(command)
     }
 }
