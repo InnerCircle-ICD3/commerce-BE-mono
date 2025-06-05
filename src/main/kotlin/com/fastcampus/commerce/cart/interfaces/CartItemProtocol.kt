@@ -10,3 +10,17 @@ data class CartCreateResponse(
     val stockQuantity: Int,
     val requiresQuantityAdjustment: Boolean,
 )
+
+data class CartUpdateRequest(
+    val userId: Long,
+    val productId: Long,
+    val quantity: Int,
+)
+
+data class CartUpdateResponse(
+    val userId: Long,
+    val productId: Long,
+    val quantity: Int,
+    val stockQuantity: Int,
+    val requiresQuantityAdjustment: Boolean,
+)
