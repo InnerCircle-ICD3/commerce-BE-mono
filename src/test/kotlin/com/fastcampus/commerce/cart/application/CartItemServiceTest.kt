@@ -15,7 +15,6 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
-import java.util.Optional
 
 class CartItemServiceTest {
     private lateinit var cartItemRepository: CartItemRepository
@@ -193,5 +192,4 @@ class CartItemServiceTest {
         assertEquals(inventoryQuantity, result.stockQuantity)
         assertTrue(result.requiresQuantityAdjustment)
     }
-
 }

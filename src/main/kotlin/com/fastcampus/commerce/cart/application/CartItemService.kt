@@ -66,7 +66,7 @@ class CartItemService(
     @Transactional
     fun updateCartItem(cartItemId: Long, request: CartUpdateRequest): CartUpdateResponse {
         var requireQuantityAdjustment = false
-        val cartItem = cartItemRepository.findByUserIdAndId(request.userId,cartItemId)
+        val cartItem = cartItemRepository.findByUserIdAndId(request.userId, cartItemId)
             ?: throw CoreException(CartErrorCode.CART_ITEMS_NOT_FOUND)
 
         val inventory = productReader.getInventoryByProductId(cartItem.productId)
@@ -85,7 +85,7 @@ class CartItemService(
             productId = cartItem.id!!,
             quantity = cartItem.quantity,
             stockQuantity = inventory.quantity,
-            requiresQuantityAdjustment =requireQuantityAdjustment
+            requiresQuantityAdjustment = requireQuantityAdjustment,
         )
     }
 }

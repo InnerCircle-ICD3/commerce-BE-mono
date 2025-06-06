@@ -10,5 +10,5 @@ interface CartItemRepository : JpaRepository<CartItem, Long> {
 
     fun findByUserIdAndProductId(userId: Long, productId: Long): CartItem?
 
-    fun findByUserIdAndId(userId: Long, cartItemId: Long) : CartItem?
+    fun findByUserIdAndId(userId: Long, cartItemId: Long): CartItem?
 }

@@ -11,4 +11,3 @@ enum class CartErrorCode(
     EMPTY_PRODUCT_IDS("CRT-001", "Product IDs cannot be empty", LogLevel.WARN),
     CART_ITEMS_NOT_FOUND("CRT-002", "No cart items found for the given product IDs", LogLevel.WARN),
 }
-

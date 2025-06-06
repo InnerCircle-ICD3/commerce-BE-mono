@@ -24,7 +24,7 @@ class CartItemController(
     fun updateCartItem(
         @RequestParam cartItemId: Long,
         @RequestBody request: CartUpdateRequest,
-    ) : CartUpdateResponse   {
+    ): CartUpdateResponse {
         val cartResponse = cartItemService.updateCartItem(cartItemId, request)
         return cartResponse
     }

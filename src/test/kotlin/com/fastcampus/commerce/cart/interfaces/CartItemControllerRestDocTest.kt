@@ -1,6 +1,5 @@
 package com.fastcampus.commerce.cart.interfaces
 
-import com.fastcampus.commerce.admin.product.interfaces.AdminProductControllerRestDocTest
 import com.fastcampus.commerce.cart.application.CartItemService
 import com.fastcampus.commerce.product.domain.entity.Inventory
 import com.fastcampus.commerce.product.domain.service.ProductReader
@@ -39,9 +38,9 @@ class CartItemControllerRestDocTest : DescribeSpec() {
             RestAssuredMockMvc.mockMvc(mockMvc)
         }
 
-        describe("PATCH /cart/item - 장바구니 내의 상품 수량 변경"){
+        describe("PATCH /cart/item - 장바구니 내의 상품 수량 변경") {
             val summary = "장바구니 내 상품의 수량을 변경할 수 있다."
-            it("장바구니 내 상품의 수량을 변경할 수 있다."){
+            it("장바구니 내 상품의 수량을 변경할 수 있다.") {
                 val userId = 1L
                 val productId = 1L
                 var finalQuantity = 1
@@ -53,14 +52,14 @@ class CartItemControllerRestDocTest : DescribeSpec() {
 
                 val inventory = Inventory(
                     productId = productId,
-                    quantity = 80
+                    quantity = 80,
                 )
 
-                every{productReader.getInventoryByProductId(productId)} returns inventory
+                every { productReader.getInventoryByProductId(productId) } returns inventory
 
-                if(request.quantity > inventory.quantity){
+                if (request.quantity > inventory.quantity) {
                     finalQuantity = inventory.quantity
-                } else{
+                } else {
                     finalQuantity = request.quantity
                 }
 
@@ -72,7 +71,7 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                     requiresQuantityAdjustment = true,
                 )
 
-                every { cartItemService.updateCartItem(userId,  request) } returns response
+                every { cartItemService.updateCartItem(userId, request) } returns response
 
                 documentation(
                     identifier = "상품_수정_성공",
@@ -86,18 +85,18 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                         header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
                     }
 
-                    requestBody{
-                        field("userId","유저 아이디", request.userId)
-                        field("productId","카트 아이디", request.productId)
-                        field("quantity", "수량",request.quantity)
+                    requestBody {
+                        field("userId", "유저 아이디", request.userId)
+                        field("productId", "카트 아이디", request.productId)
+                        field("quantity", "수량", request.quantity)
                     }
 
                     responseBody {
-                        field("productId","카트 아이디",response.productId)
-                        field("userId","유저 아이디",response.userId)
-                        field("quantity","수량",response.quantity)
-                        field("stockQuantity","재고 수량",response.stockQuantity)
-                        field("requiresQuantityAdjustment","수량 변경 여부",response.requiresQuantityAdjustment)
+                        field("productId", "카트 아이디", response.productId)
+                        field("userId", "유저 아이디", response.userId)
+                        field("quantity", "수량", response.quantity)
+                        field("stockQuantity", "재고 수량", response.stockQuantity)
+                        field("requiresQuantityAdjustment", "수량 변경 여부", response.requiresQuantityAdjustment)
                     }
                 }
             }
