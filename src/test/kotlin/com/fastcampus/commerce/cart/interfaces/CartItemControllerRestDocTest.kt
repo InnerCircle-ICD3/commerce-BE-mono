@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
+import org.springframework.test.web.client.match.MockRestRequestMatchers.queryParam
 import org.springframework.test.web.servlet.MockMvc
 
 @AutoConfigureRestDocs
@@ -63,11 +64,12 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                     summary = summary,
                     privateResource = privateResource,
                 ) {
-                    requestLine(HttpMethod.POST, "/cart/items")
+                    requestLine(HttpMethod.POST, "/cart/items"){
+                    }
+
 
                     requestHeaders {
                         header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
-                        header("X-User-Token", "사용자 ID", userId.toString())
                     }
 
                     requestBody {
@@ -76,9 +78,9 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                     }
 
                     responseBody {
-                        field("data.quantity", "상품 수량", request.quantity)
-                        field("data.stockQuantity", "재고 수량", 80)
-                        field("data.requiresQuantityAdjustment", "상품 수량이 재고 수량을 초과함", true)
+                        field("data.quantity", "상품 수량", response.quantity)
+                        field("data.stockQuantity", "재고 수량", response.stockQuantity)
+                        field("data.requiresQuantityAdjustment", "상품 수량이 재고 수량을 초과함", response.requiresQuantityAdjustment)
                         ignoredField("error")
                     }
                 }
