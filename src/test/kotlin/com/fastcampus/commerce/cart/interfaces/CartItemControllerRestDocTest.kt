@@ -249,12 +249,12 @@ class CartItemControllerRestDocTest : DescribeSpec() {
             val summary = "장바구니에 추가된 상품을 삭제할 수 있다."
 
             it("장바구니에 추가된 상품을 삭제할 수 있다.") {
-                val productIds = listOf(2L, 4L, 6L)
-                val request = CartDeleteRequest(productIds = productIds)
-                val deletedCount = productIds.size
+                val cartItemIds = listOf(2L, 4L, 6L)
+                val request = CartDeleteRequest(cartItemIds = cartItemIds)
+                val deletedCount = cartItemIds.size
                 val response = CartDeleteResponse("Successfully deleted $deletedCount cart items")
 
-                every { cartItemService.deleteCartItems(productIds) } returns deletedCount
+                every { cartItemService.deleteCartItems(cartItemIds) } returns deletedCount
 
                 documentation(
                     identifier = "장바구니_상품_삭제_성공",
@@ -269,7 +269,7 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                     }
 
                     requestBody {
-                        field("productIds", "카트 아이디", request.productIds)
+                        field("cartItemIds", "카트 아이디", request.cartItemIds)
                     }
 
                     responseBody {
