@@ -243,13 +243,12 @@ paths:
         content:
           application/json;charset=UTF-8:
             schema:
-              $ref: "#/components/schemas/cart-items-408437586"
+              $ref: "#/components/schemas/cart-items367995349"
             examples:
               장바구니_상품_수정_성공:
                 value: |-
                   {
                     "cartId" : 1,
-                    "userId" : 1,
                     "productId" : 1,
                     "quantity" : 100
                   }
@@ -270,6 +269,56 @@ paths:
                         "quantity" : 80,
                         "stockQuantity" : 80,
                         "requiresQuantityAdjustment" : true
+                      },
+                      "error" : null
+                    }
+  /carts:
+    get:
+      tags:
+      - Cart
+      summary: 장바구니에 담긴 상품 목록을 조회할 수 있다.
+      operationId: 장바구니_상품_목록_조회_성공
+      parameters:
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/carts-761185737"
+              examples:
+                장바구니_상품_목록_조회_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "totalPrice" : 80000,
+                        "deliveryPrice" : 0,
+                        "cartItems" : [ {
+                          "cartItemId" : 101,
+                          "productId" : 1,
+                          "productName" : "Product 1",
+                          "quantity" : 2,
+                          "price" : 10000,
+                          "stockQuantity" : 10,
+                          "thumbnail" : "thumbnail1.jpg",
+                          "isAvailable" : true
+                        }, {
+                          "cartItemId" : 102,
+                          "productId" : 2,
+                          "productName" : "Product 2",
+                          "quantity" : 3,
+                          "price" : 20000,
+                          "stockQuantity" : 5,
+                          "thumbnail" : "thumbnail2.jpg",
+                          "isAvailable" : true
+                        } ]
                       },
                       "error" : null
                     }
@@ -613,26 +662,6 @@ components:
         content:
           type: string
           description: 리뷰 내용
-    cart-items-408437586:
-      required:
-      - cartId
-      - productId
-      - quantity
-      - userId
-      type: object
-      properties:
-        quantity:
-          type: number
-          description: 수량
-        productId:
-          type: number
-          description: 상품 아이디
-        cartId:
-          type: number
-          description: 카트 아이디
-        userId:
-          type: number
-          description: 유저 아이디
     files-presigned-url-1375438577:
       required:
       - contentType
@@ -812,6 +841,61 @@ components:
         detailImage:
           type: string
           description: 상세 이미지
+    carts-761185737:
+      type: object
+      properties:
+        data:
+          required:
+          - cartItems
+          - deliveryPrice
+          - totalPrice
+          type: object
+          properties:
+            totalPrice:
+              type: number
+              description: 총 상품 금액 (배송비 제외)
+            deliveryPrice:
+              type: number
+              description: 배송비
+            cartItems:
+              type: array
+              description: 장바구니 상품 목록
+              items:
+                required:
+                - cartItemId
+                - isAvailable
+                - price
+                - productId
+                - productName
+                - quantity
+                - stockQuantity
+                - thumbnail
+                type: object
+                properties:
+                  isAvailable:
+                    type: boolean
+                    description: 구매 가능 여부
+                  thumbnail:
+                    type: string
+                    description: 상품 썸네일 이미지 URL
+                  quantity:
+                    type: number
+                    description: 수량
+                  productId:
+                    type: number
+                    description: 상품 ID
+                  price:
+                    type: number
+                    description: 상품 단가
+                  stockQuantity:
+                    type: number
+                    description: 재고 수량
+                  productName:
+                    type: string
+                    description: 상품명
+                  cartItemId:
+                    type: number
+                    description: 장바구니 아이템 ID
     cart-items151658045:
       type: object
       properties:
@@ -848,6 +932,22 @@ components:
               label:
                 type: string
                 description: 판매상태
+    cart-items367995349:
+      required:
+      - cartId
+      - productId
+      - quantity
+      type: object
+      properties:
+        quantity:
+          type: number
+          description: 수량
+        productId:
+          type: number
+          description: 상품 아이디
+        cartId:
+          type: number
+          description: 카트 아이디
     products-productId-reviews-352554938:
       type: object
       properties:
