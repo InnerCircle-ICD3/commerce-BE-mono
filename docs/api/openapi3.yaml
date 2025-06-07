@@ -216,7 +216,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/cart-items-1117620401"
+                $ref: "#/components/schemas/cart-items838557620"
               examples:
                 장바구니_상품_수정_성공:
                   value: |-
@@ -533,7 +533,18 @@ components:
         contentType:
           type: string
           description: 파일 Content-Type
-    cart-items-1117620401:
+    reviews-reviewId-215377401:
+      type: object
+      properties:
+        data:
+          required:
+          - reviewId
+          type: object
+          properties:
+            reviewId:
+              type: number
+              description: 수정된 리뷰 아이디
+    cart-items838557620:
       type: object
       properties:
         data:
@@ -550,7 +561,7 @@ components:
               description: 수량
             productId:
               type: number
-              description: 카트 아이디
+              description: 상품 아이디
             requiresQuantityAdjustment:
               type: boolean
               description: 수량 변경 여부
@@ -560,17 +571,6 @@ components:
             userId:
               type: number
               description: 유저 아이디
-    reviews-reviewId-215377401:
-      type: object
-      properties:
-        data:
-          required:
-          - reviewId
-          type: object
-          properties:
-            reviewId:
-              type: number
-              description: 수정된 리뷰 아이디
     admin-products9820101:
       type: object
       properties:
