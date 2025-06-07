@@ -97,7 +97,7 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                     }
 
                     responseBody {
-                        field("data.productId", "카트 아이디", response.productId.toInt())
+                        field("data.productId", "상품 아이디", response.productId.toInt())
                         field("data.userId", "유저 아이디", response.userId.toInt())
                         field("data.quantity", "수량", response.quantity)
                         field("data.stockQuantity", "재고 수량", response.stockQuantity)
