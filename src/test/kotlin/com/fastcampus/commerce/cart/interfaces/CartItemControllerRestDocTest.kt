@@ -77,7 +77,7 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                 every { cartItemService.updateCartItem(request) } returns response
 
                 documentation(
-                    identifier = "상품_수정_성공",
+                    identifier = "장바구니_상품_수정_성공",
                     tag = tag,
                     summary = summary,
                     privateResource = privateResource,
