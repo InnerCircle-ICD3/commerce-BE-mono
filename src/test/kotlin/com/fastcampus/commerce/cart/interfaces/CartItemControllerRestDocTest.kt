@@ -67,7 +67,6 @@ class CartItemControllerRestDocTest : DescribeSpec() {
 
                     requestHeaders {
                         header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
-                        header("X-User-Token", "사용자 ID", userId.toString())
                     }
 
                     requestBody {
@@ -131,7 +130,6 @@ class CartItemControllerRestDocTest : DescribeSpec() {
 
                     requestHeaders {
                         header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
-//                        header("X-User-Token", "user ID", userId.toString())
                     }
 
                     requestBody {
