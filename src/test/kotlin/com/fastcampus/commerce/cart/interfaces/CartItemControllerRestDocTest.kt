@@ -8,7 +8,9 @@ import com.fastcampus.commerce.restdoc.documentation
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.restassured.module.mockmvc.RestAssuredMockMvc
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
@@ -236,6 +238,41 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                         field("data.cartItems[0].stockQuantity", "재고 수량", 10)
                         field("data.cartItems[0].thumbnail", "상품 썸네일 이미지 URL", "thumbnail1.jpg")
                         field("data.cartItems[0].isAvailable", "구매 가능 여부", true)
+                        ignoredField("error")
+                    }
+                }
+            }
+        }
+
+        describe("POST /carts/delete - 장바구니 상품 삭제") {
+            val summary = "장바구니에 추가된 상품을 삭제할 수 있다."
+
+            it("장바구니에 추가된 상품을 삭제할 수 있다.") {
+                val productIds = listOf(2L, 4L, 6L)
+                val request = CartDeleteRequest(productIds = productIds)
+                val deletedCount = productIds.size
+                val response = CartDeleteResponse("Successfully deleted $deletedCount cart items")
+
+                every { cartItemService.deleteCartItems(productIds) } returns deletedCount
+
+                documentation(
+                    identifier = "장바구니_상품_삭제_성공",
+                    tag = tag,
+                    summary = summary,
+                    privateResource = privateResource,
+                ) {
+                    requestLine(HttpMethod.POST, "/carts/delete")
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                    }
+
+                    requestBody {
+                        field("productIds","카트 아이디", request.productIds)
+                    }
+
+                    responseBody {
+                        field("data.message", "응답 메시지", response.message)
                         ignoredField("error")
                     }
                 }
