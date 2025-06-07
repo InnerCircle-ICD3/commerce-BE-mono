@@ -38,7 +38,7 @@ class CartItemController(
         return cartResponse
     }
 
-    @DeleteMapping("/carts")
+    @PostMapping("/carts/delete")
     fun deleteCartItems(@RequestBody request: CartDeleteRequest): CartDeleteResponse {
         val deletedCount = cartItemService.deleteCartItems(request.productIds)
         val response = CartDeleteResponse("Successfully deleted $deletedCount cart items")
