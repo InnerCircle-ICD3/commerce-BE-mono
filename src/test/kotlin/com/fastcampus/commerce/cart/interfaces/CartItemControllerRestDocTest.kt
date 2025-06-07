@@ -15,7 +15,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
-import org.springframework.test.web.client.match.MockRestRequestMatchers.queryParam
 import org.springframework.test.web.servlet.MockMvc
 
 @AutoConfigureRestDocs
@@ -64,9 +63,8 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                     summary = summary,
                     privateResource = privateResource,
                 ) {
-                    requestLine(HttpMethod.POST, "/cart/items"){
+                    requestLine(HttpMethod.POST, "/cart/items") {
                     }
-
 
                     requestHeaders {
                         header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
