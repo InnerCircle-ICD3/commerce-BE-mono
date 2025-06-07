@@ -28,6 +28,7 @@ class CartItemControllerRestDocTest : DescribeSpec() {
 
     @MockkBean
     lateinit var cartItemService: CartItemService
+
     @MockkBean
     lateinit var productReader: ProductReader
 
@@ -50,7 +51,7 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                     productId = productId,
                     quantity = 100,
                     userId = userId,
-                    cartId = cartId
+                    cartId = cartId,
                 )
 
                 val inventory = Inventory(
@@ -88,9 +89,8 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                         header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
                     }
 
-
                     requestBody {
-                        field("cartId","카트 아이디",request.cartId)
+                        field("cartId", "카트 아이디", request.cartId)
                         field("userId", "유저 아이디", request.userId)
                         field("productId", "상품 아이디", request.productId)
                         field("quantity", "수량", request.quantity)

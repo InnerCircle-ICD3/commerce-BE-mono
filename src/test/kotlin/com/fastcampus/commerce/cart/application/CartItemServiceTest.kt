@@ -134,7 +134,7 @@ class CartItemServiceTest {
         val inventory = Inventory(productId, inventoryQuantity)
         inventory.id = productId
 
-        val request = CartUpdateRequest(cartItemId,userId, productId, requestQuantity)
+        val request = CartUpdateRequest(cartItemId, userId, productId, requestQuantity)
 
         `when`(cartItemRepository.findByUserIdAndId(userId, cartItemId)).thenReturn(cartItem)
         `when`(productReader.getInventoryByProductId(productId)).thenReturn(inventory)
@@ -171,7 +171,7 @@ class CartItemServiceTest {
         val inventory = Inventory(productId, inventoryQuantity)
         inventory.id = productId
 
-        val request = CartUpdateRequest(cartItemId,userId, productId, requestQuantity)
+        val request = CartUpdateRequest(cartItemId, userId, productId, requestQuantity)
 
         `when`(cartItemRepository.findByUserIdAndId(userId, cartItemId)).thenReturn(cartItem)
         `when`(productReader.getInventoryByProductId(productId)).thenReturn(inventory)
