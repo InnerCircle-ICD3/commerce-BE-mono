@@ -1,6 +1,8 @@
 package com.fastcampus.commerce.product.domain.service
 
 import com.fastcampus.commerce.product.domain.entity.ProductCategory
+import com.fastcampus.commerce.product.domain.model.CategoryType
+import com.fastcampus.commerce.product.domain.model.ProductCategoryInfo
 import com.fastcampus.commerce.product.domain.repository.CategoryRepository
 import com.fastcampus.commerce.product.domain.repository.ProductCategoryRepository
 import org.springframework.stereotype.Component
@@ -16,5 +18,16 @@ class CategoryReader(
 
     fun getAllProductCategoriesByProductId(productId: Long): List<ProductCategory> {
         return productCategoryRepository.getAllByProductId(productId)
+    }
+
+    fun getProductCategoryMap(productIds: List<Long>): Map<Long, ProductCategoryInfo> {
+        return productCategoryRepository.getCategoryInfosIn(productIds)
+            .groupBy { it.productId }
+            .mapValues { (_, categoryInfos) ->
+                ProductCategoryInfo(
+                    intensity = categoryInfos.find { it.groupTitle == CategoryType.INTENSITY.groupTitle }?.categoryName ?: "",
+                    cupSize = categoryInfos.find { it.groupTitle == CategoryType.CUP_SIZE.groupTitle }?.categoryName ?: "",
+                )
+            }
     }
 }
