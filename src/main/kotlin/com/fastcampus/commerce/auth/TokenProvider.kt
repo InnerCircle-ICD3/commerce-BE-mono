@@ -38,7 +38,8 @@ class TokenProvider(
         return createToken(
             { jwt ->
                 jwt.subject(externalId)
-                jwt.claim(USER_ID, userId) },
+                jwt.claim(USER_ID, userId)
+            },
             jwtProperties.accessTokenExpireMinutes,
             ChronoUnit.MINUTES,
         )
@@ -55,7 +56,8 @@ class TokenProvider(
         return createToken(
             { jwt ->
                 jwt.subject(externalId)
-                jwt.claim(USER_ID, userId) },
+                jwt.claim(USER_ID, userId)
+            },
             jwtProperties.refreshTokenExpireDays,
             ChronoUnit.DAYS,
         )

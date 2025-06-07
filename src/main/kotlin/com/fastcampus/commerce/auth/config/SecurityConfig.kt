@@ -46,7 +46,7 @@ class SecurityConfig(
             allowedMethods = corsProperties.allowedMethods
             allowedHeaders = corsProperties.allowedHeaders
             allowCredentials = true
-            exposedHeaders = listOf("Access-Token", "User-Id") //response.headers.get("Access-Token"); 허용 처리
+            exposedHeaders = listOf("Access-Token", "User-Id") // response.headers.get("Access-Token"); 허용 처리
         }
         return UrlBasedCorsConfigurationSource().apply {
             registerCorsConfiguration("/**", config)
@@ -65,15 +65,15 @@ class SecurityConfig(
             .csrf { it.disable() }
             .authorizeHttpRequests {
                 it
-                .requestMatchers(HttpMethod.GET, "/admin/products/selling-status").permitAll()
-                .requestMatchers(
-                    "/oauth2/**",
-                    "/auth/reissue",
-                    "/auth/register",
-                    "/auth/login",
-                    "/auth/logout",
-                ).permitAll()
-                .anyRequest().permitAll()
+                    .requestMatchers(HttpMethod.GET, "/admin/products/selling-status").permitAll()
+                    .requestMatchers(
+                        "/oauth2/**",
+                        "/auth/reissue",
+                        "/auth/register",
+                        "/auth/login",
+                        "/auth/logout",
+                    ).permitAll()
+                    .anyRequest().permitAll()
             }
             .oauth2Login { oauth2 ->
                 oauth2

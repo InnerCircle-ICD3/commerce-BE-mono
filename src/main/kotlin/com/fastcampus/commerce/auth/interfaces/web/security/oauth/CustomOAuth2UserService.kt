@@ -1,6 +1,5 @@
 package com.fastcampus.commerce.auth.interfaces.web.security.oauth
 
-import com.fastcampus.commerce.auth.infrastructure.security.oauth.config.NaverOAuth2Properties
 import com.fastcampus.commerce.user.api.controller.UserController
 import org.slf4j.LoggerFactory
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService
