@@ -3,12 +3,16 @@ package com.fastcampus.commerce.review.interfaces
 import com.fastcampus.commerce.restdoc.documentation
 import com.fastcampus.commerce.review.application.ProductReviewService
 import com.fastcampus.commerce.review.application.response.AdminReplyResponse
+import com.fastcampus.commerce.review.application.response.ProductReviewRatingResponse
 import com.fastcampus.commerce.review.application.response.ProductReviewResponse
+import com.fastcampus.commerce.review.application.response.RatingDistributionResponse
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.mockk.every
+import io.restassured.config.JsonConfig
 import io.restassured.module.mockmvc.RestAssuredMockMvc
+import io.restassured.path.json.config.JsonPathConfig
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -36,6 +40,9 @@ class ProductReviewControllerRestDocTest : DescribeSpec() {
     init {
         beforeSpec {
             RestAssuredMockMvc.mockMvc(mockMvc)
+            RestAssuredMockMvc.config = RestAssuredMockMvc
+                .config()
+                .jsonConfig(JsonConfig.jsonConfig().numberReturnType(JsonPathConfig.NumberReturnType.DOUBLE))
         }
 
         describe("GET /product/{productId}/reviews - 상품 리뷰 목록 조회") {
@@ -93,6 +100,46 @@ class ProductReviewControllerRestDocTest : DescribeSpec() {
                         field("data.size", "페이지 사이즈(기본값 10)", response.size)
                         field("data.totalPages", "전체 페이지 수", response.totalPages)
                         field("data.totalElements", "총 수", response.totalElements.toInt())
+                        ignoredField("error")
+                    }
+                }
+            }
+        }
+
+        describe("GET /product/{productId}/reviews/rating - 상품 리뷰 별점 통계") {
+            val summary = "상품에 등록된 리뷰 별점 통계 조회"
+
+            it("상품에 등록된 리뷰의 별점 통계를 조회할 수 있다.") {
+                val response = ProductReviewRatingResponse(
+                    averageRating = 3.5,
+                    totalCount = 10,
+                    ratingDistribution = RatingDistributionResponse(
+                        oneStarCount = 2,
+                        twoStarsCount = 3,
+                        threeStarsCount = 5,
+                        fourStarsCount = 1,
+                        fiveStarsCount = 8,
+                    ),
+                )
+                every { productReviewService.getProductReviewRating(any()) } returns response
+
+                documentation(
+                    identifier = "상품_리뷰별점통계_조회_성공",
+                    tag = tag,
+                    summary = summary,
+                ) {
+                    requestLine(HttpMethod.GET, "/products/{productId}/reviews/rating") {
+                        pathVariable("productId", "상품 아이디", 1)
+                    }
+
+                    responseBody {
+                        field("data.averageRating", "평점", response.averageRating)
+                        field("data.totalCount", "리뷰 개수", response.totalCount.toInt())
+                        field("data.ratingDistribution.oneStarCount", "별점 1점 개수", response.ratingDistribution.oneStarCount)
+                        field("data.ratingDistribution.twoStarsCount", "별점 2점 개수", response.ratingDistribution.twoStarsCount)
+                        field("data.ratingDistribution.threeStarsCount", "별점 3점 개수", response.ratingDistribution.threeStarsCount)
+                        field("data.ratingDistribution.fourStarsCount", "별점 4점 개수", response.ratingDistribution.fourStarsCount)
+                        field("data.ratingDistribution.fiveStarsCount", "별점 5점 개수", response.ratingDistribution.fiveStarsCount)
                         ignoredField("error")
                     }
                 }
