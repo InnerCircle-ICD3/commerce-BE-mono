@@ -40,7 +40,7 @@ class CartItemControllerRestDocTest : DescribeSpec() {
             RestAssuredMockMvc.mockMvc(mockMvc)
         }
 
-        describe("PATCH /cart/item - 장바구니 내의 상품 수량 변경") {
+        describe("PATCH /cart/items - 장바구니 내의 상품 수량 변경") {
             val summary = "장바구니 내 상품의 수량을 변경할 수 있다."
             it("장바구니 내 상품의 수량을 변경할 수 있다.") {
                 val userId = 1L
