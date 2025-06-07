@@ -82,7 +82,7 @@ class CartItemService(
 
         return CartUpdateResponse(
             userId = request.userId,
-            productId = cartItem.id!!,
+            productId = cartItem.productId,
             quantity = cartItem.quantity,
             stockQuantity = inventory.quantity,
             requiresQuantityAdjustment = requireQuantityAdjustment,
