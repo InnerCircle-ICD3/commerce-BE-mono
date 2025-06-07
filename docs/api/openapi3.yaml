@@ -183,6 +183,49 @@ paths:
                       "error" : null
                     }
   /cart/items:
+    post:
+      tags:
+      - Cart
+      summary: 사용자의 장바구니에 상품을 추가할 수 있다.
+      operationId: 장바구니에_상품_추가_성공
+      parameters:
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/cart-items1349440338"
+            examples:
+              장바구니에_상품_추가_성공:
+                value: |-
+                  {
+                    "productId" : 1,
+                    "quantity" : 100
+                  }
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/cart-items151658045"
+              examples:
+                장바구니에_상품_추가_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "quantity" : 80,
+                        "stockQuantity" : 80,
+                        "requiresQuantityAdjustment" : true
+                      },
+                      "error" : null
+                    }
     patch:
       tags:
       - Cart
@@ -645,6 +688,25 @@ components:
         detailImage:
           type: string
           description: 상세 이미지
+    cart-items151658045:
+      type: object
+      properties:
+        data:
+          required:
+          - quantity
+          - requiresQuantityAdjustment
+          - stockQuantity
+          type: object
+          properties:
+            quantity:
+              type: number
+              description: 상품 수량
+            requiresQuantityAdjustment:
+              type: boolean
+              description: 상품 수량이 재고 수량을 초과함
+            stockQuantity:
+              type: number
+              description: 재고 수량
     admin-products-selling-status-152159338:
       type: object
       properties:
@@ -673,3 +735,15 @@ components:
             productId:
               type: number
               description: 수정된 상품 아이디
+    cart-items1349440338:
+      required:
+      - productId
+      - quantity
+      type: object
+      properties:
+        quantity:
+          type: number
+          description: 상품수량
+        productId:
+          type: number
+          description: 상품Id
