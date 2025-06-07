@@ -150,7 +150,7 @@ class CartItemServiceTest {
         assertEquals(requestQuantity, cartItem.quantity)
 
         assertEquals(userId, result.userId)
-        assertEquals(cartItemId, result.productId)
+        assertEquals(productId, result.productId)
         assertEquals(requestQuantity, result.quantity)
         assertEquals(inventoryQuantity, result.stockQuantity)
         assertFalse(result.requiresQuantityAdjustment)
@@ -187,7 +187,7 @@ class CartItemServiceTest {
         assertEquals(inventoryQuantity, cartItem.quantity)
 
         assertEquals(userId, result.userId)
-        assertEquals(cartItemId, result.productId)
+        assertEquals(productId , result.productId)
         assertEquals(inventoryQuantity, result.quantity)
         assertEquals(inventoryQuantity, result.stockQuantity)
         assertTrue(result.requiresQuantityAdjustment)
