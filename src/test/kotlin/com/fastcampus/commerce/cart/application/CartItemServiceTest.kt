@@ -139,14 +139,14 @@ class CartItemServiceTest {
         val inventory = Inventory(productId, inventoryQuantity)
         inventory.id = productId
 
-        val request = CartUpdateRequest(cartItemId, userId, productId, requestQuantity)
+        val request = CartUpdateRequest(cartItemId, productId, requestQuantity)
 
         `when`(cartItemRepository.findByUserIdAndId(userId, cartItemId)).thenReturn(cartItem)
         `when`(productReader.getInventoryByProductId(productId)).thenReturn(inventory)
         `when`(cartItemRepository.save(any(CartItem::class.java))).thenReturn(cartItem)
 
         // When
-        val result = cartItemService.updateCartItem(request)
+        val result = cartItemService.updateCartItem(userId,request)
 
         // Then
         verify(cartItemRepository).save(any(CartItem::class.java))
@@ -176,14 +176,14 @@ class CartItemServiceTest {
         val inventory = Inventory(productId, inventoryQuantity)
         inventory.id = productId
 
-        val request = CartUpdateRequest(cartItemId, userId, productId, requestQuantity)
+        val request = CartUpdateRequest(cartItemId, productId, requestQuantity)
 
         `when`(cartItemRepository.findByUserIdAndId(userId, cartItemId)).thenReturn(cartItem)
         `when`(productReader.getInventoryByProductId(productId)).thenReturn(inventory)
         `when`(cartItemRepository.save(any(CartItem::class.java))).thenReturn(cartItem)
 
         // When
-        val result = cartItemService.updateCartItem(request)
+        val result = cartItemService.updateCartItem(userId,request)
 
         // Then
         verify(cartItemRepository).save(any(CartItem::class.java))
