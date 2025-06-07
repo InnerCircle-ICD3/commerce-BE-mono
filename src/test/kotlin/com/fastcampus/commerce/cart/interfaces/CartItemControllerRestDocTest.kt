@@ -8,9 +8,7 @@ import com.fastcampus.commerce.restdoc.documentation
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
-import io.mockk.Runs
 import io.mockk.every
-import io.mockk.just
 import io.restassured.module.mockmvc.RestAssuredMockMvc
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
@@ -123,7 +121,7 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                     requiresQuantityAdjustment = true,
                 )
 
-                every { cartItemService.updateCartItem(userId,request) } returns response
+                every { cartItemService.updateCartItem(userId, request) } returns response
 
                 documentation(
                     identifier = "장바구니_상품_수정_성공",
@@ -155,9 +153,9 @@ class CartItemControllerRestDocTest : DescribeSpec() {
             }
         }
 
-        describe("GET /carts - 장바구니 상품 목록 조회"){
+        describe("GET /carts - 장바구니 상품 목록 조회") {
             val summary = "장바구니에 담긴 상품 목록을 조회할 수 있다."
-            it("장바구니에 담긴 상품 목록을 조회할 수 있다."){
+            it("장바구니에 담긴 상품 목록을 조회할 수 있다.") {
                 val cartItems = listOf(
                     CartItemRetrieve(
                         cartItemId = 101,
@@ -167,7 +165,7 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                         price = 10000,
                         stockQuantity = 10,
                         thumbnail = "thumbnail1.jpg",
-                        isAvailable = true
+                        isAvailable = true,
                     ),
                     CartItemRetrieve(
                         cartItemId = 102,
@@ -177,14 +175,14 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                         price = 20000,
                         stockQuantity = 5,
                         thumbnail = "thumbnail2.jpg",
-                        isAvailable = true
-                    )
+                        isAvailable = true,
+                    ),
                 )
 
                 val cartResponse = CartRetrievesResponse(
                     totalPrice = 80000,
                     deliveryPrice = 0,
-                    cartItems = cartItems
+                    cartItems = cartItems,
                 )
 
                 every { cartItemService.getCarts(1L) } returns cartResponse
@@ -194,40 +192,43 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                     tag = tag,
                     summary = summary,
                     privateResource = privateResource,
-                ){
+                ) {
                     requestLine(HttpMethod.GET, "/carts")
 
                     requestHeaders {
                         header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
                     }
 
-
                     responseBody {
                         // 최상위 필드들
                         field("data.totalPrice", "총 상품 금액 (배송비 제외)", 80000)
                         field("data.deliveryPrice", "배송비", 0)
-                        field("data.cartItems", "장바구니 상품 목록", listOf(
-                            mapOf(
-                                "cartItemId" to 101,
-                                "productId" to 1,
-                                "productName" to "Product 1",
-                                "quantity" to 2,
-                                "price" to 10000,
-                                "stockQuantity" to 10,
-                                "thumbnail" to "thumbnail1.jpg",
-                                "isAvailable" to true
+                        field(
+                            "data.cartItems",
+                            "장바구니 상품 목록",
+                            listOf(
+                                mapOf(
+                                    "cartItemId" to 101,
+                                    "productId" to 1,
+                                    "productName" to "Product 1",
+                                    "quantity" to 2,
+                                    "price" to 10000,
+                                    "stockQuantity" to 10,
+                                    "thumbnail" to "thumbnail1.jpg",
+                                    "isAvailable" to true,
+                                ),
+                                mapOf(
+                                    "cartItemId" to 102,
+                                    "productId" to 2,
+                                    "productName" to "Product 2",
+                                    "quantity" to 3,
+                                    "price" to 20000,
+                                    "stockQuantity" to 5,
+                                    "thumbnail" to "thumbnail2.jpg",
+                                    "isAvailable" to true,
+                                ),
                             ),
-                            mapOf(
-                                "cartItemId" to 102,
-                                "productId" to 2,
-                                "productName" to "Product 2",
-                                "quantity" to 3,
-                                "price" to 20000,
-                                "stockQuantity" to 5,
-                                "thumbnail" to "thumbnail2.jpg",
-                                "isAvailable" to true
-                            )
-                        ))
+                        )
 
                         // cartItems 배열 내부 필드들
                         field("data.cartItems[0].cartItemId", "장바구니 아이템 ID", 101)
@@ -268,7 +269,7 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                     }
 
                     requestBody {
-                        field("productIds","카트 아이디", request.productIds)
+                        field("productIds", "카트 아이디", request.productIds)
                     }
 
                     responseBody {

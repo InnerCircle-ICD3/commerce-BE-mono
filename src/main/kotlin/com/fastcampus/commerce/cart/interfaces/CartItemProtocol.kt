@@ -26,11 +26,11 @@ data class CartUpdateResponse(
 )
 
 data class CartDeleteRequest(
-    val productIds: List<Long>
+    val productIds: List<Long>,
 )
 
 data class CartDeleteResponse(
-    val message: String
+    val message: String,
 )
 
 data class CartRetrievesResponse(

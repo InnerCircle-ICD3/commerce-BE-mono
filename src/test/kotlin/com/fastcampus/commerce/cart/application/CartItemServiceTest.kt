@@ -1,38 +1,25 @@
 package com.fastcampus.commerce.cart.application
 
 import com.fastcampus.commerce.cart.domain.entity.CartItem
-import com.fastcampus.commerce.cart.domain.error.CartErrorCode
 import com.fastcampus.commerce.cart.infrastructure.repository.CartItemRepository
-import com.fastcampus.commerce.common.policy.DeliveryPolicy
 import com.fastcampus.commerce.cart.interfaces.CartUpdateRequest
-import com.fastcampus.commerce.cart.application.InventoryService
-import com.fastcampus.commerce.common.error.CoreException
+import com.fastcampus.commerce.common.policy.DeliveryPolicy
 import com.fastcampus.commerce.product.domain.entity.Inventory
 import com.fastcampus.commerce.product.domain.entity.Product
 import com.fastcampus.commerce.product.domain.entity.SellingStatus
 import com.fastcampus.commerce.product.domain.service.ProductReader
-import io.kotest.assertions.eq.eq
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
-import org.mockito.ArgumentMatchers.anyList
-import org.mockito.ArgumentMatchers.argThat
-import org.mockito.ArgumentMatchers.eq
-import org.mockito.Mockito.doNothing
-import org.mockito.Mockito.never
-import org.mockito.Mockito.times
-import java.time.LocalDateTime
 
 class CartItemServiceTest {
     private lateinit var cartItemRepository: CartItemRepository
@@ -45,7 +32,7 @@ class CartItemServiceTest {
         cartItemRepository = mock(CartItemRepository::class.java)
         productReader = mock(ProductReader::class.java)
         deliveryPolicy = DeliveryPolicy()
-        cartItemService = CartItemService(cartItemRepository, productReader,deliveryPolicy)
+        cartItemService = CartItemService(cartItemRepository, productReader, deliveryPolicy)
     }
 
     @Test
@@ -161,7 +148,7 @@ class CartItemServiceTest {
         `when`(cartItemRepository.save(any(CartItem::class.java))).thenReturn(cartItem)
 
         // When
-        val result = cartItemService.updateCartItem(userId,request)
+        val result = cartItemService.updateCartItem(userId, request)
 
         // Then
         verify(cartItemRepository).save(any(CartItem::class.java))
@@ -198,7 +185,7 @@ class CartItemServiceTest {
         `when`(cartItemRepository.save(any(CartItem::class.java))).thenReturn(cartItem)
 
         // When
-        val result = cartItemService.updateCartItem(userId,request)
+        val result = cartItemService.updateCartItem(userId, request)
 
         // Then
         verify(cartItemRepository).save(any(CartItem::class.java))
@@ -214,7 +201,7 @@ class CartItemServiceTest {
     }
 
     @Test
-    fun `해당 유저의 상품 전체 조회가 가능해야 한다`()  {
+    fun `해당 유저의 상품 전체 조회가 가능해야 한다`() {
         // Given
         val userId = 1L
         val cartItems = listOf(
