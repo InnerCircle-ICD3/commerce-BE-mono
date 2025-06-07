@@ -26,7 +26,7 @@ data class CartUpdateResponse(
 )
 
 data class CartDeleteRequest(
-    val productIds: List<Long>,
+    val cartItemIds: List<Long>,
 )
 
 data class CartDeleteResponse(

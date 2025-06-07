@@ -138,17 +138,17 @@ class CartItemService(
     }
 
     @Transactional
-    fun deleteCartItems(productIds: List<Long>): Int {
-        if (productIds.isEmpty()) {
+    fun deleteCartItems(cartItemIds: List<Long>): Int {
+        if (cartItemIds.isEmpty()) {
             throw CoreException(CartErrorCode.EMPTY_PRODUCT_IDS)
         }
 
-        val cartItems = cartItemRepository.findAllById(productIds)
+        val cartItems = cartItemRepository.findAllById(cartItemIds)
         if (cartItems.isEmpty()) {
             throw CoreException(CartErrorCode.CART_ITEMS_NOT_FOUND)
         }
 
-        cartItemRepository.softDeleteByIds(productIds)
+        cartItemRepository.softDeleteByIds(cartItemIds)
 
         return cartItems.size
     }

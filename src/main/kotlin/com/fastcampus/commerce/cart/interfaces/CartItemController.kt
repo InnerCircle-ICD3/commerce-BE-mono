@@ -39,7 +39,7 @@ class CartItemController(
     fun deleteCartItems(
         @RequestBody request: CartDeleteRequest,
     ): CartDeleteResponse {
-        val deletedCount = cartItemService.deleteCartItems(request.productIds)
+        val deletedCount = cartItemService.deleteCartItems(request.cartItemIds)
         val response = CartDeleteResponse("Successfully deleted $deletedCount cart items")
         return response
     }
