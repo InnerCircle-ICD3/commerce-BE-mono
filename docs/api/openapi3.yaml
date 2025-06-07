@@ -4,7 +4,7 @@ info:
   description: 801base의 API 문서입니다.
   version: 0.0.1
 servers:
-- url: http://localhost:8080
+- url: http://3.39.233.3:8080
 tags:
 - name: Cart
   description: 장바구니 API
