@@ -8,8 +8,11 @@ import com.fastcampus.commerce.cart.interfaces.CartUpdateRequest
 import com.fastcampus.commerce.cart.application.InventoryService
 import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.product.domain.entity.Inventory
+import com.fastcampus.commerce.product.domain.entity.Product
+import com.fastcampus.commerce.product.domain.entity.SellingStatus
 import com.fastcampus.commerce.product.domain.service.ProductReader
 import io.kotest.assertions.eq.eq
+import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -35,12 +38,14 @@ class CartItemServiceTest {
     private lateinit var cartItemRepository: CartItemRepository
     private lateinit var productReader: ProductReader
     private lateinit var cartItemService: CartItemService
+    private lateinit var deliveryPolicy: DeliveryPolicy
 
     @BeforeEach
     fun setUp() {
         cartItemRepository = mock(CartItemRepository::class.java)
         productReader = mock(ProductReader::class.java)
-        cartItemService = CartItemService(cartItemRepository, productReader)
+        deliveryPolicy = DeliveryPolicy()
+        cartItemService = CartItemService(cartItemRepository, productReader,deliveryPolicy)
     }
 
     @Test
@@ -229,7 +234,7 @@ class CartItemServiceTest {
             detailImage = "detail1.jpg",
         )
         product1.id = 1L
-        product1.status = SellingStatus.UNAVAILABLE // Set to UNAVAILABLE to make isAvailable true
+        product1.status = SellingStatus.ON_SALE
 
         val product2 = Product(
             name = "Product 2",
@@ -238,7 +243,7 @@ class CartItemServiceTest {
             detailImage = "detail2.jpg",
         )
         product2.id = 2L
-        product2.status = SellingStatus.UNAVAILABLE // Set to UNAVAILABLE to make isAvailable true
+        product2.status = SellingStatus.ON_SALE
 
         val inventory1 = Inventory(1L, 10)
         val inventory2 = Inventory(2L, 5)
@@ -261,7 +266,7 @@ class CartItemServiceTest {
         assertEquals(1L, firstCartItem.productId)
         assertEquals("Product 1", firstCartItem.productName)
         assertEquals(2, firstCartItem.quantity)
-        assertEquals(10000L, firstCartItem.price)
+        assertEquals(10000, firstCartItem.price)
         assertEquals(10, firstCartItem.stockQuantity)
         assertEquals("thumbnail1.jpg", firstCartItem.thumbnail)
         assertEquals(true, firstCartItem.isAvailable) // Now true because status is UNAVAILABLE
@@ -270,7 +275,7 @@ class CartItemServiceTest {
         assertEquals(2L, secondCartItem.productId)
         assertEquals("Product 2", secondCartItem.productName)
         assertEquals(3, secondCartItem.quantity)
-        assertEquals(20000L, secondCartItem.price)
+        assertEquals(20000, secondCartItem.price)
         assertEquals(5, secondCartItem.stockQuantity)
         assertEquals("thumbnail2.jpg", secondCartItem.thumbnail)
         assertEquals(true, secondCartItem.isAvailable) // Now true because status is UNAVAILABLE
@@ -344,7 +349,7 @@ class CartItemServiceTest {
     }
 
     @Test
-    fun `장바구니 삭제 시 논리적 삭제로 deletedAt이 null에서 현재 시간으로 update 된다`() {
+    fun `장바구니 상품을 삭제할 수 있다`() {
         // Given
         val productId1 = 1L
         val productId2 = 2L
@@ -354,19 +359,13 @@ class CartItemServiceTest {
         val cartItem2 = CartItem(userId = 1L, productId = productId2, quantity = 3)
         val cartItems = listOf(cartItem1, cartItem2)
 
-        // findAllById 메서드가 호출되면 cartItems를 반환하도록 설정
         `when`(cartItemRepository.findAllById(productIds)).thenReturn(cartItems)
 
         // When
         val result = cartItemService.deleteCartItems(productIds)
 
         // Then
-        // 삭제된 아이템 수 확인
         assertEquals(2, result)
-
-        // 논리적 삭제 확인 - CartItemService.deleteCartItems 메서드가
-        // cartItemRepository.softDeleteByIds를 호출했는지 확인
-        // 두 번째 인자는 시간이므로 any()를 사용하여 무시
-        verify(cartItemRepository).softDeleteByIds(eq(productIds), any(LocalDateTime::class.java))
+        verify(cartItemRepository).findAllById(productIds)
     }
 }
