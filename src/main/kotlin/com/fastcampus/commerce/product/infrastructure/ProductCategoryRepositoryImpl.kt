@@ -1,6 +1,7 @@
 package com.fastcampus.commerce.product.infrastructure
 
 import com.fastcampus.commerce.product.domain.entity.ProductCategory
+import com.fastcampus.commerce.product.domain.model.CategoryInfo
 import com.fastcampus.commerce.product.domain.repository.ProductCategoryRepository
 import org.springframework.stereotype.Repository
 
@@ -18,5 +19,9 @@ class ProductCategoryRepositoryImpl(
 
     override fun deleteAll(productCategories: List<ProductCategory>) {
         productCategoryJpaRepository.deleteAll(productCategories)
+    }
+
+    override fun getCategoryInfosIn(productIds: List<Long>): List<CategoryInfo> {
+        return productCategoryJpaRepository.findCategoriesByProductIds(productIds)
     }
 }

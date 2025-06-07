@@ -4,8 +4,12 @@ import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.product.domain.entity.Inventory
 import com.fastcampus.commerce.product.domain.entity.Product
 import com.fastcampus.commerce.product.domain.error.ProductErrorCode
+import com.fastcampus.commerce.product.domain.model.ProductInfo
+import com.fastcampus.commerce.product.domain.model.SearchProductCondition
 import com.fastcampus.commerce.product.domain.repository.InventoryRepository
 import com.fastcampus.commerce.product.domain.repository.ProductRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Component
 
 @Component
@@ -26,5 +30,15 @@ class ProductReader(
     fun getProductById(productId: Long): Product {
         return productRepository.findById(productId)
             .orElseThrow { CoreException(ProductErrorCode.PRODUCT_NOT_FOUND) }
+    }
+
+    fun searchProducts(condition: SearchProductCondition, pageable: Pageable): Page<ProductInfo> {
+        return productRepository.searchProducts(condition, pageable)
+    }
+
+    fun getProductInfo(productId: Long): ProductInfo {
+        val product = getProductById(productId)
+        val inventory = getInventoryByProductId(productId)
+        return ProductInfo.of(product, inventory)
     }
 }

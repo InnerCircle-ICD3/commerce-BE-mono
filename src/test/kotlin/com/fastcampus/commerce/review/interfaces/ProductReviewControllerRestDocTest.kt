@@ -1,5 +1,6 @@
 package com.fastcampus.commerce.review.interfaces
 
+import com.fastcampus.commerce.config.TestSecurityConfig
 import com.fastcampus.commerce.restdoc.documentation
 import com.fastcampus.commerce.review.application.ProductReviewService
 import com.fastcampus.commerce.review.application.response.AdminReplyResponse
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.context.annotation.Import
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpMethod
@@ -26,6 +28,7 @@ import java.time.LocalDateTime
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
 @WebMvcTest(ProductReviewController::class)
+@Import(TestSecurityConfig::class)
 class ProductReviewControllerRestDocTest : DescribeSpec() {
     override fun extensions() = listOf(SpringExtension)
 
