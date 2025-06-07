@@ -22,10 +22,9 @@ class CartItemController(
 
     @PatchMapping("/cart/items")
     fun updateCartItem(
-        @RequestParam cartItemId: Long,
         @RequestBody request: CartUpdateRequest,
     ): CartUpdateResponse {
-        val cartResponse = cartItemService.updateCartItem(cartItemId, request)
+        val cartResponse = cartItemService.updateCartItem(request)
         return cartResponse
     }
 }
