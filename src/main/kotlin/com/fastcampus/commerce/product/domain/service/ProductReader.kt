@@ -35,4 +35,10 @@ class ProductReader(
     fun searchProducts(condition: SearchProductCondition, pageable: Pageable): Page<ProductInfo> {
         return productRepository.searchProducts(condition, pageable)
     }
+
+    fun getProductInfo(productId: Long): ProductInfo {
+        val product = getProductById(productId)
+        val inventory = getInventoryByProductId(productId)
+        return ProductInfo.of(product, inventory)
+    }
 }

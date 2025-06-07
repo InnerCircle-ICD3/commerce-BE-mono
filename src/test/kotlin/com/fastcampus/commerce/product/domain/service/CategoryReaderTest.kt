@@ -109,5 +109,71 @@ class CategoryReaderTest : FunSpec(
                 verify(exactly = 1) { productCategoryRepository.getCategoryInfosIn(productIds) }
             }
         }
+
+        context("getProductCategory") {
+            test("상품 ID로 상품 카테고리 정보를 조회할 수 있다") {
+                val productId = 1L
+                val categoryInfos = listOf(
+                    CategoryInfo(
+                        productId = productId,
+                        groupId = 1L,
+                        groupTitle = "intensity",
+                        categoryId = 10L,
+                        categoryName = "Strong",
+                        sortOrder = 1,
+                    ),
+                    CategoryInfo(
+                        productId = productId,
+                        groupId = 2L,
+                        groupTitle = "cup_size",
+                        categoryId = 20L,
+                        categoryName = "Large",
+                        sortOrder = 1,
+                    ),
+                )
+                val expectedCategoryInfo = ProductCategoryInfo(intensity = "Strong", cupSize = "Large")
+                every { productCategoryRepository.getCategoryInfosIn(listOf(productId)) } returns categoryInfos
+
+                val result = categoryReader.getProductCategory(productId)
+
+                result shouldBe expectedCategoryInfo
+
+                verify(exactly = 1) { productCategoryRepository.getCategoryInfosIn(listOf(productId)) }
+            }
+
+            test("카테고리 정보가 없는 상품은 빈 카테고리 정보를 반환한다") {
+                val productId = 1L
+                val expectedCategoryInfo = ProductCategoryInfo.empty()
+                every { productCategoryRepository.getCategoryInfosIn(listOf(productId)) } returns emptyList()
+
+                val result = categoryReader.getProductCategory(productId)
+
+                result shouldBe expectedCategoryInfo
+
+                verify(exactly = 1) { productCategoryRepository.getCategoryInfosIn(listOf(productId)) }
+            }
+
+            test("일부 카테고리 정보만 있는 상품도 조회할 수 있다") {
+                val productId = 1L
+                val categoryInfos = listOf(
+                    CategoryInfo(
+                        productId = productId,
+                        groupId = 1L,
+                        groupTitle = "intensity",
+                        categoryId = 10L,
+                        categoryName = "Mild",
+                        sortOrder = 1,
+                    ),
+                )
+                val expectedCategoryInfo = ProductCategoryInfo(intensity = "Mild", cupSize = "")
+                every { productCategoryRepository.getCategoryInfosIn(listOf(productId)) } returns categoryInfos
+
+                val result = categoryReader.getProductCategory(productId)
+
+                result shouldBe expectedCategoryInfo
+
+                verify(exactly = 1) { productCategoryRepository.getCategoryInfosIn(listOf(productId)) }
+            }
+        }
     },
 )

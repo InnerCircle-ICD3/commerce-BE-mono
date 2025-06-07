@@ -137,5 +137,69 @@ class ProductReaderTest : FunSpec(
                 verify(exactly = 1) { productRepository.searchProducts(condition, pageable) }
             }
         }
+
+        context("getProductInfo") {
+            test("상품 ID로 상품 정보를 조회할 수 있다") {
+                val productId = 1L
+                val product = Product(
+                    name = "콜드브루",
+                    price = 3500,
+                    thumbnail = "https://test.com/thumbnail.png",
+                    detailImage = "https://test.com/detailImage.png",
+                ).apply { id = productId }
+                val inventory = Inventory(productId = productId, quantity = 100)
+                val expectedProductInfo = ProductInfo(
+                    id = productId,
+                    name = "콜드브루",
+                    price = 3500,
+                    quantity = 100,
+                    thumbnail = "https://test.com/thumbnail.png",
+                    detailImage = "https://test.com/detailImage.png",
+                )
+
+                every { productRepository.findById(productId) } returns Optional.of(product)
+                every { inventoryRepository.findByProductId(productId) } returns Optional.of(inventory)
+
+                val result = productReader.getProductInfo(productId)
+
+                result shouldBe expectedProductInfo
+
+                verify(exactly = 1) { productRepository.findById(productId) }
+                verify(exactly = 1) { inventoryRepository.findByProductId(productId) }
+            }
+
+            test("상품이 존재하지 않으면 PRODUCT_NOT_FOUND 예외가 발생한다") {
+                val productId = 1L
+
+                every { productRepository.findById(productId) } returns Optional.empty()
+
+                shouldThrow<CoreException> {
+                    productReader.getProductInfo(productId)
+                }.errorCode shouldBe ProductErrorCode.PRODUCT_NOT_FOUND
+
+                verify(exactly = 1) { productRepository.findById(productId) }
+                verify(exactly = 0) { inventoryRepository.findByProductId(any()) }
+            }
+
+            test("재고가 존재하지 않으면 INVENTORY_NOT_FOUND 예외가 발생한다") {
+                val productId = 1L
+                val product = Product(
+                    name = "콜드브루",
+                    price = 3500,
+                    thumbnail = "https://test.com/thumbnail.png",
+                    detailImage = "https://test.com/detailImage.png",
+                ).apply { id = productId }
+
+                every { productRepository.findById(productId) } returns Optional.of(product)
+                every { inventoryRepository.findByProductId(productId) } returns Optional.empty()
+
+                shouldThrow<CoreException> {
+                    productReader.getProductInfo(productId)
+                }.errorCode shouldBe ProductErrorCode.INVENTORY_NOT_FOUND
+
+                verify(exactly = 1) { productRepository.findById(productId) }
+                verify(exactly = 1) { inventoryRepository.findByProductId(productId) }
+            }
+        }
     },
 )

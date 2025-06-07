@@ -30,4 +30,8 @@ class CategoryReader(
                 )
             }
     }
+
+    fun getProductCategory(productId: Long): ProductCategoryInfo {
+        return getProductCategoryMap(listOf(productId))[productId] ?: ProductCategoryInfo.empty()
+    }
 }

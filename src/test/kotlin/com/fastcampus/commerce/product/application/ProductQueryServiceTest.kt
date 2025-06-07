@@ -207,5 +207,72 @@ class ProductQueryServiceTest : DescribeSpec(
                 }
             }
         }
+
+        describe("상품 상세 조회") {
+            context("정상 조회") {
+                it("상품 ID로 상품 상세 정보를 조회할 수 있다") {
+                    val productId = 1L
+                    val productInfo = ProductInfo(
+                        id = productId,
+                        name = "콜드브루",
+                        price = 3500,
+                        quantity = 100,
+                        thumbnail = "https://test.com/thumbnail.png",
+                        detailImage = "https://test.com/detail.png",
+                    )
+                    val productCategoryInfo = ProductCategoryInfo(
+                        intensity = "Strong",
+                        cupSize = "Large",
+                    )
+
+                    every { productReader.getProductInfo(productId) } returns productInfo
+                    every { categoryReader.getProductCategory(productId) } returns productCategoryInfo
+
+                    val result = productQueryService.getProductDetail(productId)
+
+                    result.id shouldBe productId
+                    result.name shouldBe "콜드브루"
+                    result.price shouldBe 3500
+                    result.quantity shouldBe 100
+                    result.thumbnail shouldBe "https://test.com/thumbnail.png"
+                    result.detailImage shouldBe "https://test.com/detail.png"
+                    result.intensity shouldBe "Strong"
+                    result.cupSize shouldBe "Large"
+
+                    verify(exactly = 1) { productReader.getProductInfo(productId) }
+                    verify(exactly = 1) { categoryReader.getProductCategory(productId) }
+                }
+
+                it("카테고리 정보가 없는 상품도 조회할 수 있다") {
+                    val productId = 1L
+                    val productInfo = ProductInfo(
+                        id = productId,
+                        name = "테스트 상품",
+                        price = 1000,
+                        quantity = 50,
+                        thumbnail = "https://test.com/test.png",
+                        detailImage = "https://test.com/test-detail.png",
+                    )
+                    val emptyProductCategoryInfo = ProductCategoryInfo.empty()
+
+                    every { productReader.getProductInfo(productId) } returns productInfo
+                    every { categoryReader.getProductCategory(productId) } returns emptyProductCategoryInfo
+
+                    val result = productQueryService.getProductDetail(productId)
+
+                    result.id shouldBe productId
+                    result.name shouldBe "테스트 상품"
+                    result.price shouldBe 1000
+                    result.quantity shouldBe 50
+                    result.thumbnail shouldBe "https://test.com/test.png"
+                    result.detailImage shouldBe "https://test.com/test-detail.png"
+                    result.intensity shouldBe ""
+                    result.cupSize shouldBe ""
+
+                    verify(exactly = 1) { productReader.getProductInfo(productId) }
+                    verify(exactly = 1) { categoryReader.getProductCategory(productId) }
+                }
+            }
+        }
     },
 )

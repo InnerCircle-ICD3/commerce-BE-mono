@@ -1,6 +1,7 @@
 package com.fastcampus.commerce.product.application
 
 import com.fastcampus.commerce.product.application.request.SearchProductRequest
+import com.fastcampus.commerce.product.application.response.ProductDetailResponse
 import com.fastcampus.commerce.product.application.response.SearchProductResponse
 import com.fastcampus.commerce.product.domain.model.ProductCategoryInfo
 import com.fastcampus.commerce.product.domain.service.CategoryReader
@@ -22,5 +23,11 @@ class ProductQueryService(
             val productCategoryInfo = categoryMap[productInfo.id] ?: ProductCategoryInfo.empty()
             SearchProductResponse.of(productInfo, productCategoryInfo)
         }
+    }
+
+    fun getProductDetail(productId: Long): ProductDetailResponse {
+        val productInfo = productReader.getProductInfo(productId)
+        val productCategoryInfo = categoryReader.getProductCategory(productId)
+        return ProductDetailResponse.of(productInfo, productCategoryInfo)
     }
 }
