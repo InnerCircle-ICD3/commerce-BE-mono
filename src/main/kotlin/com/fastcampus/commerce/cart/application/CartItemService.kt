@@ -1,8 +1,12 @@
 package com.fastcampus.commerce.cart.application
 
 import com.fastcampus.commerce.cart.domain.entity.CartItem
+import com.fastcampus.commerce.cart.domain.error.CartErrorCode
 import com.fastcampus.commerce.cart.infrastructure.repository.CartItemRepository
 import com.fastcampus.commerce.cart.interfaces.CartCreateResponse
+import com.fastcampus.commerce.cart.interfaces.CartUpdateRequest
+import com.fastcampus.commerce.cart.interfaces.CartUpdateResponse
+import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.product.domain.service.ProductReader
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -56,6 +60,32 @@ class CartItemService(
             quantity = finalQuantity,
             stockQuantity = stockQuantity,
             requiresQuantityAdjustment = requiresQuantityAdjustment,
+        )
+    }
+
+    @Transactional
+    fun updateCartItem(request: CartUpdateRequest): CartUpdateResponse {
+        var requireQuantityAdjustment = false
+        val cartItem = cartItemRepository.findByUserIdAndId(request.userId, request.cartId)
+            ?: throw CoreException(CartErrorCode.CART_ITEMS_NOT_FOUND)
+
+        val inventory = productReader.getInventoryByProductId(cartItem.productId)
+
+        if (request.quantity > inventory.quantity) {
+            cartItem.quantity = inventory.quantity
+            requireQuantityAdjustment = true
+        } else {
+            cartItem.quantity = request.quantity
+        }
+
+        cartItemRepository.save(cartItem)
+
+        return CartUpdateResponse(
+            userId = request.userId,
+            productId = cartItem.productId,
+            quantity = cartItem.quantity,
+            stockQuantity = inventory.quantity,
+            requiresQuantityAdjustment = requireQuantityAdjustment,
         )
     }
 }

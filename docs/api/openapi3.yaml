@@ -6,6 +6,8 @@ info:
 servers:
 - url: http://localhost:8080
 tags:
+- name: Cart
+  description: 장바구니 API
 - name: Review
   description: 사용자 리뷰 API
 - name: Admin-File
@@ -177,6 +179,54 @@ paths:
                     {
                       "data" : {
                         "message" : "OK"
+                      },
+                      "error" : null
+                    }
+  /cart/items:
+    patch:
+      tags:
+      - Cart
+      summary: 장바구니 내 상품의 수량을 변경할 수 있다.
+      operationId: 장바구니_상품_수정_성공
+      parameters:
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/cart-items-408437586"
+            examples:
+              장바구니_상품_수정_성공:
+                value: |-
+                  {
+                    "cartId" : 1,
+                    "userId" : 1,
+                    "productId" : 1,
+                    "quantity" : 100
+                  }
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/cart-items838557620"
+              examples:
+                장바구니_상품_수정_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "userId" : 1,
+                        "productId" : 1,
+                        "quantity" : 80,
+                        "stockQuantity" : 80,
+                        "requiresQuantityAdjustment" : true
                       },
                       "error" : null
                     }
@@ -357,17 +407,6 @@ paths:
                     }
 components:
   schemas:
-    admin-products9820101:
-      type: object
-      properties:
-        data:
-          required:
-          - productId
-          type: object
-          properties:
-            productId:
-              type: number
-              description: 생성된 상품 아이디
     files-presigned-url-2064193514:
       type: object
       properties:
@@ -387,26 +426,6 @@ components:
             key:
               type: string
               description: S3 Object Key
-    reviews1890941445:
-      required:
-      - content
-      - orderItemId
-      - orderNumber
-      - rating
-      type: object
-      properties:
-        orderNumber:
-          type: string
-          description: 주문번호
-        orderItemId:
-          type: number
-          description: 주문 아이템 아이디
-        rating:
-          type: number
-          description: 별점
-        content:
-          type: string
-          description: 리뷰 내용
     admin-products-productId-1789436874:
       required:
       - cupSizeId
@@ -454,17 +473,6 @@ components:
             reviewId:
               type: number
               description: 생성된 리뷰 아이디
-    admin-products-productId1686665306:
-      type: object
-      properties:
-        data:
-          required:
-          - message
-          type: object
-          properties:
-            message:
-              type: string
-              description: 응답 메시지
     reviews-reviewId480882763:
       required:
       - content
@@ -477,6 +485,134 @@ components:
         content:
           type: string
           description: 리뷰 내용
+    cart-items-408437586:
+      required:
+      - cartId
+      - productId
+      - quantity
+      - userId
+      type: object
+      properties:
+        quantity:
+          type: number
+          description: 수량
+        productId:
+          type: number
+          description: 상품 아이디
+        cartId:
+          type: number
+          description: 카트 아이디
+        userId:
+          type: number
+          description: 유저 아이디
+    files-presigned-url-1375438577:
+      required:
+      - contentType
+      - domainContext
+      - domainType
+      - fileName
+      - fileSize
+      type: object
+      properties:
+        domainContext:
+          type: string
+          description: 파일 컨텍스트(thumbnail/detailImage 고정)
+        fileName:
+          type: string
+          description: 파일명
+        domainType:
+          type: string
+          description: 도메인 타입(PRODUCT 고정)
+        fileSize:
+          type: number
+          description: 파일 크기(Byte)
+        contextId:
+          type: string
+          description: 업로드 세션 ID
+          nullable: true
+        contentType:
+          type: string
+          description: 파일 Content-Type
+    reviews-reviewId-215377401:
+      type: object
+      properties:
+        data:
+          required:
+          - reviewId
+          type: object
+          properties:
+            reviewId:
+              type: number
+              description: 수정된 리뷰 아이디
+    cart-items838557620:
+      type: object
+      properties:
+        data:
+          required:
+          - productId
+          - quantity
+          - requiresQuantityAdjustment
+          - stockQuantity
+          - userId
+          type: object
+          properties:
+            quantity:
+              type: number
+              description: 수량
+            productId:
+              type: number
+              description: 상품 아이디
+            requiresQuantityAdjustment:
+              type: boolean
+              description: 수량 변경 여부
+            stockQuantity:
+              type: number
+              description: 재고 수량
+            userId:
+              type: number
+              description: 유저 아이디
+    admin-products9820101:
+      type: object
+      properties:
+        data:
+          required:
+          - productId
+          type: object
+          properties:
+            productId:
+              type: number
+              description: 생성된 상품 아이디
+    reviews1890941445:
+      required:
+      - content
+      - orderItemId
+      - orderNumber
+      - rating
+      type: object
+      properties:
+        orderNumber:
+          type: string
+          description: 주문번호
+        orderItemId:
+          type: number
+          description: 주문 아이템 아이디
+        rating:
+          type: number
+          description: 별점
+        content:
+          type: string
+          description: 리뷰 내용
+    admin-products-productId1686665306:
+      type: object
+      properties:
+        data:
+          required:
+          - message
+          type: object
+          properties:
+            message:
+              type: string
+              description: 응답 메시지
     admin-products-247955186:
       required:
       - cupSizeId
@@ -526,34 +662,6 @@ components:
               label:
                 type: string
                 description: 판매상태
-    files-presigned-url-1375438577:
-      required:
-      - contentType
-      - domainContext
-      - domainType
-      - fileName
-      - fileSize
-      type: object
-      properties:
-        domainContext:
-          type: string
-          description: 파일 컨텍스트(thumbnail/detailImage 고정)
-        fileName:
-          type: string
-          description: 파일명
-        domainType:
-          type: string
-          description: 도메인 타입(PRODUCT 고정)
-        fileSize:
-          type: number
-          description: 파일 크기(Byte)
-        contextId:
-          type: string
-          description: 업로드 세션 ID
-          nullable: true
-        contentType:
-          type: string
-          description: 파일 Content-Type
     admin-products-productId-1712578160:
       type: object
       properties:
@@ -565,14 +673,3 @@ components:
             productId:
               type: number
               description: 수정된 상품 아이디
-    reviews-reviewId-215377401:
-      type: object
-      properties:
-        data:
-          required:
-          - reviewId
-          type: object
-          properties:
-            reviewId:
-              type: number
-              description: 수정된 리뷰 아이디
