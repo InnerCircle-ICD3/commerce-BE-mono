@@ -2,12 +2,13 @@ package com.fastcampus.commerce.cart.application
 
 import com.fastcampus.commerce.cart.domain.entity.CartItem
 import com.fastcampus.commerce.cart.infrastructure.repository.CartItemRepository
-import com.fastcampus.commerce.common.policy.DeliveryPolicy
 import com.fastcampus.commerce.cart.interfaces.CartUpdateRequest
+import com.fastcampus.commerce.common.policy.DeliveryPolicy
 import com.fastcampus.commerce.product.domain.entity.Inventory
 import com.fastcampus.commerce.product.domain.entity.Product
 import com.fastcampus.commerce.product.domain.entity.SellingStatus
 import com.fastcampus.commerce.product.domain.service.ProductReader
+import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 
@@ -146,7 +148,7 @@ class CartItemServiceTest {
         `when`(cartItemRepository.save(any(CartItem::class.java))).thenReturn(cartItem)
 
         // When
-        val result = cartItemService.updateCartItem(userId,request)
+        val result = cartItemService.updateCartItem(userId, request)
 
         // Then
         verify(cartItemRepository).save(any(CartItem::class.java))
@@ -183,7 +185,7 @@ class CartItemServiceTest {
         `when`(cartItemRepository.save(any(CartItem::class.java))).thenReturn(cartItem)
 
         // When
-        val result = cartItemService.updateCartItem(userId,request)
+        val result = cartItemService.updateCartItem(userId, request)
 
         // Then
         verify(cartItemRepository).save(any(CartItem::class.java))
@@ -199,7 +201,7 @@ class CartItemServiceTest {
     }
 
     @Test
-    fun `해당 유저의 상품 전체 조회가 가능해야 한다`()  {
+    fun `해당 유저의 상품 전체 조회가 가능해야 한다`() {
         // Given
         val userId = 1L
         val cartItems = listOf(
@@ -244,7 +246,7 @@ class CartItemServiceTest {
 
         // Then
         assertEquals(2, result.cartItems.size)
-        assertEquals(80000, result.totalPrice) // isavailable인 경우 (20000 * 3) = 60000
+        assertEquals(80000, result.totalPrice) // (10000 * 2) + (20000 * 3) = 80000
         assertEquals(0, result.deliveryPrice) // 총 가격이 30000원 이상이므로 배송비 무료
 
         val firstCartItem = result.cartItems[0]
@@ -331,5 +333,26 @@ class CartItemServiceTest {
         // Then
         assertEquals(20000, result.totalPrice) // UNAVAILABLE 상품 제외
         assertEquals(3000, result.deliveryPrice) // 30,000원 미만이므로 배송비 부과
+    }
+
+    @Test
+    fun `장바구니 상품을 삭제할 수 있다`() {
+        // Given
+        val productId1 = 1L
+        val productId2 = 2L
+        val productIds = listOf(productId1, productId2)
+
+        val cartItem1 = CartItem(userId = 1L, productId = productId1, quantity = 2)
+        val cartItem2 = CartItem(userId = 1L, productId = productId2, quantity = 3)
+        val cartItems = listOf(cartItem1, cartItem2)
+
+        `when`(cartItemRepository.findAllById(productIds)).thenReturn(cartItems)
+
+        // When
+        val result = cartItemService.deleteCartItems(productIds)
+
+        // Then
+        assertEquals(2, result)
+        verify(cartItemRepository).findAllById(productIds)
     }
 }

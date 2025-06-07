@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class DeliveryPolicy {
-    fun calculateDeliveryFee(totalPrice: Int): Int  {
+    fun calculateDeliveryFee(totalPrice: Int): Int {
         return if (totalPrice >= 30000) {
             0
         } else {

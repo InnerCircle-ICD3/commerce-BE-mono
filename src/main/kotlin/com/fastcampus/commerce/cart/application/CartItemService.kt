@@ -6,11 +6,11 @@ import com.fastcampus.commerce.cart.infrastructure.repository.CartItemRepository
 import com.fastcampus.commerce.cart.interfaces.CartCreateResponse
 import com.fastcampus.commerce.cart.interfaces.CartItemRetrieve
 import com.fastcampus.commerce.cart.interfaces.CartRetrievesResponse
-import com.fastcampus.commerce.common.policy.DeliveryPolicy
-import com.fastcampus.commerce.product.domain.entity.SellingStatus
 import com.fastcampus.commerce.cart.interfaces.CartUpdateRequest
 import com.fastcampus.commerce.cart.interfaces.CartUpdateResponse
 import com.fastcampus.commerce.common.error.CoreException
+import com.fastcampus.commerce.common.policy.DeliveryPolicy
+import com.fastcampus.commerce.product.domain.entity.SellingStatus
 import com.fastcampus.commerce.product.domain.service.ProductReader
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -21,7 +21,7 @@ class CartItemService(
     private val productReader: ProductReader,
     private val deliveryPolicy: DeliveryPolicy,
 ) {
-    fun getCarts(userId: Long): CartRetrievesResponse  {
+    fun getCarts(userId: Long): CartRetrievesResponse {
         val cartItems = cartItemRepository.findAllByUserId(userId) ?: emptyList()
 
         if (cartItems.isEmpty()) {
@@ -112,7 +112,7 @@ class CartItemService(
     }
 
     @Transactional
-    fun updateCartItem(userId: Long,request: CartUpdateRequest): CartUpdateResponse {
+    fun updateCartItem(userId: Long, request: CartUpdateRequest): CartUpdateResponse {
         var requireQuantityAdjustment = false
         val cartItem = cartItemRepository.findByUserIdAndId(userId, request.cartId)
             ?: throw CoreException(CartErrorCode.CART_ITEMS_NOT_FOUND)
@@ -135,5 +135,21 @@ class CartItemService(
             stockQuantity = inventory.quantity,
             requiresQuantityAdjustment = requireQuantityAdjustment,
         )
+    }
+
+    @Transactional
+    fun deleteCartItems(cartItemIds: List<Long>): Int {
+        if (cartItemIds.isEmpty()) {
+            throw CoreException(CartErrorCode.EMPTY_PRODUCT_IDS)
+        }
+
+        val cartItems = cartItemRepository.findAllById(cartItemIds)
+        if (cartItems.isEmpty()) {
+            throw CoreException(CartErrorCode.CART_ITEMS_NOT_FOUND)
+        }
+
+        cartItemRepository.softDeleteByIds(cartItemIds)
+
+        return cartItems.size
     }
 }

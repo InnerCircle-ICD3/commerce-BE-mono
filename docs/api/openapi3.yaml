@@ -322,6 +322,47 @@ paths:
                       },
                       "error" : null
                     }
+  /carts/delete:
+    post:
+      tags:
+      - Cart
+      summary: 장바구니에 추가된 상품을 삭제할 수 있다.
+      operationId: 장바구니_상품_삭제_성공
+      parameters:
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/carts-delete-1467555311"
+            examples:
+              장바구니_상품_삭제_성공:
+                value: |-
+                  {
+                    "productIds" : [ 2, 4, 6 ]
+                  }
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/admin-products-productId1686665306"
+              examples:
+                장바구니_상품_삭제_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "message" : "Successfully deleted 3 cart items"
+                      },
+                      "error" : null
+                    }
   /files/presigned-url:
     post:
       tags:
@@ -1107,6 +1148,20 @@ components:
             stockQuantity:
               type: number
               description: 재고 수량
+    carts-delete-1467555311:
+      required:
+      - productIds
+      type: object
+      properties:
+        productIds:
+          type: array
+          description: 카트 아이디
+          items:
+            oneOf:
+            - type: object
+            - type: boolean
+            - type: string
+            - type: number
     admin-products-selling-status-152159338:
       type: object
       properties:
