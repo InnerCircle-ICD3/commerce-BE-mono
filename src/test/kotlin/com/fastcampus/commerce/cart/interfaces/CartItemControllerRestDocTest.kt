@@ -28,6 +28,7 @@ class CartItemControllerRestDocTest : DescribeSpec() {
 
     @MockkBean
     lateinit var cartItemService: CartItemService
+    @MockkBean
     lateinit var productReader: ProductReader
 
     val tag = "Cart"
@@ -44,10 +45,12 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                 val userId = 1L
                 val productId = 1L
                 var finalQuantity = 1
+                val cartId = 1L
                 val request = CartUpdateRequest(
                     productId = productId,
                     quantity = 100,
                     userId = userId,
+                    cartId = cartId
                 )
 
                 val inventory = Inventory(
@@ -71,7 +74,7 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                     requiresQuantityAdjustment = true,
                 )
 
-                every { cartItemService.updateCartItem(userId, request) } returns response
+                every { cartItemService.updateCartItem(request) } returns response
 
                 documentation(
                     identifier = "상품_수정_성공",
@@ -85,18 +88,21 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                         header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
                     }
 
+
                     requestBody {
+                        field("cartId","카트 아이디",request.cartId)
                         field("userId", "유저 아이디", request.userId)
-                        field("productId", "카트 아이디", request.productId)
+                        field("productId", "상품 아이디", request.productId)
                         field("quantity", "수량", request.quantity)
                     }
 
                     responseBody {
-                        field("productId", "카트 아이디", response.productId)
-                        field("userId", "유저 아이디", response.userId)
-                        field("quantity", "수량", response.quantity)
-                        field("stockQuantity", "재고 수량", response.stockQuantity)
-                        field("requiresQuantityAdjustment", "수량 변경 여부", response.requiresQuantityAdjustment)
+                        field("data.productId", "카트 아이디", response.productId.toInt())
+                        field("data.userId", "유저 아이디", response.userId.toInt())
+                        field("data.quantity", "수량", response.quantity)
+                        field("data.stockQuantity", "재고 수량", response.stockQuantity)
+                        field("data.requiresQuantityAdjustment", "수량 변경 여부", response.requiresQuantityAdjustment)
+                        ignoredField("error")
                     }
                 }
             }
