@@ -25,11 +25,13 @@ phases:
       - echo Tagging Docker image for ECR...
       - docker tag $IMAGE_NAME:$TAG $IMAGE_URI
       - docker push $IMAGE_URI
-      - echo Writing image definitions file...
-      - printf '[{"name":"container-name","imageUri":"%s"}]' "$IMAGE_URI" > ./imagedefinitions.json
+      - echo Writing image definition file...
+      - cd $CODEBUILD_SRC_DIR
+      - printf '[{"name":"container-name","imageUri":"%s"}]' "$IMAGE_URI" > imagedefinitions.json
       - echo "📄 imagedefinitions.json created:"
-      - cat ./imagedefinitions.json
+      - cat imagedefinitions.json
 
 artifacts:
   files:
     - imagedefinitions.json
+  base-directory: $CODEBUILD_SRC_DIR
