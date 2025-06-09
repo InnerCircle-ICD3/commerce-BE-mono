@@ -13,7 +13,7 @@ data class RegisterUserAddressApiRequest(
     @field:NotBlank(message = "수령인의 휴대폰 번호를 입력해주세요.")
     @field:Pattern(
         regexp = "^01(?:0|1|[6-9])-?(?:\\d{3}|\\d{4})-?\\d{4}$",
-        message = "올바른 휴대폰 번호를 입력해주세요."
+        message = "올바른 휴대폰 번호를 입력해주세요.",
     )
     val recipientPhone: String,
     @field:NotBlank(message = "우편번호를 입력해주세요.")

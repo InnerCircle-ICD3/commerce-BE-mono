@@ -12,6 +12,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -51,7 +52,6 @@ class UserAddressServiceTest : FunSpec({
                 isDefault = false,
             ).apply { id = 101L }
 
-            every { userRepository.findById(userId) } returns Optional.of(user)
             every { userAddressRepository.getAllByUserId(userId) } returns listOf(address1, address2)
 
             val result = userAddressService.getUserAddresses(userId)
@@ -66,20 +66,88 @@ class UserAddressServiceTest : FunSpec({
         }
 
         test("배송지가 없는 경우 빈 목록을 반환한다") {
-            every { userRepository.findById(userId) } returns Optional.of(user)
             every { userAddressRepository.getAllByUserId(userId) } returns emptyList()
 
             val result = userAddressService.getUserAddresses(userId)
 
             result shouldHaveSize 0
         }
+    }
 
-        test("존재하지 않는 사용자의 배송지를 조회하려고 하면 USER_NOT_FOUND 예외가 발생한다") {
-            every { userRepository.findById(userId) } returns Optional.empty()
+    context("getUserAddress") {
+        val userAddressId = 400L
+
+        test("특정 사용자 주소를 조회할 수 있다") {
+            val userAddress = UserAddress(
+                userId = userId,
+                alias = "집",
+                recipientName = "홍길동",
+                recipientPhone = "01012345678",
+                zipCode = "12345",
+                address1 = "서울시 강남구",
+                address2 = "테헤란로 123",
+                isDefault = true,
+            ).apply { id = userAddressId }
+
+            every { userAddressRepository.findByIdAndUserId(userAddressId, userId) } returns Optional.of(userAddress)
+
+            val result = userAddressService.getUserAddress(userId, userAddressId)
+
+            result.addressId shouldBe userAddressId
+            result.alias shouldBe "집"
+            result.recipientName shouldBe "홍길동"
+            result.recipientPhone shouldBe "010-1234-5678"
+            result.isDefault shouldBe true
+        }
+
+        test("존재하지 않는 주소를 조회하려고 하면 USER_ADDRESS_NOT_FOUND 예외가 발생한다") {
+            every { userAddressRepository.findByIdAndUserId(userAddressId, userId) } returns Optional.empty()
 
             shouldThrow<CoreException> {
-                userAddressService.getUserAddresses(userId)
-            }.errorCode shouldBe UserErrorCode.USER_NOT_FOUND
+                userAddressService.getUserAddress(userId, userAddressId)
+            }.errorCode shouldBe UserErrorCode.USER_ADDRESS_NOT_FOUND
+        }
+
+        test("다른 사용자의 주소를 조회하려고 하면 USER_ADDRESS_NOT_FOUND 예외가 발생한다") {
+            val otherUserId = 999L
+
+            every { userAddressRepository.findByIdAndUserId(userAddressId, userId) } returns Optional.empty()
+
+            shouldThrow<CoreException> {
+                userAddressService.getUserAddress(userId, userAddressId)
+            }.errorCode shouldBe UserErrorCode.USER_ADDRESS_NOT_FOUND
+        }
+    }
+
+    context("getDefaultUserAddress") {
+        test("기본 배송지가 있는 경우 조회할 수 있다") {
+            val defaultAddress = UserAddress(
+                userId = userId,
+                alias = "집",
+                recipientName = "홍길동",
+                recipientPhone = "01012345678",
+                zipCode = "12345",
+                address1 = "서울시 강남구",
+                address2 = "테헤란로 123",
+                isDefault = true,
+            ).apply { id = 500L }
+
+            every { userAddressRepository.findDefaultByUserId(userId) } returns Optional.of(defaultAddress)
+
+            val result = userAddressService.findDefaultUserAddress(userId)
+
+            result shouldNotBe null
+            result?.addressId shouldBe 500L
+            result?.alias shouldBe "집"
+            result?.isDefault shouldBe true
+        }
+
+        test("기본 배송지가 없는 경우 null을 반환한다") {
+            every { userAddressRepository.findDefaultByUserId(userId) } returns Optional.empty()
+
+            val result = userAddressService.findDefaultUserAddress(userId)
+
+            result shouldBe null
         }
     }
 

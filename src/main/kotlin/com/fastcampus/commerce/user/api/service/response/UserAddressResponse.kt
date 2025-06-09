@@ -25,6 +25,5 @@ data class UserAddressResponse(
                 address2 = userAddress.address2,
                 isDefault = userAddress.isDefault,
             )
-
     }
 }
