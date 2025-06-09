@@ -15,9 +15,8 @@ class UserAddressService(
     private val userRepository: UserRepository,
     private val userAddressRepository: UserAddressRepository,
 ) {
+    @Transactional(readOnly = true)
     fun getUserAddresses(userId: Long): List<UserAddressResponse> {
-        val user = userRepository.findById(userId)
-            .orElseThrow { throw CoreException(UserErrorCode.USER_NOT_FOUND) }
         val addresses = userAddressRepository.getAllByUserId(userId)
         return addresses.map(UserAddressResponse::from)
     }
