@@ -43,9 +43,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
     // security
-    implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
-    testImplementation("org.springframework.security:spring-security-test")
+//    implementation("org.springframework.boot:spring-boot-starter-security")
+//    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+//    testImplementation("org.springframework.security:spring-security-test")
 
     // JWT support (via JJWT)
     implementation("io.jsonwebtoken:jjwt-api:$jjwtVersion")
