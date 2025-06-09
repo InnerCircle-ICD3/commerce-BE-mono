@@ -10,19 +10,25 @@ phases:
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 116489046164.dkr.ecr.ap-northeast-2.amazonaws.com
       - TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_URI=116489046164.dkr.ecr.ap-northeast-2.amazonaws.com/$IMAGE_NAME:$TAG
+      - echo "🔖 TAG=$TAG"
+      - echo "🔗 IMAGE_URI=$IMAGE_URI"
 
   build:
     commands:
       - echo Building Docker image...
       - docker build -t $IMAGE_NAME:$TAG .
+      - docker images | grep $IMAGE_NAME
 
   post_build:
     commands:
       - echo Tagging Docker image for ECR...
-      - docker tag $IMAGE_NAME:$TAG 116489046164.dkr.ecr.ap-northeast-2.amazonaws.com/$IMAGE_NAME:$TAG
-      - docker push 116489046164.dkr.ecr.ap-northeast-2.amazonaws.com/$IMAGE_NAME:$TAG
+      - docker tag $IMAGE_NAME:$TAG $IMAGE_URI
+      - docker push $IMAGE_URI
       - echo Writing image definitions file...
-      - printf '[{"name":"container-name","imageUri":"%s"}]' 116489046164.dkr.ecr.ap-northeast-2.amazonaws.com/$IMAGE_NAME:$TAG > imagedefinitions.json
+      - printf '[{"name":"container-name","imageUri":"%s"}]' "$IMAGE_URI" > ./imagedefinitions.json
+      - echo "📄 imagedefinitions.json created:"
+      - cat ./imagedefinitions.json
 
 artifacts:
   files:

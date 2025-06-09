@@ -125,5 +125,32 @@ class ReviewStoreTest : FunSpec(
                 }.errorCode shouldBe ReviewErrorCode.UNAUTHORIZED_REVIEW_UPDATE
             }
         }
+
+        context("delete") {
+            val reviewId = 1L
+            val ownerUserId = 100L
+            test("리뷰 작성자가 맞으면 정상적으로 삭제한다") {
+                val review = mockk<Review>(relaxed = true) {
+                    every { userId } returns ownerUserId
+                }
+                every { reviewReader.getReviewById(reviewId) } returns review
+                every { reviewRepository.delete(review) } just Runs
+
+                reviewStore.delete(ownerUserId, reviewId)
+
+                verify(exactly = 1) { reviewRepository.delete(review) }
+            }
+
+            test("리뷰 작성자가 아니면 UNAUTHORIZED_REVIEW_DELETE 예외가 발생한다") {
+                val review = mockk<Review> {
+                    every { userId } returns ownerUserId
+                }
+                every { reviewReader.getReviewById(reviewId) } returns review
+
+                shouldThrow<CoreException> {
+                    reviewStore.delete(ownerUserId + 1, reviewId)
+                }.errorCode shouldBe ReviewErrorCode.UNAUTHORIZED_REVIEW_DELETE
+            }
+        }
     },
 )

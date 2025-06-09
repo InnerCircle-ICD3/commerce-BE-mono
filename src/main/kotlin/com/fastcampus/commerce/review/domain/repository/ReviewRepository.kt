@@ -9,4 +9,6 @@ interface ReviewRepository {
     fun save(review: Review): Review
 
     fun findById(reviewId: Long): Optional<Review>
+
+    fun delete(review: Review)
 }

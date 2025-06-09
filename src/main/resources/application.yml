@@ -10,3 +10,19 @@ spring:
       - classpath:config/web.yml
       - classpath:config/secret/auth.yml
       - classpath:config/secret/db.yml
+  web:
+    resources:
+      static-locations:
+        - classpath:/static/
+        - file:./docs/
+
+springdoc:
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  cache.disabled: true
+  swagger-ui:
+    enabled: true
+    url: /api/openapi3.yaml
+    tags-sorter: alpha
+    operations-sorter: alpha
+    path: /swagger-ui.html

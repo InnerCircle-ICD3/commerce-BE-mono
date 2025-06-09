@@ -71,6 +71,8 @@ dependencies {
     kapt("org.springframework.boot:spring-boot-configuration-processor")
 
     // doc
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8")
+
     testImplementation("org.springframework.restdocs:spring-restdocs-restassured")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     implementation("com.epages:restdocs-api-spec-mockmvc:$restdocsApiSpecVersion")
@@ -113,7 +115,7 @@ val querydslDir = "build/generated"
 sourceSets["main"].java.srcDirs(querydslDir)
 
 configure<com.epages.restdocs.apispec.gradle.OpenApi3Extension> {
-    setServer("http://localhost:8080")
+    setServer("http://3.39.233.3:8080")
     title = "801base API docs"
     description = "801base의 API 문서입니다."
     version = "0.0.1"
@@ -122,10 +124,10 @@ configure<com.epages.restdocs.apispec.gradle.OpenApi3Extension> {
 }
 
 tasks.register<Copy>("copyOasToDocs") {
+    dependsOn("clean", "openapi3")
     delete("docs/api/openapi3.yaml")
     from(project.layout.buildDirectory.file("api-spec/openapi3.yaml"))
     into("docs/api/.")
-    dependsOn("openapi3")
 }
 
 tasks.matching { it.name.contains("ktlintCheck", ignoreCase = true) }.configureEach {

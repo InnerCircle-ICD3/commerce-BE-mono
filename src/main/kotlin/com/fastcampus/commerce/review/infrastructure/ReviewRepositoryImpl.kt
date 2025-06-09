@@ -20,4 +20,8 @@ class ReviewRepositoryImpl(
     override fun findById(reviewId: Long): Optional<Review> {
         return reviewJpaRepository.findById(reviewId)
     }
+
+    override fun delete(review: Review) {
+        reviewJpaRepository.delete(review)
+    }
 }

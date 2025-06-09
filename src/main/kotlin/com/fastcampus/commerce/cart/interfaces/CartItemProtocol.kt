@@ -10,3 +10,42 @@ data class CartCreateResponse(
     val stockQuantity: Int,
     val requiresQuantityAdjustment: Boolean,
 )
+
+data class CartUpdateRequest(
+    val cartId: Long,
+    val productId: Long,
+    val quantity: Int,
+)
+
+data class CartUpdateResponse(
+    val userId: Long,
+    val productId: Long,
+    val quantity: Int,
+    val stockQuantity: Int,
+    val requiresQuantityAdjustment: Boolean,
+)
+
+data class CartDeleteRequest(
+    val cartItemIds: List<Long>,
+)
+
+data class CartDeleteResponse(
+    val message: String,
+)
+
+data class CartRetrievesResponse(
+    val totalPrice: Int,
+    val deliveryPrice: Int,
+    val cartItems: List<CartItemRetrieve>,
+)
+
+data class CartItemRetrieve(
+    val cartItemId: Long,
+    val productId: Long,
+    val productName: String,
+    val quantity: Int,
+    val price: Int,
+    val stockQuantity: Int,
+    val thumbnail: String,
+    val isAvailable: Boolean,
+)

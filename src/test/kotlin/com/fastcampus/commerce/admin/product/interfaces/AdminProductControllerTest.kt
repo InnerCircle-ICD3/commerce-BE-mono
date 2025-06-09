@@ -4,6 +4,7 @@ import com.fastcampus.commerce.admin.product.application.AdminProductService
 import com.fastcampus.commerce.admin.product.application.response.SellingStatusResponse
 import com.fastcampus.commerce.admin.product.interfaces.request.RegisterProductApiRequest
 import com.fastcampus.commerce.admin.product.interfaces.request.UpdateProductApiRequest
+import com.fastcampus.commerce.config.TestSecurityConfig
 import com.fastcampus.commerce.product.domain.entity.SellingStatus
 import com.fastcampus.commerce.restdoc.documentation
 import com.ninjasquad.springmockk.MockkBean
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.context.annotation.Import
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.test.web.servlet.MockMvc
@@ -24,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
 @WebMvcTest(AdminProductController::class)
+@Import(TestSecurityConfig::class)
 class AdminProductControllerTest : DescribeSpec() {
     override fun extensions() = listOf(SpringExtension)
 
