@@ -24,6 +24,6 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/commerce
-    username: ${secrets.db.username}
-    password: ${secrets.db.password}
+    username: commerce
+    password: aa
 
