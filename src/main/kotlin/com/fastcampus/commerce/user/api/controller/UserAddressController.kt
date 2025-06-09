@@ -7,6 +7,7 @@ import com.fastcampus.commerce.user.api.controller.response.RegisterUserAddressA
 import com.fastcampus.commerce.user.api.controller.response.UpdateUserAddressApiResponse
 import com.fastcampus.commerce.user.api.controller.response.UserAddressApiResponse
 import com.fastcampus.commerce.user.api.service.UserAddressService
+import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -30,7 +31,7 @@ class UserAddressController(
 
     @PostMapping
     fun registerUserAddress(
-        @RequestBody request: RegisterUserAddressApiRequest,
+        @Valid @RequestBody request: RegisterUserAddressApiRequest,
     ): RegisterUserAddressApiResponse {
         val userId = 1L
         val userAddressId = userAddressService.register(userId, request.toServiceRequest())
@@ -40,7 +41,7 @@ class UserAddressController(
     @PutMapping("/{userAddressId}")
     fun updateUserAddress(
         @PathVariable userAddressId: Long,
-        @RequestBody request: UpdateUserAddressApiRequest,
+        @Valid @RequestBody request: UpdateUserAddressApiRequest,
     ): UpdateUserAddressApiResponse {
         val userId = 1L
         userAddressService.update(userId, userAddressId, request.toServiceRequest())

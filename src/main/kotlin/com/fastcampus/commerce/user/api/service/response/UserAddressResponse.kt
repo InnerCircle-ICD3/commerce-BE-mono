@@ -1,5 +1,6 @@
 package com.fastcampus.commerce.user.api.service.response
 
+import com.fastcampus.commerce.common.util.PhoneNumberUtil
 import com.fastcampus.commerce.user.domain.entity.UserAddress
 
 data class UserAddressResponse(
@@ -18,11 +19,12 @@ data class UserAddressResponse(
                 addressId = userAddress.id!!,
                 alias = userAddress.alias,
                 recipientName = userAddress.recipientName,
-                recipientPhone = userAddress.recipientPhone,
+                recipientPhone = PhoneNumberUtil.addHyphens(userAddress.recipientPhone),
                 zipCode = userAddress.zipCode,
                 address1 = userAddress.address1,
                 address2 = userAddress.address2,
                 isDefault = userAddress.isDefault,
             )
+
     }
 }
