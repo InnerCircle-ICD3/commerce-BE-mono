@@ -22,7 +22,7 @@ phases:
       - docker tag $IMAGE_NAME:$TAG 116489046164.dkr.ecr.ap-northeast-2.amazonaws.com/$IMAGE_NAME:$TAG
       - docker push 116489046164.dkr.ecr.ap-northeast-2.amazonaws.com/$IMAGE_NAME:$TAG
       - echo Writing image definitions file...
-      - printf '[{"name":"container-name","imageUri":"%s"}]' 116489046164.dkr.ecr.ap-northeast-2.amazonaws.com/$IMAGE_NAME:$TAG > imagedefinitions.json
+      - printf '[{"name":"container-name","imageUri":"%s"}]' 116489046164.dkr.ecr.ap-northeast-2.amazonaws.com/$IMAGE_NAME:$TAG > ./imagedefinitions.json
 
 artifacts:
   files:
