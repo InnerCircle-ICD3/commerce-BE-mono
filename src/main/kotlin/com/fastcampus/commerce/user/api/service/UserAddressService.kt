@@ -42,4 +42,17 @@ class UserAddressService(
         }
         userAddress.update(request.toUpdater())
     }
+
+    @Transactional
+    fun delete(userId: Long, userAddressId: Long) {
+        val user = userRepository.findById(userId)
+            .orElseThrow { throw CoreException(UserErrorCode.USER_NOT_FOUND) }
+
+        val userAddress = userAddressRepository.findById(userAddressId)
+            .orElseThrow { throw CoreException(UserErrorCode.USER_ADDRESS_NOT_FOUND) }
+        if (userAddress.userId != userId) {
+            throw CoreException(UserErrorCode.UNAUTHORIZED_USER_ADDRESS_DELETE)
+        }
+        userAddressRepository.delete(userAddress)
+    }
 }

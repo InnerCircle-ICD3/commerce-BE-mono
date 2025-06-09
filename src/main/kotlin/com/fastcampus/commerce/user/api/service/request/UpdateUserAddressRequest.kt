@@ -9,15 +9,16 @@ data class UpdateUserAddressRequest(
     val zipCode: String,
     val address1: String,
     val address2: String?,
-    val isDefault: Boolean
+    val isDefault: Boolean,
 ) {
-    fun toUpdater()= UserAddressUpdater (
-        alias = alias,
-        recipientName = recipientName,
-        recipientPhone = recipientPhone,
-        zipCode = zipCode,
-        address1 = address1,
-        address2 = address2,
-        isDefault = isDefault,
-    )
+    fun toUpdater() =
+        UserAddressUpdater(
+            alias = alias,
+            recipientName = recipientName,
+            recipientPhone = recipientPhone,
+            zipCode = zipCode,
+            address1 = address1,
+            address2 = address2,
+            isDefault = isDefault,
+        )
 }

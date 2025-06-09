@@ -12,10 +12,10 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
 import io.mockk.just
+import io.mockk.mockk
 import io.mockk.runs
+import io.mockk.verify
 import java.util.Optional
 
 class UserAddressServiceTest : FunSpec({
@@ -116,7 +116,7 @@ class UserAddressServiceTest : FunSpec({
     context("update") {
         val userAddressId = 200L
         val existingUserAddress = mockk<UserAddress>()
-        
+
         val updateRequest = UpdateUserAddressRequest(
             alias = "회사",
             recipientName = "김철수",
@@ -174,7 +174,7 @@ class UserAddressServiceTest : FunSpec({
 
         test("다른 사용자의 주소를 수정하려고 하면 UNAUTHORIZED_USER_ADDRESS_UPDATE 예외가 발생한다") {
             val otherUserId = 999L
-            
+
             every { userRepository.findById(userId) } returns Optional.of(user)
             every { userAddressRepository.findById(userAddressId) } returns Optional.of(existingUserAddress)
             every { existingUserAddress.userId } returns otherUserId
@@ -182,6 +182,51 @@ class UserAddressServiceTest : FunSpec({
             shouldThrow<CoreException> {
                 userAddressService.update(userId, userAddressId, updateRequest)
             }.errorCode shouldBe UserErrorCode.UNAUTHORIZED_USER_ADDRESS_UPDATE
+        }
+    }
+
+    context("delete") {
+        val userAddressId = 300L
+        val existingUserAddress = mockk<UserAddress>()
+
+        test("사용자 주소를 삭제할 수 있다") {
+            every { userRepository.findById(userId) } returns Optional.of(user)
+            every { userAddressRepository.findById(userAddressId) } returns Optional.of(existingUserAddress)
+            every { existingUserAddress.userId } returns userId
+            every { userAddressRepository.delete(existingUserAddress) } just runs
+
+            userAddressService.delete(userId, userAddressId)
+
+            verify { userAddressRepository.delete(existingUserAddress) }
+        }
+
+        test("존재하지 않는 사용자의 주소를 삭제하려고 하면 USER_NOT_FOUND 예외가 발생한다") {
+            every { userRepository.findById(userId) } returns Optional.empty()
+
+            shouldThrow<CoreException> {
+                userAddressService.delete(userId, userAddressId)
+            }.errorCode shouldBe UserErrorCode.USER_NOT_FOUND
+        }
+
+        test("존재하지 않는 주소를 삭제하려고 하면 USER_ADDRESS_NOT_FOUND 예외가 발생한다") {
+            every { userRepository.findById(userId) } returns Optional.of(user)
+            every { userAddressRepository.findById(userAddressId) } returns Optional.empty()
+
+            shouldThrow<CoreException> {
+                userAddressService.delete(userId, userAddressId)
+            }.errorCode shouldBe UserErrorCode.USER_ADDRESS_NOT_FOUND
+        }
+
+        test("다른 사용자의 주소를 삭제하려고 하면 UNAUTHORIZED_USER_ADDRESS_DELETE 예외가 발생한다") {
+            val otherUserId = 999L
+
+            every { userRepository.findById(userId) } returns Optional.of(user)
+            every { userAddressRepository.findById(userAddressId) } returns Optional.of(existingUserAddress)
+            every { existingUserAddress.userId } returns otherUserId
+
+            shouldThrow<CoreException> {
+                userAddressService.delete(userId, userAddressId)
+            }.errorCode shouldBe UserErrorCode.UNAUTHORIZED_USER_ADDRESS_DELETE
         }
     }
 })

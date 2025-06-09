@@ -76,7 +76,7 @@ class UserAddressControllerRestDocTest : DescribeSpec() {
         describe("PUT /users/addresses/{addressId}") {
             val summary = "유저 배송지 수정"
             it("배송지 정보를 수정할 수 있다.") {
-                every { userAddressService.update(any(), any(),any()) } just Runs
+                every { userAddressService.update(any(), any(), any()) } just Runs
 
                 documentation(
                     identifier = "배송지_수정_성공",
@@ -103,6 +103,32 @@ class UserAddressControllerRestDocTest : DescribeSpec() {
 
                     responseBody {
                         field("data.addressId", "배송지 아이디", 10)
+                        ignoredField("error")
+                    }
+                }
+            }
+        }
+
+        describe("DELETE /users/addresses/{addressId}") {
+            val summary = "유저 배송지 삭제"
+            it("배송지 정보를 삭제할 수 있다.") {
+                every { userAddressService.delete(any(), any()) } just Runs
+
+                documentation(
+                    identifier = "배송지_삭제_성공",
+                    tag = tag,
+                    summary = summary,
+                ) {
+                    requestLine(HttpMethod.DELETE, "/users/addresses/{addressId}") {
+                        pathVariable("addressId", "배송지 아이디", 10)
+                    }
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                    }
+
+                    responseBody {
+                        field("data.message", "응답 메시지", "OK")
                         ignoredField("error")
                     }
                 }

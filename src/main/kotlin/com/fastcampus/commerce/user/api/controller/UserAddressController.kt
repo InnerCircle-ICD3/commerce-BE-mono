@@ -2,10 +2,11 @@ package com.fastcampus.commerce.user.api.controller
 
 import com.fastcampus.commerce.user.api.controller.request.RegisterUserAddressApiRequest
 import com.fastcampus.commerce.user.api.controller.request.UpdateUserAddressApiRequest
+import com.fastcampus.commerce.user.api.controller.response.DeleteUserAddressApiResponse
 import com.fastcampus.commerce.user.api.controller.response.RegisterUserAddressApiResponse
 import com.fastcampus.commerce.user.api.controller.response.UpdateUserAddressApiResponse
 import com.fastcampus.commerce.user.api.service.UserAddressService
-import org.springframework.web.bind.annotation.PatchMapping
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -35,5 +36,14 @@ class UserAddressController(
         val userId = 1L
         userAddressService.update(userId, userAddressId, request.toServiceRequest())
         return UpdateUserAddressApiResponse(userAddressId)
+    }
+
+    @DeleteMapping("/{userAddressId}")
+    fun deleteUserAddress(
+        @PathVariable userAddressId: Long,
+    ): DeleteUserAddressApiResponse {
+        val userId = 1L
+        userAddressService.delete(userId, userAddressId)
+        return DeleteUserAddressApiResponse()
     }
 }
