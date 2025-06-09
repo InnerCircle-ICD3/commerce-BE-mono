@@ -5,8 +5,10 @@ import com.fastcampus.commerce.user.api.controller.request.UpdateUserAddressApiR
 import com.fastcampus.commerce.user.api.controller.response.DeleteUserAddressApiResponse
 import com.fastcampus.commerce.user.api.controller.response.RegisterUserAddressApiResponse
 import com.fastcampus.commerce.user.api.controller.response.UpdateUserAddressApiResponse
+import com.fastcampus.commerce.user.api.controller.response.UserAddressApiResponse
 import com.fastcampus.commerce.user.api.service.UserAddressService
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -19,6 +21,13 @@ import org.springframework.web.bind.annotation.RestController
 class UserAddressController(
     private val userAddressService: UserAddressService,
 ) {
+    @GetMapping
+    fun getUserAddresses(): List<UserAddressApiResponse> {
+        val userId = 1L
+        return userAddressService.getUserAddresses(userId)
+            .map(UserAddressApiResponse::from)
+    }
+
     @PostMapping
     fun registerUserAddress(
         @RequestBody request: RegisterUserAddressApiRequest,

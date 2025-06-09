@@ -11,6 +11,16 @@ interface UserAddressRepository : JpaRepository<UserAddress, Long> {
         select ua 
         from UserAddress ua
         where ua.userId = :userId
+        order by ua.isDefault desc, ua.createdAt desc
+    """,
+    )
+    fun getAllByUserId(userId: Long): List<UserAddress>
+
+    @Query(
+        """
+        select ua 
+        from UserAddress ua
+        where ua.userId = :userId
           and ua.isDefault = true
     """,
     )

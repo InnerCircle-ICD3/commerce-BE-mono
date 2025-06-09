@@ -3,6 +3,7 @@ package com.fastcampus.commerce.user.api.service
 import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.user.api.service.request.RegisterUserAddressRequest
 import com.fastcampus.commerce.user.api.service.request.UpdateUserAddressRequest
+import com.fastcampus.commerce.user.api.service.response.UserAddressResponse
 import com.fastcampus.commerce.user.domain.error.UserErrorCode
 import com.fastcampus.commerce.user.domain.repository.UserAddressRepository
 import com.fastcampus.commerce.user.domain.repository.UserRepository
@@ -14,6 +15,13 @@ class UserAddressService(
     private val userRepository: UserRepository,
     private val userAddressRepository: UserAddressRepository,
 ) {
+    fun getUserAddresses(userId: Long): List<UserAddressResponse> {
+        val user = userRepository.findById(userId)
+            .orElseThrow { throw CoreException(UserErrorCode.USER_NOT_FOUND) }
+        val addresses = userAddressRepository.getAllByUserId(userId)
+        return addresses.map(UserAddressResponse::from)
+    }
+
     @Transactional
     fun register(userId: Long, request: RegisterUserAddressRequest): Long {
         val user = userRepository.findById(userId)

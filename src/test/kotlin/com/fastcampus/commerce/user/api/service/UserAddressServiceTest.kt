@@ -10,6 +10,7 @@ import com.fastcampus.commerce.user.domain.repository.UserAddressRepository
 import com.fastcampus.commerce.user.domain.repository.UserRepository
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.just
@@ -26,6 +27,61 @@ class UserAddressServiceTest : FunSpec({
 
     val userId = 1L
     val user = mockk<User>()
+
+    context("getUserAddresses") {
+        test("사용자의 배송지 목록을 조회할 수 있다") {
+            val address1 = UserAddress(
+                userId = userId,
+                alias = "집",
+                recipientName = "홍길동",
+                recipientPhone = "010-1234-5678",
+                zipCode = "12345",
+                address1 = "서울시 강남구",
+                address2 = "테헤란로 123",
+                isDefault = true,
+            ).apply { id = 100L }
+
+            val address2 = UserAddress(
+                userId = userId,
+                alias = "회사",
+                recipientName = "홍길동",
+                recipientPhone = "010-1234-5678",
+                zipCode = "54321",
+                address1 = "부산시 해운대구",
+                isDefault = false,
+            ).apply { id = 101L }
+
+            every { userRepository.findById(userId) } returns Optional.of(user)
+            every { userAddressRepository.getAllByUserId(userId) } returns listOf(address1, address2)
+
+            val result = userAddressService.getUserAddresses(userId)
+
+            result shouldHaveSize 2
+            result[0].addressId shouldBe 100L
+            result[0].alias shouldBe "집"
+            result[0].isDefault shouldBe true
+            result[1].addressId shouldBe 101L
+            result[1].alias shouldBe "회사"
+            result[1].isDefault shouldBe false
+        }
+
+        test("배송지가 없는 경우 빈 목록을 반환한다") {
+            every { userRepository.findById(userId) } returns Optional.of(user)
+            every { userAddressRepository.getAllByUserId(userId) } returns emptyList()
+
+            val result = userAddressService.getUserAddresses(userId)
+
+            result shouldHaveSize 0
+        }
+
+        test("존재하지 않는 사용자의 배송지를 조회하려고 하면 USER_NOT_FOUND 예외가 발생한다") {
+            every { userRepository.findById(userId) } returns Optional.empty()
+
+            shouldThrow<CoreException> {
+                userAddressService.getUserAddresses(userId)
+            }.errorCode shouldBe UserErrorCode.USER_NOT_FOUND
+        }
+    }
 
     context("register") {
         val registerRequest = RegisterUserAddressRequest(

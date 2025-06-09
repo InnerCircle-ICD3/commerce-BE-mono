@@ -3,6 +3,7 @@ package com.fastcampus.commerce.user.api.controller
 import com.fastcampus.commerce.config.TestSecurityConfig
 import com.fastcampus.commerce.restdoc.documentation
 import com.fastcampus.commerce.user.api.service.UserAddressService
+import com.fastcampus.commerce.user.api.service.response.UserAddressResponse
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
@@ -37,6 +38,50 @@ class UserAddressControllerRestDocTest : DescribeSpec() {
     init {
         beforeSpec {
             RestAssuredMockMvc.mockMvc(mockMvc)
+        }
+
+        describe("GET /users/addresses") {
+            val summary = "유저 배송지 목록조회"
+            it("배송지 목록을 조회할 수 있다") {
+                val addresses = listOf(
+                    UserAddressResponse(
+                        addressId = 1L,
+                        alias = "집",
+                        recipientName = "홍길동",
+                        recipientPhone = "010-1234-5678",
+                        zipCode = "12345",
+                        address1 = "서울시 강남구 테헤란로 123",
+                        address2 = "A동 101호",
+                        isDefault = true,
+                    ),
+                )
+
+                every { userAddressService.getUserAddresses(any()) } returns addresses
+
+                documentation(
+                    identifier = "배송지_목록조회_성공",
+                    tag = tag,
+                    summary = summary,
+                ) {
+                    requestLine(HttpMethod.GET, "/users/addresses")
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                    }
+
+                    responseBody {
+                        field("data[0].addressId", "배송지 ID", 1)
+                        field("data[0].alias", "배송지 별칭", "집")
+                        field("data[0].recipientName", "수령인 이름", "홍길동")
+                        field("data[0].recipientPhone", "수령인 전화번호", "010-1234-5678")
+                        field("data[0].zipCode", "우편번호", "12345")
+                        field("data[0].address1", "기본 주소", "서울시 강남구 테헤란로 123")
+                        optionalField("data[0].address2", "상세 주소", "A동 101호")
+                        field("data[0].isDefault", "기본 배송지 여부", true)
+                        ignoredField("error")
+                    }
+                }
+            }
         }
 
         describe("POST /users/addresses") {
