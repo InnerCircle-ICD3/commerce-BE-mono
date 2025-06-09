@@ -20,7 +20,7 @@ class UserAddress(
     @Column(name = "user_id", nullable = false)
     val userId: Long,
     @Column(nullable = false)
-    val alias: String,
+    var alias: String,
     @Column(nullable = false)
     var recipientName: String,
     @Column(nullable = false)
@@ -29,8 +29,8 @@ class UserAddress(
     var zipCode: String,
     @Column(nullable = false)
     var address1: String,
-    @Column(nullable = false)
-    var address2: String,
+    @Column
+    var address2: String? = null,
     @Column(nullable = false)
     var isDefault: Boolean = false,
 ) : BaseEntity() {
@@ -44,4 +44,8 @@ class UserAddress(
 
     @Column
     var deletedAt: LocalDateTime? = null
+
+    fun unsetAsDefault() {
+        isDefault = false
+    }
 }
