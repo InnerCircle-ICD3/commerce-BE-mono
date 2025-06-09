@@ -1,7 +1,9 @@
 package com.fastcampus.commerce.product.application
 
 import com.fastcampus.commerce.product.application.request.SearchProductRequest
+import com.fastcampus.commerce.product.application.response.CategoryResponse
 import com.fastcampus.commerce.product.application.response.SearchProductResponse
+import com.fastcampus.commerce.product.domain.model.CategoryDetail
 import com.fastcampus.commerce.product.domain.model.ProductCategoryInfo
 import com.fastcampus.commerce.product.domain.model.ProductInfo
 import com.fastcampus.commerce.product.domain.model.SearchProductCondition
@@ -27,6 +29,66 @@ class ProductQueryServiceTest : DescribeSpec(
 
         beforeTest {
             clearMocks(productReader, categoryReader)
+        }
+
+        describe("카테고리 목록 조회") {
+            context("정상 조회") {
+                it("전체 카테고리 목록을 조회할 수 있다") {
+                    val categoryDetails = listOf(
+                        CategoryDetail(
+                            groupId = 1L,
+                            groupTitle = "cup_size",
+                            categoryId = 1L,
+                            categoryName = "Small",
+                            sortOrder = 1,
+                        ),
+                        CategoryDetail(
+                            groupId = 1L,
+                            groupTitle = "cup_size",
+                            categoryId = 2L,
+                            categoryName = "Large",
+                            sortOrder = 2,
+                        ),
+                        CategoryDetail(
+                            groupId = 2L,
+                            groupTitle = "intensity",
+                            categoryId = 3L,
+                            categoryName = "Mild",
+                            sortOrder = 1,
+                        ),
+                        CategoryDetail(
+                            groupId = 2L,
+                            groupTitle = "intensity",
+                            categoryId = 4L,
+                            categoryName = "Strong",
+                            sortOrder = 2,
+                        ),
+                    )
+
+                    every { categoryReader.getCategoryDetail() } returns categoryDetails
+
+                    val result = productQueryService.getCategories()
+
+                    result shouldBe listOf(
+                        CategoryResponse(groupTitle = "cup_size", id = 1L, name = "Small"),
+                        CategoryResponse(groupTitle = "cup_size", id = 2L, name = "Large"),
+                        CategoryResponse(groupTitle = "intensity", id = 3L, name = "Mild"),
+                        CategoryResponse(groupTitle = "intensity", id = 4L, name = "Strong"),
+                    )
+
+                    verify(exactly = 1) { categoryReader.getCategoryDetail() }
+                }
+
+                it("카테고리가 없는 경우 빈 리스트를 반환한다") {
+                    every { categoryReader.getCategoryDetail() } returns emptyList()
+
+                    val result = productQueryService.getCategories()
+
+                    result shouldBe emptyList()
+
+                    verify(exactly = 1) { categoryReader.getCategoryDetail() }
+                }
+            }
         }
 
         describe("상품 목록 조회") {
