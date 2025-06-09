@@ -3,6 +3,7 @@ package com.fastcampus.commerce.product.interfaces
 import com.fastcampus.commerce.common.response.PagedData
 import com.fastcampus.commerce.product.application.ProductQueryService
 import com.fastcampus.commerce.product.interfaces.request.SearchProductApiRequest
+import com.fastcampus.commerce.product.interfaces.response.CategoryApiResponse
 import com.fastcampus.commerce.product.interfaces.response.ProductDetailApiResponse
 import com.fastcampus.commerce.product.interfaces.response.SearchProductApiResponse
 import org.springframework.data.domain.Pageable
@@ -18,6 +19,12 @@ import org.springframework.web.bind.annotation.RestController
 class ProductController(
     private val productQueryService: ProductQueryService,
 ) {
+    @GetMapping("/categories")
+    fun getCategories(): CategoryApiResponse {
+        val categoryResponses = productQueryService.getCategories()
+        return CategoryApiResponse.from(categoryResponses)
+    }
+
     @GetMapping
     fun searchProducts(
         @ModelAttribute request: SearchProductApiRequest,

@@ -8,8 +8,7 @@ spring:
       - classpath:config/file.yml
       - classpath:config/logging.yml
       - classpath:config/web.yml
-      - classpath:config/secret/auth.yml
-      - classpath:config/secret/db.yml
+      - classpath:config/auth.yml
   web:
     resources:
       static-locations:

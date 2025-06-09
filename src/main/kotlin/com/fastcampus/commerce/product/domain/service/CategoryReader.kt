@@ -1,6 +1,7 @@
 package com.fastcampus.commerce.product.domain.service
 
 import com.fastcampus.commerce.product.domain.entity.ProductCategory
+import com.fastcampus.commerce.product.domain.model.CategoryDetail
 import com.fastcampus.commerce.product.domain.model.CategoryType
 import com.fastcampus.commerce.product.domain.model.ProductCategoryInfo
 import com.fastcampus.commerce.product.domain.repository.CategoryRepository
@@ -33,5 +34,9 @@ class CategoryReader(
 
     fun getProductCategory(productId: Long): ProductCategoryInfo {
         return getProductCategoryMap(listOf(productId))[productId] ?: ProductCategoryInfo.empty()
+    }
+
+    fun getCategoryDetail(): List<CategoryDetail> {
+        return categoryRepository.getCategoryDetail()
     }
 }

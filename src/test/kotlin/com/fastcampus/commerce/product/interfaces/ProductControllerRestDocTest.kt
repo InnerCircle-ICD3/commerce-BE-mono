@@ -2,6 +2,7 @@ package com.fastcampus.commerce.product.interfaces
 
 import com.fastcampus.commerce.config.TestSecurityConfig
 import com.fastcampus.commerce.product.application.ProductQueryService
+import com.fastcampus.commerce.product.application.response.CategoryResponse
 import com.fastcampus.commerce.product.application.response.ProductDetailResponse
 import com.fastcampus.commerce.product.application.response.SearchProductResponse
 import com.fastcampus.commerce.restdoc.documentation
@@ -38,6 +39,55 @@ class ProductControllerRestDocTest : DescribeSpec() {
     init {
         beforeSpec {
             RestAssuredMockMvc.mockMvc(mockMvc)
+        }
+
+        describe("GET /products/categories - 카테고리 목록 조회") {
+            val summary = "상품 카테고리 목록을 조회할 수 있다."
+
+            it("전체 카테고리 목록을 조회할 수 있다.") {
+                val categoryResponses = listOf(
+                    CategoryResponse(groupTitle = "cup_size", id = 1L, name = "25ml"),
+                    CategoryResponse(groupTitle = "cup_size", id = 2L, name = "80ml"),
+                    CategoryResponse(groupTitle = "intensity", id = 3L, name = "1"),
+                    CategoryResponse(groupTitle = "intensity", id = 4L, name = "2"),
+                )
+
+                every {
+                    productQueryService.getCategories()
+                } returns categoryResponses
+
+                documentation(
+                    identifier = "카테고리_목록_조회_성공",
+                    tag = tag,
+                    summary = summary,
+                ) {
+                    requestLine(HttpMethod.GET, "/products/categories")
+
+                    responseBody {
+                        field(
+                            "data.cupSizes",
+                            "컵 사이즈 목록",
+                            listOf(
+                                mapOf("id" to "1", "label" to "25ml"),
+                                mapOf("id" to "2", "label" to "80ml"),
+                            ),
+                        )
+                        field("data.cupSizes[0].id", "카테고리 ID", "1")
+                        field("data.cupSizes[0].label", "카테고리명", "25ml")
+                        field(
+                            "data.intensities",
+                            "원두 강도 목록",
+                            listOf(
+                                mapOf("id" to "3", "label" to "1"),
+                                mapOf("id" to "4", "label" to "2"),
+                            ),
+                        )
+                        field("data.intensities[0].id", "카테고리 ID", "3")
+                        field("data.intensities[0].label", "카테고리명", "1")
+                        ignoredField("error")
+                    }
+                }
+            }
         }
 
         describe("GET /products - 상품 목록 조회") {
