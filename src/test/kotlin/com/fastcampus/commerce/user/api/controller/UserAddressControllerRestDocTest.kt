@@ -84,6 +84,117 @@ class UserAddressControllerRestDocTest : DescribeSpec() {
             }
         }
 
+        describe("GET /users/addresses/{userAddressId}") {
+            val summary = "유저 배송지 조회"
+            it("배송지를 조회할 수 있다") {
+                val address =
+                    UserAddressResponse(
+                        addressId = 1L,
+                        alias = "집",
+                        recipientName = "홍길동",
+                        recipientPhone = "010-1234-5678",
+                        zipCode = "12345",
+                        address1 = "서울시 강남구 테헤란로 123",
+                        address2 = "A동 101호",
+                        isDefault = true,
+                    )
+
+                every { userAddressService.getUserAddress(any(), any()) } returns address
+
+                documentation(
+                    identifier = "배송지_조회_성공",
+                    tag = tag,
+                    summary = summary,
+                ) {
+                    requestLine(HttpMethod.GET, "/users/addresses/{userAddressId}") {
+                        pathVariable("userAddressId", "배송지 아이디", 1)
+                    }
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                    }
+
+                    responseBody {
+                        field("data.addressId", "배송지 ID", 1)
+                        field("data.alias", "배송지 별칭", "집")
+                        field("data.recipientName", "수령인 이름", "홍길동")
+                        field("data.recipientPhone", "수령인 전화번호", "010-1234-5678")
+                        field("data.zipCode", "우편번호", "12345")
+                        field("data.address1", "기본 주소", "서울시 강남구 테헤란로 123")
+                        optionalField("data.address2", "상세 주소", "A동 101호")
+                        field("data.isDefault", "기본 배송지 여부", true)
+                        ignoredField("error")
+                    }
+                }
+            }
+        }
+
+        describe("GET /users/addresses/default") {
+            val summary = "기본 배송지 조회"
+            it("기본 배송지를 조회할 수 있다") {
+                val address =
+                    UserAddressResponse(
+                        addressId = 1L,
+                        alias = "집",
+                        recipientName = "홍길동",
+                        recipientPhone = "010-1234-5678",
+                        zipCode = "12345",
+                        address1 = "서울시 강남구 테헤란로 123",
+                        address2 = "A동 101호",
+                        isDefault = true,
+                    )
+
+                every { userAddressService.findDefaultUserAddress(any()) } returns address
+
+                documentation(
+                    identifier = "기본배송지_조회_성공",
+                    tag = tag,
+                    summary = summary,
+                ) {
+                    requestLine(HttpMethod.GET, "/users/addresses/default")
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                    }
+
+                    responseBody {
+                        field("data.hasDefault", "기본 배송지 존재 여부", true)
+                        field("data.address.addressId", "배송지 ID", 1)
+                        field("data.address.alias", "배송지 별칭", "집")
+                        field("data.address.recipientName", "수령인 이름", "홍길동")
+                        field("data.address.recipientPhone", "수령인 전화번호", "010-1234-5678")
+                        field("data.address.zipCode", "우편번호", "12345")
+                        field("data.address.address1", "기본 주소", "서울시 강남구 테헤란로 123")
+                        optionalField("data.address.address2", "상세 주소", "A동 101호")
+                        field("data.address.isDefault", "기본 배송지 여부", true)
+                        ignoredField("error")
+                    }
+                }
+            }
+
+            it("기본 배송지가 없으면  조회할 수 있다") {
+                every { userAddressService.findDefaultUserAddress(any()) } returns null
+
+                documentation(
+                    identifier = "기본배송지_없음",
+                    tag = tag,
+                    summary = summary,
+                ) {
+                    requestLine(HttpMethod.GET, "/users/addresses/default")
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                    }
+
+                    responseBody {
+                        field("data.hasDefault", "기본 배송지 존재 여부", false)
+                        optionalField("data.address", "기본 배송지", null)
+                        ignoredField("error")
+                    }
+                }
+            }
+        }
+
         describe("POST /users/addresses") {
             val summary = "유저 배송지 등록"
             it("배송지를 등록할 수 있다") {

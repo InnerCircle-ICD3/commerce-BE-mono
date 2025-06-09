@@ -16,6 +16,8 @@ interface UserAddressRepository : JpaRepository<UserAddress, Long> {
     )
     fun getAllByUserId(userId: Long): List<UserAddress>
 
+    fun findByIdAndUserId(addressId: Long, userId: Long): Optional<UserAddress>
+
     @Query(
         """
         select ua 

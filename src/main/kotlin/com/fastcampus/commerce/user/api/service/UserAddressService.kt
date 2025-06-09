@@ -21,6 +21,20 @@ class UserAddressService(
         return addresses.map(UserAddressResponse::from)
     }
 
+    @Transactional(readOnly = true)
+    fun getUserAddress(userId: Long, addressId: Long): UserAddressResponse {
+        val address = userAddressRepository.findByIdAndUserId(addressId, userId)
+            .orElseThrow { throw CoreException(UserErrorCode.USER_ADDRESS_NOT_FOUND) }
+        return UserAddressResponse.from(address)
+    }
+
+    @Transactional(readOnly = true)
+    fun findDefaultUserAddress(userId: Long): UserAddressResponse? {
+        return userAddressRepository.findDefaultByUserId(userId)
+            .map { UserAddressResponse.from(it) }
+            .orElse(null)
+    }
+
     @Transactional
     fun register(userId: Long, request: RegisterUserAddressRequest): Long {
         val user = userRepository.findById(userId)
