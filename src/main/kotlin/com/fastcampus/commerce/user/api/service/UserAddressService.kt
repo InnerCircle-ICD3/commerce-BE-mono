@@ -2,6 +2,7 @@ package com.fastcampus.commerce.user.api.service
 
 import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.user.api.service.request.RegisterUserAddressRequest
+import com.fastcampus.commerce.user.api.service.request.UpdateUserAddressRequest
 import com.fastcampus.commerce.user.domain.error.UserErrorCode
 import com.fastcampus.commerce.user.domain.repository.UserAddressRepository
 import com.fastcampus.commerce.user.domain.repository.UserRepository
@@ -23,5 +24,22 @@ class UserAddressService(
             defaultAddress.ifPresent { address -> address.unsetAsDefault() }
         }
         return userAddressRepository.save(request.toEntity(userId)).id!!
+    }
+
+    @Transactional
+    fun update(userId: Long, userAddressId: Long, request: UpdateUserAddressRequest) {
+        val user = userRepository.findById(userId)
+            .orElseThrow { throw CoreException(UserErrorCode.USER_NOT_FOUND) }
+
+        val userAddress = userAddressRepository.findById(userAddressId)
+            .orElseThrow { throw CoreException(UserErrorCode.USER_ADDRESS_NOT_FOUND) }
+        if (userAddress.userId != userId) {
+            throw CoreException(UserErrorCode.UNAUTHORIZED_USER_ADDRESS_UPDATE)
+        }
+        if (request.isDefault) {
+            val defaultAddress = userAddressRepository.findDefaultByUserId(userId)
+            defaultAddress.ifPresent { address -> address.unsetAsDefault() }
+        }
+        userAddress.update(request.toUpdater())
     }
 }

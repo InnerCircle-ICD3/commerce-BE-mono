@@ -1,6 +1,7 @@
 package com.fastcampus.commerce.user.domain.entity
 
 import com.fastcampus.commerce.common.entity.BaseEntity
+import com.fastcampus.commerce.user.domain.model.UserAddressUpdater
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.annotation.LastModifiedDate
@@ -47,5 +48,15 @@ class UserAddress(
 
     fun unsetAsDefault() {
         isDefault = false
+    }
+
+    fun update(updater: UserAddressUpdater) {
+        alias = updater.alias
+        recipientName = updater.recipientName
+        recipientPhone = updater.recipientPhone
+        zipCode = updater.zipCode
+        address1 = updater.address1
+        address2 = updater.address2
+        isDefault = updater.isDefault
     }
 }
