@@ -8,4 +8,6 @@ enum class AuthErrorCode(
     INVALID_TOKEN("AUTH-001", "Invalid token", LogLevel.WARN),
     EXPIRED_TOKEN("AUTH-002", "Expired token", LogLevel.WARN),
     TOKEN_NOT_FOUND("AUTH-003", "Token not found", LogLevel.WARN),
+    UNAUTHENTICATED("AUTH-004", "User is not authenticated", LogLevel.WARN),
+    USER_NOT_FOUND("AUTH-005", "User not found", LogLevel.WARN),
 }
