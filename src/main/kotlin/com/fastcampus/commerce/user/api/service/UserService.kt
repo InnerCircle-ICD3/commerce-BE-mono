@@ -1,7 +1,11 @@
 package com.fastcampus.commerce.user.api.service
 
+import com.fastcampus.commerce.auth.api.dto.LoginRequest
+import com.fastcampus.commerce.auth.api.dto.RegisterRequest
+import com.fastcampus.commerce.auth.interfaces.web.security.oauth.NaverUserResponse
 import com.fastcampus.commerce.common.error.AuthErrorCode
 import com.fastcampus.commerce.common.error.CoreException
+import com.fastcampus.commerce.user.api.dto.UserDto
 import com.fastcampus.commerce.user.domain.entity.User
 import com.fastcampus.commerce.user.domain.enums.UserRole
 import com.fastcampus.commerce.user.domain.repository.UserRepository
@@ -15,6 +19,47 @@ class UserService(
     private val userRoleConnectionRepository: UserRoleConnectionRepository,
     private val userRoleRepository: UserRoleRepository
 ) {
+
+    fun registerUser(request: RegisterRequest): UserDto {
+        return UserDto(
+            id = "",
+            externalId = "",
+            name = "",
+            email = request.email,
+            nickname = "User",
+            profileImage = "",
+            roles = emptyList(),
+        )
+    }
+
+    fun loginUser(request: LoginRequest): UserDto {
+        return UserDto(
+            id = "",
+            externalId = "",
+            name = "",
+            email = request.email,
+            nickname = "User",
+            profileImage = "",
+            roles = emptyList(),
+        )
+    }
+
+    fun deleteUser(userId: Long) {
+        // TODO: delete 처리
+    }
+
+    fun saveOrUpdateUser(naverUser: NaverUserResponse): UserDto {
+        return UserDto(
+            id = "",
+            externalId = "",
+            name = "",
+            email = naverUser.email,
+            nickname = "User",
+            profileImage = "",
+            roles = emptyList(),
+        )
+    }
+
     fun findById(userId: Long): User {
         return userRepository.findById(userId)
             .orElseThrow { throw CoreException(AuthErrorCode.USER_NOT_FOUND) }
