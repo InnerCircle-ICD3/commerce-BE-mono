@@ -1,6 +1,6 @@
 package com.fastcampus.commerce.product.interfaces
 
-import com.fastcampus.commerce.config.TestSecurityConfig
+import com.fastcampus.commerce.config.TestConfig
 import com.fastcampus.commerce.product.application.ProductQueryService
 import com.fastcampus.commerce.product.application.response.CategoryResponse
 import com.fastcampus.commerce.product.application.response.ProductDetailResponse
@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.MockMvc
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
 @WebMvcTest(ProductController::class)
-@Import(TestSecurityConfig::class)
+@Import(TestConfig::class)
 class ProductControllerRestDocTest : DescribeSpec() {
     override fun extensions() = listOf(SpringExtension)
 

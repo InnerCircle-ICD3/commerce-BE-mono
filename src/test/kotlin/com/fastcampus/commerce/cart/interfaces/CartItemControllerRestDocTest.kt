@@ -1,7 +1,7 @@
 package com.fastcampus.commerce.cart.interfaces
 
 import com.fastcampus.commerce.cart.application.CartItemService
-import com.fastcampus.commerce.config.TestSecurityConfig
+import com.fastcampus.commerce.config.TestConfig
 import com.fastcampus.commerce.product.domain.entity.Inventory
 import com.fastcampus.commerce.product.domain.service.ProductReader
 import com.fastcampus.commerce.restdoc.documentation
@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.MockMvc
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
 @WebMvcTest(CartItemController::class)
-@Import(TestSecurityConfig::class)
+@Import(TestConfig::class)
 class CartItemControllerRestDocTest : DescribeSpec() {
     override fun extensions() = listOf(SpringExtension)
 

@@ -1,6 +1,6 @@
 package com.fastcampus.commerce.file.interfaces
 
-import com.fastcampus.commerce.config.TestSecurityConfig
+import com.fastcampus.commerce.config.TestConfig
 import com.fastcampus.commerce.file.application.FileCommandService
 import com.fastcampus.commerce.file.application.response.GeneratePresignedUrlResponse
 import com.fastcampus.commerce.file.interfaces.request.GeneratePresignedUrlApiRequest
@@ -23,7 +23,7 @@ import java.util.UUID
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
 @WebMvcTest(FileController::class)
-@Import(TestSecurityConfig::class)
+@Import(TestConfig::class)
 class FileControllerRestDocTest : DescribeSpec() {
     override fun extensions() = listOf(SpringExtension)
 
