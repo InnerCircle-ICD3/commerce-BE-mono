@@ -1,6 +1,6 @@
 package com.fastcampus.commerce.user.api.controller
 
-import com.fastcampus.commerce.config.TestSecurityConfig
+import com.fastcampus.commerce.config.TestConfig
 import com.fastcampus.commerce.restdoc.documentation
 import com.fastcampus.commerce.user.api.service.UserAddressService
 import com.fastcampus.commerce.user.api.service.response.UserAddressResponse
@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.MockMvc
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
 @WebMvcTest(UserAddressController::class)
-@Import(TestSecurityConfig::class)
+@Import(TestConfig::class)
 class UserAddressControllerRestDocTest : DescribeSpec() {
     override fun extensions() = listOf(SpringExtension)
 

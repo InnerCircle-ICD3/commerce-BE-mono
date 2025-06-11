@@ -2,14 +2,12 @@ package com.fastcampus.commerce.review.interfaces.response
 
 import com.fastcampus.commerce.review.application.response.AdminReplyResponse
 import com.fastcampus.commerce.review.application.response.ProductReviewResponse
-import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.LocalDateTime
 
 data class ProductReviewApiResponse(
     val reviewId: Long,
     val rating: Int,
     val content: String,
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     val createdAt: LocalDateTime,
     val adminReply: AdminReplyApiResponse? = null,
 ) {
@@ -27,7 +25,6 @@ data class ProductReviewApiResponse(
 
 data class AdminReplyApiResponse(
     val content: String,
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     val createdAt: LocalDateTime,
 ) {
     companion object {

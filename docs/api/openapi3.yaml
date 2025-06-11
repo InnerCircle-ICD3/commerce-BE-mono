@@ -64,6 +64,93 @@ paths:
                       },
                       "error" : null
                     }
+  /admin/reviews:
+    get:
+      tags:
+      - Admin-Review
+      summary: 관리자의 리뷰 검색
+      operationId: 관리자_리뷰목록_조회_성공
+      parameters:
+      - name: productId
+        in: query
+        description: 상품 아이디
+        required: false
+        schema:
+          type: string
+      - name: productName
+        in: query
+        description: 상품명
+        required: false
+        schema:
+          type: string
+      - name: rating
+        in: query
+        description: 별점(1~5)
+        required: false
+        schema:
+          type: string
+      - name: content
+        in: query
+        description: 리뷰 내용
+        required: false
+        schema:
+          type: string
+      - name: period
+        in: query
+        description: "작성일 기간(3, 6, 9, 12월)"
+        required: false
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: "페이지(기본 값: 1)"
+        required: false
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/admin-reviews1949273614"
+              examples:
+                관리자_리뷰목록_조회_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "content" : [ {
+                          "reviewId" : 10,
+                          "rating" : 5,
+                          "content" : "좋아요.",
+                          "adminReply" : {
+                            "content" : "감사합니다.",
+                            "createdAt" : "2025-06-12T12:00"
+                          },
+                          "user" : {
+                            "userId" : 1,
+                            "nickname" : "커피좋아"
+                          },
+                          "product" : {
+                            "productId" : 1,
+                            "productName" : "스타벅스 캡슐커피"
+                          },
+                          "createdAt" : "2025-06-12T12:00"
+                        } ],
+                        "page" : 1,
+                        "size" : 10,
+                        "totalPages" : 2,
+                        "totalElements" : 11
+                      },
+                      "error" : null
+                    }
   /admin/products/selling-status:
     get:
       tags:
@@ -1612,6 +1699,86 @@ components:
             key:
               type: string
               description: S3 Object Key
+    admin-reviews1949273614:
+      type: object
+      properties:
+        data:
+          required:
+          - page
+          - size
+          - totalElements
+          - totalPages
+          type: object
+          properties:
+            size:
+              type: number
+              description: 페이지 사이즈(기본값 10)
+            totalPages:
+              type: number
+              description: 전체 페이지 수
+            page:
+              type: number
+              description: 현재 페이지 (기본값 1)
+            content:
+              type: array
+              items:
+                required:
+                - content
+                - createdAt
+                - rating
+                - reviewId
+                type: object
+                properties:
+                  createdAt:
+                    type: string
+                    description: 리뷰 작성일
+                  product:
+                    required:
+                    - productId
+                    - productName
+                    type: object
+                    properties:
+                      productId:
+                        type: number
+                        description: 리뷰 대상 상품 아이디
+                      productName:
+                        type: string
+                        description: 리뷰 대상 상품명
+                  rating:
+                    type: number
+                    description: 별점
+                  user:
+                    required:
+                    - nickname
+                    - userId
+                    type: object
+                    properties:
+                      nickname:
+                        type: string
+                        description: 리뷰 작성자 닉네임
+                      userId:
+                        type: number
+                        description: 리뷰 작성자 아이디
+                  reviewId:
+                    type: number
+                    description: 리뷰 아이디
+                  adminReply:
+                    type: object
+                    properties:
+                      createdAt:
+                        type: string
+                        description: 관리자 답글 작성일
+                        nullable: true
+                      content:
+                        type: string
+                        description: 관리자 답글 내용
+                        nullable: true
+                  content:
+                    type: string
+                    description: 리뷰 내용
+            totalElements:
+              type: number
+              description: 총 수
     admin-products-productId-1789436874:
       required:
       - cupSizeId
