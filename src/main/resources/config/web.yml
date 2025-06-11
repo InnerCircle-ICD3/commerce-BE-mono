@@ -3,7 +3,7 @@ spring:
     web:
       pageable:
         one-indexed-parameters: true
-        default-page-size: 20
+        default-page-size: 10
         max-page-size: 50
   jackson:
     default-property-inclusion: always
