@@ -19,8 +19,6 @@ class RoleBasedUserArgumentResolver(
 ) : HandlerMethodArgumentResolver {
 
     override fun supportsParameter(parameter: MethodParameter): Boolean {
-        println("supportsParameter in")
-        println("supportsParameter parameter: ${parameter.parameterName}")
         return parameter.hasParameterAnnotation(WithRoles::class.java)
     }
 
@@ -30,19 +28,13 @@ class RoleBasedUserArgumentResolver(
         webRequest: NativeWebRequest,
         binderFactory: WebDataBinderFactory?
     ): Any? {
-        println("resolveArgument in")
-        println("resolveArgument parameter: ${parameter.parameterName}")
         val userId = SecurityContextHolder.getContext().authentication?.name?.toLongOrNull()
             ?: throw CoreException(AuthErrorCode.UNAUTHENTICATED)
-        println("resolveArgument userId: $userId")
 
         val withRole = parameter.getParameterAnnotation(WithRoles::class.java)!!
-        println("resolveArgument withRole: ${withRole.value.joinToString()}")
         val requiredRoles = withRole.value // Array<UserRole>
-        println("resolveArgument requiredRoles: ${requiredRoles.joinToString()}")
 
         val user = userService.findById(userId)
-        println("resolveArgument user: $user")
 
         if (!userService.hasRole(userId, requiredRoles)) {
             throw AccessDeniedException("Required role: ${requiredRoles.joinToString()}")

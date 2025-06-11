@@ -17,7 +17,6 @@ class CustomOAuth2FailureHandler : AuthenticationFailureHandler {
         exception: AuthenticationException?,
     ) {
         // 1. 실패 로그 기록 (원인 파악에 필수)
-        println("OAuth2 로그인 실패: ${exception?.message}")
         log.info("OAuth2 로그인 실패 원인: ${exception?.cause}")
 
         // 2. 실패 시 로그인 페이지로 리다이렉트 + 에러 파라미터 전달

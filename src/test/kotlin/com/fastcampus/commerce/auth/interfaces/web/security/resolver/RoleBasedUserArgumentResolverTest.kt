@@ -46,14 +46,11 @@ class RoleBasedUserArgumentResolverTest {
             nickname = "testNickName"
         )
         every { userService.findById(userId) } returns user
-        println("test user::: "+user)
         every { userService.hasRole(userId, arrayOf(UserRole.ADMIN)) } returns true
 
         // SecurityContext 세팅 (Spring Security Mock)
         val authentication = UsernamePasswordAuthenticationToken(userId.toString(), null, listOf())
-        println("authentication: "+authentication)
         SecurityContextHolder.getContext().authentication = authentication
-        println("SecurityContextHolder.getContext().authentication: "+SecurityContextHolder.getContext().authentication)
 
         // when & then
         mockMvc.perform(get("/api/test/with-roles"))

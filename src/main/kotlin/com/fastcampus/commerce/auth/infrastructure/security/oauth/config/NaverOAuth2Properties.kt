@@ -16,12 +16,6 @@ data class NaverOAuth2Properties(
 ) {
     @PostConstruct
     fun logProps() {
-        println("Naver OAuth2 Config:")
-        println("- clientId: $clientId")
-        println("- clientSecret: $clientSecret")
-        println("- redirectUri: $redirectUri")
-        println("- authorizationGrantType: $authorizationGrantType")
-        println("- scope: $scope")
         log.info("Naver OAuth2 NaverOAuth2Properties")
         log.info("- clientId: $clientId")
         log.info("- clientSecret: $clientSecret")

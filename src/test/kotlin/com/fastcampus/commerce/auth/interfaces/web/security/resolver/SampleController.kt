@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController
 class SampleController {
     @GetMapping("/api/test/with-roles")
     fun getWithRole(@WithRoles(arrayOf(UserRole.ADMIN)) user: User): ResponseEntity<String> {
-        println("user: $user")
         return ResponseEntity.ok("ok:${user.name}")
     }
 }
