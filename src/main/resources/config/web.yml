@@ -7,7 +7,6 @@ spring:
         max-page-size: 50
   jackson:
     default-property-inclusion: always
-    date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
     time-zone: Asia/Seoul
   mvc:
     contentnegotiation:
