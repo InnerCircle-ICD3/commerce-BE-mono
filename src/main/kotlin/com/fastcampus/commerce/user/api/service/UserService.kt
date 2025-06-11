@@ -65,10 +65,6 @@ class UserService(
             .orElseThrow { throw CoreException(AuthErrorCode.USER_NOT_FOUND) }
     }
 
-    fun findByEmail(email: String): User? {
-        return userRepository.findByEmail(email)
-    }
-
     fun hasRole(userId: Long, requiredRoles: Array<UserRole>): Boolean {
         val userRoleConnections = userRoleConnectionRepository.findAllByUserId(userId)
         val userRoleIds = userRoleConnections.map { it.roleId }
