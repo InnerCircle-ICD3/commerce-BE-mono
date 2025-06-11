@@ -34,6 +34,7 @@ data class GetOrderApiResponse(
 )
 
 data class GetOrderItemApiResponse(
+    val orderItemId: Long,
     val productSnapshotId: Long,
     val name: String,
     val thumbnail: String,

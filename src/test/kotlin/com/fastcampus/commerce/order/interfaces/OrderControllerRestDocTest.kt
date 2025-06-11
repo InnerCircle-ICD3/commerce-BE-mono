@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Import
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.test.web.servlet.MockMvc
+import java.time.LocalDateTime
 
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
@@ -40,14 +41,14 @@ class OrderControllerRestDocTest : DescribeSpec() {
                     tag = tag,
                     summary = summary,
                 ) {
-                    requestLine(HttpMethod.POST, "/orders/prepare")
+                    requestLine(HttpMethod.GET, "/orders/prepare")
 
                     requestHeaders {
                         header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
                     }
 
-                    requestBody {
-                        field("cartItemIds", "장바구니 아이템 아이디", listOf(1L))
+                    queryParameters {
+                        field("cartItemIds", "장바구니 아이템 아이디", "1,2,3")
                     }
 
                     responseBody {
@@ -146,8 +147,10 @@ class OrderControllerRestDocTest : DescribeSpec() {
                     responseBody {
                         field("data.content[0].orderNumber", "주문 번호", "ORD20250609123456789")
                         field("data.content[0].orderName", "주문명", "스페셜 리버즈 외 3건")
+                        field("data.content[0].mainProductThumbnail", "대표 상품 썸네일", "https://example.com/thumbnail.jpg")
                         field("data.content[0].orderStatus", "주문 상태", "배송 준비중")
                         field("data.content[0].finalTotalPrice", "최종 결제 금액", 13000)
+                        field("data.content[0].orderedAt", "주문 날짜", LocalDateTime.of(2025, 6, 8, 12, 34).toString())
                         field("data.content[0].cancellable", "취소 가능 여부", true)
                         field("data.content[0].refundable", "환불 가능 여부", false)
                         field("data.page", "현재 페이지 (기본값 1)", 1)
@@ -188,6 +191,7 @@ class OrderControllerRestDocTest : DescribeSpec() {
                         field("data.itemsSubTotal", "상품 금액 합계", 10000)
                         field("data.shippingFee", "배송비", 3000)
                         field("data.finalTotalPrice", "최종 결제 금액", 13000)
+                        field("data.items[0].orderItemId", "주문 아이템 ID", 1)
                         field("data.items[0].productSnapshotId", "상품 스냅샷 ID", 1)
                         field("data.items[0].name", "상품명", "상품명")
                         field("data.items[0].thumbnail", "상품 썸네일 URL", "https://example.com/thumbnail.jpg")

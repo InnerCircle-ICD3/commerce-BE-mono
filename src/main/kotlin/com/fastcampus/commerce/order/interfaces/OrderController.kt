@@ -3,7 +3,6 @@ package com.fastcampus.commerce.order.interfaces
 import com.fastcampus.commerce.common.response.EnumResponse
 import com.fastcampus.commerce.common.response.PagedData
 import com.fastcampus.commerce.order.interfaces.request.OrderApiRequest
-import com.fastcampus.commerce.order.interfaces.request.PrepareOrderApiRequest
 import com.fastcampus.commerce.order.interfaces.request.SearchOrderApiRequest
 import com.fastcampus.commerce.order.interfaces.response.GetOrderApiResponse
 import com.fastcampus.commerce.order.interfaces.response.GetOrderItemApiResponse
@@ -23,15 +22,16 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
 
 @RequestMapping("/orders")
 @RestController
 class OrderController {
-    @PostMapping("/prepare")
+    @GetMapping("/prepare")
     fun prepareOrders(
-        @RequestBody request: PrepareOrderApiRequest,
+        @RequestParam cartItemIds: String,
     ): PrepareOrderApiResponse {
         return PrepareOrderApiResponse(
             cartItemIds = listOf(1L),
@@ -76,8 +76,10 @@ class OrderController {
         val searchOrderApiResponse = SearchOrderApiResponse(
             orderNumber = "ORD20250609123456789",
             orderName = "스페셜 리버즈 외 3건",
+            mainProductThumbnail = "https://example.com/thumbnail.jpg",
             orderStatus = "배송 준비중",
             finalTotalPrice = 13000,
+            orderedAt = LocalDateTime.of(2025, 6, 8, 12, 34),
             cancellable = true,
             refundable = false,
         )
@@ -101,6 +103,7 @@ class OrderController {
             finalTotalPrice = 13000,
             items = listOf(
                 GetOrderItemApiResponse(
+                    orderItemId = 1L,
                     productSnapshotId = 1L,
                     name = "상품명",
                     thumbnail = "https://example.com/thumbnail.jpg",
