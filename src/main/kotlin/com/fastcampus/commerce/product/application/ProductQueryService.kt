@@ -1,8 +1,10 @@
 package com.fastcampus.commerce.product.application
 
 import com.fastcampus.commerce.product.application.request.SearchProductRequest
+import com.fastcampus.commerce.product.application.response.CategoryResponse
 import com.fastcampus.commerce.product.application.response.ProductDetailResponse
 import com.fastcampus.commerce.product.application.response.SearchProductResponse
+import com.fastcampus.commerce.product.domain.model.CategoryDetail
 import com.fastcampus.commerce.product.domain.model.ProductCategoryInfo
 import com.fastcampus.commerce.product.domain.service.CategoryReader
 import com.fastcampus.commerce.product.domain.service.ProductReader
@@ -15,6 +17,11 @@ class ProductQueryService(
     private val productReader: ProductReader,
     private val categoryReader: CategoryReader,
 ) {
+    fun getCategories(): List<CategoryResponse> {
+        val categories: List<CategoryDetail> = categoryReader.getCategoryDetail()
+        return categories.map(CategoryResponse::from)
+    }
+
     fun getProducts(request: SearchProductRequest, pageable: Pageable): Page<SearchProductResponse> {
         val productInfos = productReader.searchProducts(request.toCondition(), pageable)
         val productIds = productInfos.content.map { it.id }

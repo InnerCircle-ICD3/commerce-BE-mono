@@ -12,7 +12,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 
 @SQLDelete(sql = "update roles set deleted_at = now() where id = ?")
-@SQLRestriction("deletedAt is null")
+@SQLRestriction("deleted_at is null")
 @Table(name = "roles")
 @Entity
 class Role(

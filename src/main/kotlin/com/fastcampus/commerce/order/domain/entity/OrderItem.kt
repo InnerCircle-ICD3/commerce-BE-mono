@@ -12,7 +12,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.Table
 
 @SQLDelete(sql = "update order_items set deleted_at = now() where id = ?")
-@SQLRestriction("deletedAt is null")
+@SQLRestriction("deleted_at is null")
 @Table(name = "order_items")
 @Entity
 class OrderItem(

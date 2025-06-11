@@ -10,6 +10,7 @@ COPY gradle ./gradle
 COPY docs ./docs
 
 COPY src ./src
+COPY src/main/resources/config/secret ./src/main/resources/config/secret
 
 RUN chmod +x gradlew
 RUN ./gradlew build -x test \

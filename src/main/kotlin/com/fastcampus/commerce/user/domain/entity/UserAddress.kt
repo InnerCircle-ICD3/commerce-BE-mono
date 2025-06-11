@@ -1,6 +1,7 @@
 package com.fastcampus.commerce.user.domain.entity
 
 import com.fastcampus.commerce.common.entity.BaseEntity
+import com.fastcampus.commerce.user.domain.model.UserAddressUpdater
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.annotation.LastModifiedDate
@@ -13,14 +14,14 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 
 @SQLDelete(sql = "update user_addresses set deleted_at = now() where id = ?")
-@SQLRestriction("deletedAt is null")
+@SQLRestriction("deleted_at is null")
 @Table(name = "user_addresses")
 @Entity
 class UserAddress(
     @Column(name = "user_id", nullable = false)
     val userId: Long,
     @Column(nullable = false)
-    val alias: String,
+    var alias: String,
     @Column(nullable = false)
     var recipientName: String,
     @Column(nullable = false)
@@ -29,8 +30,8 @@ class UserAddress(
     var zipCode: String,
     @Column(nullable = false)
     var address1: String,
-    @Column(nullable = false)
-    var address2: String,
+    @Column
+    var address2: String? = null,
     @Column(nullable = false)
     var isDefault: Boolean = false,
 ) : BaseEntity() {
@@ -44,4 +45,18 @@ class UserAddress(
 
     @Column
     var deletedAt: LocalDateTime? = null
+
+    fun unsetAsDefault() {
+        isDefault = false
+    }
+
+    fun update(updater: UserAddressUpdater) {
+        alias = updater.alias
+        recipientName = updater.recipientName
+        recipientPhone = updater.recipientPhone
+        zipCode = updater.zipCode
+        address1 = updater.address1
+        address2 = updater.address2
+        isDefault = updater.isDefault
+    }
 }

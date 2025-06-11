@@ -13,7 +13,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 
 @SQLDelete(sql = "update cart_items set deleted_at = now() where id = ?")
-@SQLRestriction("deletedAt is null")
+@SQLRestriction("deleted_at is null")
 @Table(name = "cart_items")
 @Entity
 class CartItem(

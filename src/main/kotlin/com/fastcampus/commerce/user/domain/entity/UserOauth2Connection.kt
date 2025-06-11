@@ -12,7 +12,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 
 @SQLDelete(sql = "update user_oauth2_connections set deleted_at = now() where id = ?")
-@SQLRestriction("deletedAt is null")
+@SQLRestriction("deleted_at is null")
 @Table(name = "user_oauth2_connections")
 @Entity
 class UserOauth2Connection(
