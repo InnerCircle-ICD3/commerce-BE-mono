@@ -1,6 +1,6 @@
 package com.fastcampus.commerce.review.interfaces
 
-import com.fastcampus.commerce.config.TestSecurityConfig
+import com.fastcampus.commerce.config.TestConfig
 import com.fastcampus.commerce.restdoc.documentation
 import com.fastcampus.commerce.review.application.ReviewCommandService
 import com.fastcampus.commerce.review.interfaces.request.RegisterReviewApiRequest
@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.MockMvc
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
 @WebMvcTest(ReviewController::class)
-@Import(TestSecurityConfig::class)
+@Import(TestConfig::class)
 class ReviewControllerRestDocTest : DescribeSpec() {
     override fun extensions() = listOf(SpringExtension)
 
