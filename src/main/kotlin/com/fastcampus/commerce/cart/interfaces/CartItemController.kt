@@ -3,6 +3,7 @@ package com.fastcampus.commerce.cart.interfaces
 import com.fastcampus.commerce.cart.application.CartItemService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -11,13 +12,13 @@ import org.springframework.web.bind.annotation.RestController
 class CartItemController(
     private val cartItemService: CartItemService,
 ) {
-    @GetMapping("/carts")
+    @GetMapping("/cart-items")
     fun getCarts(): CartRetrievesResponse {
         val userId = 1L
         return cartItemService.getCarts(userId)
     }
 
-    @PostMapping("/cart/items")
+    @PostMapping("/cart-items")
     fun addToCart(
         @RequestBody request: CartCreateRequest,
     ): CartCreateResponse {
@@ -26,16 +27,17 @@ class CartItemController(
         return response
     }
 
-    @PatchMapping("/cart/items")
+    @PatchMapping("/cart-items/{cartItemId}")
     fun updateCartItem(
+        @PathVariable cartItemId: Long,
         @RequestBody request: CartUpdateRequest,
     ): CartUpdateResponse {
         val userId = 1L
-        val cartResponse = cartItemService.updateCartItem(userId, request)
+        val cartResponse = cartItemService.updateCartItem(userId, cartItemId,request)
         return cartResponse
     }
 
-    @PostMapping("/carts/delete")
+    @PostMapping("/cart-items/delete")
     fun deleteCartItems(
         @RequestBody request: CartDeleteRequest,
     ): CartDeleteResponse {

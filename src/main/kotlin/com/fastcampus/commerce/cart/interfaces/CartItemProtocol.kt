@@ -12,8 +12,6 @@ data class CartCreateResponse(
 )
 
 data class CartUpdateRequest(
-    val cartId: Long,
-    val productId: Long,
     val quantity: Int,
 )
 
