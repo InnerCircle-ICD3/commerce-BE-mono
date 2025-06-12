@@ -21,7 +21,7 @@ class CustomUserPrincipal(
             "nickname" to (user.nickname ?: ""),
         )
 
-    override fun getAuthorities(): Collection<GrantedAuthority> = user.roles.map { SimpleGrantedAuthority(it) }
+    override fun getAuthorities(): Collection<GrantedAuthority> = user.roles.map { SimpleGrantedAuthority(it.toString()) }
 
     companion object {
         fun of(user: UserDto): CustomUserPrincipal = CustomUserPrincipal(user)
