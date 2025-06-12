@@ -11,7 +11,8 @@ data class RegisterRequest(
     val email: String,
     val password: String,
     val nickname: String,
-    val name: String? = null,
+    val name: String,
+    val profileImage: String,
 )
 
 /**

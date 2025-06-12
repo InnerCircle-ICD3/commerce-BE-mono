@@ -1,5 +1,7 @@
 package com.fastcampus.commerce.user.api.dto
 
+import com.fastcampus.commerce.user.domain.enums.UserRole
+
 /**
  * User data transfer object
  */
@@ -10,5 +12,5 @@ data class UserDto(
     val email: String,
     val nickname: String,
     val profileImage: String,
-    val roles: List<String> = emptyList(),
+    val roles: List<UserRole> = emptyList(),
 )
