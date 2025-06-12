@@ -1,6 +1,8 @@
 package com.fastcampus.commerce.common.config
 
+import com.fastcampus.commerce.auth.interfaces.web.security.resolver.RoleBasedUserArgumentResolver
 import org.springframework.context.annotation.Configuration
+import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
