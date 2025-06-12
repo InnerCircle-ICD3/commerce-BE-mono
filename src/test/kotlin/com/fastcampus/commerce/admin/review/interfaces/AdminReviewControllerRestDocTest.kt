@@ -104,5 +104,37 @@ class AdminReviewControllerRestDocTest : DescribeSpec() {
                 }
             }
         }
+
+        describe("POST /admin/reviews/{reviewId}/reply - 리뷰 답글등록") {
+            val summary = "관리자의 리뷰 답글 등록"
+            it("리뷰 답글을 등록할 수 있다.") {
+                val replyId = 1L
+                every { adminReviewService.registerReply(any(), any(), any()) } returns replyId
+
+                documentation(
+                    identifier = "관리자_리뷰답글_등록_성공",
+                    tag = tag,
+                    summary = summary,
+                    privateResource = privateResource,
+                ) {
+                    requestLine(HttpMethod.POST, "/admin/reviews/{reviewId}/reply") {
+                        pathVariable("reviewId", "리뷰 아이디", 1)
+                    }
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                    }
+
+                    requestBody {
+                        field("content", "답글 내용", "감사합니다.")
+                    }
+
+                    responseBody {
+                        field("data.replyId", "리뷰 답글 아이디", 1)
+                        ignoredField("error")
+                    }
+                }
+            }
+        }
     }
 }

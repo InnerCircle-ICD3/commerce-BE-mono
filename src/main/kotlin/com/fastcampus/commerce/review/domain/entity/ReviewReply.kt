@@ -1,6 +1,8 @@
 package com.fastcampus.commerce.review.domain.entity
 
 import com.fastcampus.commerce.common.entity.BaseEntity
+import com.fastcampus.commerce.common.error.CoreException
+import com.fastcampus.commerce.review.domain.error.ReviewErrorCode
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.annotation.LastModifiedDate
@@ -34,4 +36,14 @@ class ReviewReply(
 
     @Column
     var deletedAt: LocalDateTime? = null
+
+    init {
+        validate()
+    }
+
+    private fun validate() {
+        if (content.isBlank()) {
+            throw CoreException(ReviewErrorCode.REPLY_CONTENT_EMPTY)
+        }
+    }
 }

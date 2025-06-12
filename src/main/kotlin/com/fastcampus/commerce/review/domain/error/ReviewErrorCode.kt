@@ -16,4 +16,7 @@ enum class ReviewErrorCode(
     REVIEW_NOT_FOUND("RVW-006", "리뷰를 찾을 수 없습니다.", LogLevel.WARN),
     UNAUTHORIZED_REVIEW_UPDATE("RVW-007", "다른 사람의 리뷰를 수정할 수 없습니다", LogLevel.WARN),
     UNAUTHORIZED_REVIEW_DELETE("RVW-008", "다른 사람의 리뷰를 삭제할 수 없습니다", LogLevel.WARN),
+
+    REPLY_EXISTS("RVW-101", "이미 답글이 작성된 리뷰입니다.", LogLevel.WARN),
+    REPLY_CONTENT_EMPTY("RVW-102", "리뷰 답글 내용을 입력해주세요.", LogLevel.WARN),
 }

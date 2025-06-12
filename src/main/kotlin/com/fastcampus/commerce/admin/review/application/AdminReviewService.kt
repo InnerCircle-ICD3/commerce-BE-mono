@@ -4,6 +4,7 @@ import com.fastcampus.commerce.admin.review.application.request.SearchReviewAdmi
 import com.fastcampus.commerce.admin.review.application.response.SearchReviewAdminResponse
 import com.fastcampus.commerce.common.util.TimeProvider
 import com.fastcampus.commerce.review.domain.service.ReviewAdminReader
+import com.fastcampus.commerce.review.domain.service.ReviewAdminStore
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional
 class AdminReviewService(
     private val timeProvider: TimeProvider,
     private val reviewAdminReader: ReviewAdminReader,
+    private val reviewAdminStore: ReviewAdminStore,
 ) {
     @Transactional(readOnly = true)
     fun search(request: SearchReviewAdminRequest, pageable: Pageable): Page<SearchReviewAdminResponse> {
@@ -20,5 +22,12 @@ class AdminReviewService(
         val condition = request.toCondition(now)
         val searchReviews = reviewAdminReader.searchReviews(condition, pageable)
         return searchReviews.map(SearchReviewAdminResponse.Companion::from)
+    }
+
+    @Transactional
+    fun registerReply(adminId: Long, reviewId: Long, content: String): Long {
+        val reviewAdminInfo = reviewAdminReader.getReview(reviewId)
+        val reviewReply = reviewAdminStore.registerReply(adminId, reviewAdminInfo, content)
+        return reviewReply.id!!
     }
 }

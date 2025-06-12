@@ -6,6 +6,7 @@ import com.fastcampus.commerce.product.domain.entity.QProduct.product
 import com.fastcampus.commerce.review.domain.entity.QReview.review
 import com.fastcampus.commerce.review.domain.entity.QReviewReply.reviewReply
 import com.fastcampus.commerce.review.domain.entity.Review
+import com.fastcampus.commerce.review.domain.entity.ReviewReply
 import com.fastcampus.commerce.review.domain.model.QReviewAdminInfoFlat
 import com.fastcampus.commerce.review.domain.model.ReviewAdminInfoFlat
 import com.fastcampus.commerce.review.domain.model.SearchReviewAdminCondition
@@ -24,6 +25,7 @@ import java.time.LocalDate
 @Repository
 class ReviewAdminRepositoryImpl(
     private val queryFactory: JPAQueryFactory,
+    private val reviewReplyJpaRepository: ReviewReplyJpaRepository,
 ) : ReviewAdminRepository, QuerydslRepositorySupport(Review::class.java) {
     override fun searchReviews(condition: SearchReviewAdminCondition, pageable: Pageable): Page<ReviewAdminInfoFlat> {
         val whereCondition = BooleanBuilder()
@@ -69,6 +71,34 @@ class ReviewAdminRepositoryImpl(
                 .where(whereCondition)
                 .fetchOne() ?: 0L
         }
+    }
+
+    override fun getReview(reviewId: Long): ReviewAdminInfoFlat? {
+        return queryFactory
+            .select(
+                QReviewAdminInfoFlat(
+                    review.id,
+                    review.rating,
+                    review.content,
+                    reviewReply.content,
+                    reviewReply.createdAt,
+                    user.id,
+                    user.nickname,
+                    product.id,
+                    product.name,
+                    review.createdAt,
+                ),
+            )
+            .from(review)
+            .join(user).on(review.userId.eq(user.id))
+            .join(product).on(review.productId.eq(product.id))
+            .leftJoin(reviewReply).on(review.id.eq(reviewReply.reviewId))
+            .where(review.id.eq(reviewId))
+            .fetchOne()
+    }
+
+    override fun registerReply(reviewReply: ReviewReply): ReviewReply {
+        return reviewReplyJpaRepository.save(reviewReply)
     }
 
     private fun productIdEq(productId: Long?) = if (productId == null) null else product.id.eq(productId)

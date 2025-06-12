@@ -5,13 +5,18 @@ import com.fastcampus.commerce.admin.review.application.response.SearchReviewAdm
 import com.fastcampus.commerce.admin.review.application.response.SearchReviewAdminProductResponse
 import com.fastcampus.commerce.admin.review.application.response.SearchReviewAdminReplyResponse
 import com.fastcampus.commerce.admin.review.application.response.SearchReviewAdminResponse
+import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.common.util.TimeProvider
+import com.fastcampus.commerce.review.domain.entity.ReviewReply
+import com.fastcampus.commerce.review.domain.error.ReviewErrorCode
 import com.fastcampus.commerce.review.domain.model.AdminReply
 import com.fastcampus.commerce.review.domain.model.ReviewAdminInfo
 import com.fastcampus.commerce.review.domain.model.ReviewAuthor
 import com.fastcampus.commerce.review.domain.model.ReviewProduct
 import com.fastcampus.commerce.review.domain.model.SearchReviewAdminCondition
 import com.fastcampus.commerce.review.domain.service.ReviewAdminReader
+import com.fastcampus.commerce.review.domain.service.ReviewAdminStore
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
@@ -26,7 +31,8 @@ class AdminReviewServiceTest : FunSpec({
 
     val timeProvider = mockk<TimeProvider>()
     val reviewAdminReader = mockk<ReviewAdminReader>()
-    val adminReviewService = AdminReviewService(timeProvider, reviewAdminReader)
+    val reviewAdminStore = mockk<ReviewAdminStore>()
+    val adminReviewService = AdminReviewService(timeProvider, reviewAdminReader, reviewAdminStore)
 
     context("search") {
         val now = LocalDateTime.of(2024, 6, 15, 14, 30, 0)
@@ -137,6 +143,54 @@ class AdminReviewServiceTest : FunSpec({
             val response2 = result.content[1]
             response2.reviewId shouldBe 2L
             response2.adminReply shouldBe null
+        }
+    }
+
+    context("registerReply") {
+        val adminId = 1L
+        val reviewId = 100L
+        val replyContent = "감사합니다. 더 좋은 서비스로 보답하겠습니다."
+
+        test("관리자가 리뷰에 답글을 등록할 수 있다") {
+            val reviewAdminInfo = ReviewAdminInfo(
+                reviewId = reviewId,
+                rating = 5,
+                content = "정말 좋은 상품입니다",
+                adminReply = null,
+                user = ReviewAuthor(100L, "사용자1"),
+                product = ReviewProduct(1L, "테스트 상품"),
+                createdAt = LocalDateTime.of(2024, 6, 10, 14, 20),
+            )
+
+            val expectedReplyId = 10L
+            val reviewReply = mockk<ReviewReply> {
+                every { id } returns expectedReplyId
+            }
+
+            every { reviewAdminReader.getReview(reviewId) } returns reviewAdminInfo
+            every { reviewAdminStore.registerReply(adminId, reviewAdminInfo, replyContent) } returns reviewReply
+
+            val result = adminReviewService.registerReply(adminId, reviewId, replyContent)
+
+            result shouldBe expectedReplyId
+
+            verify(exactly = 1) { reviewAdminReader.getReview(reviewId) }
+            verify(exactly = 1) { reviewAdminStore.registerReply(adminId, reviewAdminInfo, replyContent) }
+        }
+
+        test("존재하지 않는 리뷰에 답글을 등록하려고 하면 예외가 발생한다") {
+            val nonExistentReviewId = 999L
+
+            every { reviewAdminReader.getReview(nonExistentReviewId) } throws
+                CoreException(
+                    ReviewErrorCode.REVIEW_NOT_FOUND,
+                )
+
+            shouldThrow<CoreException> {
+                adminReviewService.registerReply(adminId, nonExistentReviewId, replyContent)
+            }.errorCode shouldBe ReviewErrorCode.REVIEW_NOT_FOUND
+
+            verify(exactly = 1) { reviewAdminReader.getReview(nonExistentReviewId) }
         }
     }
 })
