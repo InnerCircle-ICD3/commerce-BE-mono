@@ -73,7 +73,7 @@ class SecurityConfig(
                         "/auth/login",
                         "/auth/logout",
                     ).permitAll()
-                    .anyRequest().permitAll()
+                    .anyRequest().authenticated()
             }
             .oauth2Login { oauth2 ->
                 oauth2
