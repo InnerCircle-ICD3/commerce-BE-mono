@@ -22,6 +22,12 @@ paths:
       tags:
       - Admin-Product
       summary: 상품을 등록할 수 있다.
+      description: |2-
+                        PRD-101: 상품명이 비어있습니다.
+                        PRD-102: 상품명이 너무 깁니다.
+                        PRD-103: 가격은 양수여야합니다.
+                        PRD-104: 재고는 음수일 수 없습니다.
+                        PRD-105: 유효하지 않은 카테고리입니다.
       operationId: 상품_등록_성공
       parameters:
       - name: Authorization
@@ -193,6 +199,14 @@ paths:
       tags:
       - Admin-Product
       summary: 상품을 수정할 수 있다.
+      description: |2-
+                        PRO-001: 상품을 찾을 수 없습니다.
+                        PRO-002: 상품 재고를 찾을 수 없습니다.
+                        PRD-101: 상품명이 비어있습니다.
+                        PRD-102: 상품명이 너무 깁니다.
+                        PRD-103: 가격은 양수여야합니다.
+                        PRD-104: 재고는 음수일 수 없습니다.
+                        PRD-105: 유효하지 않은 카테고리입니다.
       operationId: 상품_수정_성공
       parameters:
       - name: productId
@@ -246,6 +260,9 @@ paths:
       tags:
       - Admin-Product
       summary: 상품을 삭제할 수 있다.
+      description: |2-
+                        PRO-001: 상품을 찾을 수 없습니다.
+                        PRO-002: 상품 재고를 찾을 수 없습니다.
       operationId: 상품_삭제_성공
       parameters:
       - name: productId
@@ -267,7 +284,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/admin-products-productId1686665306"
+                $ref: "#/components/schemas/reviews-reviewId1686665306"
               examples:
                 상품_삭제_성공:
                   value: |-
@@ -548,7 +565,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/admin-products-productId1686665306"
+                $ref: "#/components/schemas/reviews-reviewId1686665306"
               examples:
                 장바구니_상품_삭제_성공:
                   value: |-
@@ -963,6 +980,9 @@ paths:
       tags:
       - Product
       summary: 상품 상세 정보를 조회할 수 있다.
+      description: |2-
+                        PRO-001: 상품을 찾을 수 없습니다.
+                        PRO-002: 상품 재고를 찾을 수 없습니다.
       operationId: 상품_상세_조회_성공
       parameters:
       - name: productId
@@ -1084,6 +1104,12 @@ paths:
       tags:
       - Review
       summary: 배송완료된 상품에 리뷰를 등록할 수 있다.
+      description: |2-
+                        RVW-001: 리뷰 내용을 입력해주세요.
+                        RVW-002: 별점은 1~5점 사이로 선택해주세요.
+                        RVW-003: 배송완료된 주문건에 대해서만 리뷰를 작성할 수 있습니다.
+                        RVW-004: 배송완료 후 30일 이내의 주문건에 대해서만 리뷰를 작성 및 수정할 수 있습니다.
+                        RVW-005: 리뷰는 주문 당 한번만 작성가능합니다.
       operationId: 리뷰_등록_성공
       parameters:
       - name: Authorization
@@ -1128,6 +1154,11 @@ paths:
       tags:
       - Review
       summary: 리뷰를 수정할 수 있다.
+      description: |2-
+                        RVW-001: 리뷰 내용을 입력해주세요.
+                        RVW-002: 별점은 1~5점 사이로 선택해주세요.
+                        RVW-006: 리뷰를 찾을 수 없습니다.
+                        RVW-007: 다른 사람의 리뷰를 수정할 수 없습니다
       operationId: 리뷰_수정_성공
       parameters:
       - name: reviewId
@@ -1175,6 +1206,9 @@ paths:
       tags:
       - Review
       summary: 리뷰를 삭제할 수 있다.
+      description: |2-
+                        RVW-006: 리뷰를 찾을 수 없습니다.
+                        RVW-008: 다른 사람의 리뷰를 삭제할 수 없습니다
       operationId: 리뷰_삭제_성공
       parameters:
       - name: reviewId
@@ -1196,7 +1230,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/admin-products-productId1686665306"
+                $ref: "#/components/schemas/reviews-reviewId1686665306"
               examples:
                 리뷰_삭제_성공:
                   value: |-
@@ -1402,6 +1436,9 @@ paths:
       tags:
       - Address
       summary: 유저 배송지 수정
+      description: |2-
+                        USR-101: 유저 배송지를 찾을 수 없습니다.
+                        USR-102: 본인의 배송지만 변경할 수 있습니다.
       operationId: 배송지_수정_성공
       parameters:
       - name: addressId
@@ -1454,6 +1491,9 @@ paths:
       tags:
       - Address
       summary: 유저 배송지 삭제
+      description: |2-
+                        USR-101: 유저 배송지를 찾을 수 없습니다.
+                        USR-103: 본인의 배송지만 삭제할 수 있습니다.
       operationId: 배송지_삭제_성공
       parameters:
       - name: addressId
@@ -1475,7 +1515,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/admin-products-productId1686665306"
+                $ref: "#/components/schemas/reviews-reviewId1686665306"
               examples:
                 배송지_삭제_성공:
                   value: |-
@@ -1748,7 +1788,7 @@ components:
                   type: number
                   description: 배송지 ID
               description: 기본 배송지
-    admin-products-productId1686665306:
+    reviews-reviewId1686665306:
       type: object
       properties:
         data:
@@ -2667,17 +2707,6 @@ components:
             totalElements:
               type: number
               description: 총 수
-    admin-products-productId-1712578160:
-      type: object
-      properties:
-        data:
-          required:
-          - productId
-          type: object
-          properties:
-            productId:
-              type: number
-              description: 수정된 상품 아이디
     cart-items1349440338:
       required:
       - productId
@@ -2690,6 +2719,17 @@ components:
         productId:
           type: number
           description: 상품Id
+    admin-products-productId-1712578160:
+      type: object
+      properties:
+        data:
+          required:
+          - productId
+          type: object
+          properties:
+            productId:
+              type: number
+              description: 수정된 상품 아이디
     orders-prepare-1188466473:
       type: object
       properties:
