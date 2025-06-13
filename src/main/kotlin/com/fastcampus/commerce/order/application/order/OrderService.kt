@@ -1,5 +1,6 @@
 package com.fastcampus.commerce.order.application.order
 
+import com.fastcampus.commerce.cart.application.query.CartItemReader
 import com.fastcampus.commerce.order.domain.entity.Order
 import com.fastcampus.commerce.order.domain.entity.OrderItem
 import com.fastcampus.commerce.order.domain.entity.OrderStatus
@@ -15,17 +16,17 @@ import org.springframework.transaction.annotation.Transactional
 class OrderService(
     private val orderRepository: OrderRepository,
     private val orderItemRepository: OrderItemRepository,
-    //private val cartItemReader: CartItemReader, // 장바구니 조회용 컴포넌트
+    private val cartItemReader: CartItemReader, // 장바구니 조회용 컴포넌트
     private val orderNumberGenerator: OrderNumberGenerator,
 ){
 
     @Transactional
     fun createOrder(userId: Long, request: OrderApiRequest): OrderApiResponse {
         // 1. 장바구니 아이템 정보 조회 (상품ID, 수량, 가격)
-        /*val cartItems = cartItemReader.readCartItems(userId, request.cartItemIds)
+        val cartItems = cartItemReader.readCartItems(userId, request.cartItemIds)
 
         // 2. 총 주문 금액 계산
-        val totalAmount = cartItems.sumOf { it.unitPrice * it.quantity }*/
+        val totalAmount = cartItems.sumOf { it.unitPrice!! * it.quantity }
 
         // 난수 생성
         val orderId = 1L
@@ -37,8 +38,7 @@ class OrderService(
         val order = Order(
             orderNumber = orderNumber,
             userId = userId,
-            //totalAmount = totalAmount,
-            totalAmount = 0,
+            totalAmount = totalAmount,
             recipientName = request.shippingInfo.recipientName,
             recipientPhone = request.shippingInfo.recipientPhone,
             zipCode = request.shippingInfo.zipCode,
@@ -50,15 +50,15 @@ class OrderService(
         orderRepository.save(order)
 
         // 5. OrderItem Entity 생성 및 저장
-        /*val orderItems = cartItems.map { cartItem ->
+        val orderItems = cartItems.map { cartItem ->
             OrderItem(
                 orderId = order.id!!,
-                productSnapshotId = cartItem.productSnapshotId,
+                productSnapshotId = cartItem.productSnapshotId!!,
                 quantity = cartItem.quantity,
-                unitPrice = cartItem.unitPrice
+                unitPrice = cartItem.unitPrice!!
             )
         }
-        orderItemRepository.saveAll(orderItems)*/
+        orderItemRepository.saveAll(orderItems)
 
         // 6. 응답 반환
         return OrderApiResponse(orderNumber)

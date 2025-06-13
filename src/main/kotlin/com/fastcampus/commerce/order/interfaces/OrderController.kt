@@ -2,6 +2,7 @@ package com.fastcampus.commerce.order.interfaces
 
 import com.fastcampus.commerce.common.response.EnumResponse
 import com.fastcampus.commerce.common.response.PagedData
+import com.fastcampus.commerce.order.application.order.OrderService
 import com.fastcampus.commerce.order.interfaces.request.OrderApiRequest
 import com.fastcampus.commerce.order.interfaces.request.SearchOrderApiRequest
 import com.fastcampus.commerce.order.interfaces.response.GetOrderApiResponse
@@ -28,7 +29,9 @@ import java.time.LocalDateTime
 
 @RequestMapping("/orders")
 @RestController
-class OrderController {
+class OrderController(
+    private val orderService: OrderService
+) {
     @GetMapping("/prepare")
     fun prepareOrders(
         @RequestParam cartItemIds: String,
@@ -65,7 +68,8 @@ class OrderController {
     fun orders(
         @RequestBody request: OrderApiRequest,
     ): OrderApiResponse {
-        return OrderApiResponse("ORD20250609123456789")
+        //TODO: 인증된 사용자 ID 값 넘길 수 있도록 수정 필요 (request.userId <- 이 부분 제거후 수정 필요)
+        return orderService.createOrder(request.userId, request)
     }
 
     @GetMapping
