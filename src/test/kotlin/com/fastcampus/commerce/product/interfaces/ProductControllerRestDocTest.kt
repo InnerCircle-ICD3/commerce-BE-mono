@@ -188,6 +188,10 @@ class ProductControllerRestDocTest : DescribeSpec() {
 
         describe("GET /products/{productId} - 상품 상세 조회") {
             val summary = "상품 상세 정보를 조회할 수 있다."
+            val description = """
+                PRO-001: 상품을 찾을 수 없습니다.
+                PRO-002: 상품 재고를 찾을 수 없습니다.
+            """.trimMargin()
 
             it("상품 ID로 상품 상세 정보를 조회할 수 있다.") {
                 val productId = 1L
@@ -210,6 +214,7 @@ class ProductControllerRestDocTest : DescribeSpec() {
                     identifier = "상품_상세_조회_성공",
                     tag = tag,
                     summary = summary,
+                    description = description,
                 ) {
                     requestLine(HttpMethod.GET, "/products/{productId}") {
                         pathVariable("productId", "상품 ID", productId)

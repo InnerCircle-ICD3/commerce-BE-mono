@@ -72,6 +72,13 @@ class AdminProductControllerRestDocTest : DescribeSpec() {
 
         describe("POST /admin/products - 상품 등록") {
             val summary = "상품을 등록할 수 있다."
+            val description = """
+                PRD-101: 상품명이 비어있습니다.
+                PRD-102: 상품명이 너무 깁니다.
+                PRD-103: 가격은 양수여야합니다.
+                PRD-104: 재고는 음수일 수 없습니다.
+                PRD-105: 유효하지 않은 카테고리입니다.
+            """.trimMargin()
 
             it("상품을 등록할 수 있다.") {
                 val request = RegisterProductApiRequest(
@@ -90,6 +97,7 @@ class AdminProductControllerRestDocTest : DescribeSpec() {
                     identifier = "상품_등록_성공",
                     tag = tag,
                     summary = summary,
+                    description = description,
                     privateResource = privateResource,
                 ) {
                     requestLine(HttpMethod.POST, "/admin/products")
@@ -118,6 +126,15 @@ class AdminProductControllerRestDocTest : DescribeSpec() {
 
         describe("PUT /admin/products/{productId} - 상품 수정") {
             val summary = "상품을 수정할 수 있다."
+            val description = """
+                PRO-001: 상품을 찾을 수 없습니다.
+                PRO-002: 상품 재고를 찾을 수 없습니다.
+                PRD-101: 상품명이 비어있습니다.
+                PRD-102: 상품명이 너무 깁니다.
+                PRD-103: 가격은 양수여야합니다.
+                PRD-104: 재고는 음수일 수 없습니다.
+                PRD-105: 유효하지 않은 카테고리입니다.
+            """.trimMargin()
 
             it("상품을 수정할 수 있다.") {
                 val productId = 10L
@@ -138,6 +155,7 @@ class AdminProductControllerRestDocTest : DescribeSpec() {
                     identifier = "상품_수정_성공",
                     tag = tag,
                     summary = summary,
+                    description = description,
                     privateResource = privateResource,
                 ) {
                     requestLine(HttpMethod.PUT, "/admin/products/{productId}") {
@@ -168,6 +186,10 @@ class AdminProductControllerRestDocTest : DescribeSpec() {
         }
         describe("DELETE /admin/products/{productId} - 상품 삭제") {
             val summary = "상품을 삭제할 수 있다."
+            val description = """
+                PRO-001: 상품을 찾을 수 없습니다.
+                PRO-002: 상품 재고를 찾을 수 없습니다.
+            """.trimMargin()
 
             it("상품을 삭제할 수 있다.") {
                 val productId = 10L
@@ -177,6 +199,7 @@ class AdminProductControllerRestDocTest : DescribeSpec() {
                     identifier = "상품_삭제_성공",
                     tag = tag,
                     summary = summary,
+                    description = description,
                     privateResource = privateResource,
                 ) {
                     requestLine(HttpMethod.DELETE, "/admin/products/{productId}") {

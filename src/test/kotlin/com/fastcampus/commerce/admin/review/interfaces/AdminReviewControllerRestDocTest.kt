@@ -10,7 +10,9 @@ import com.fastcampus.commerce.restdoc.documentation
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.restassured.module.mockmvc.RestAssuredMockMvc
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
@@ -82,6 +84,7 @@ class AdminReviewControllerRestDocTest : DescribeSpec() {
                         optionalField("content", "리뷰 내용", "좋아요")
                         optionalField("period", "작성일 기간(3, 6, 9, 12월)", 3)
                         optionalField("page", "페이지(기본 값: 1)", 1)
+                        optionalField("sort", "정렬(기본값: createdAt / e.g. sort=createdAt, sort=-createdAt)", "createdAt")
                     }
 
                     responseBody {
@@ -99,6 +102,79 @@ class AdminReviewControllerRestDocTest : DescribeSpec() {
                         field("data.size", "페이지 사이즈(기본값 10)", response.size)
                         field("data.totalPages", "전체 페이지 수", response.totalPages)
                         field("data.totalElements", "총 수", response.totalElements.toInt())
+                        ignoredField("error")
+                    }
+                }
+            }
+        }
+
+        describe("POST /admin/reviews/{reviewId}/reply - 리뷰 답글등록") {
+            val summary = "관리자의 리뷰 답글 등록"
+            val description = """
+                RVW-101: 이미 답글이 작성된 리뷰입니다.
+                RVW-102: 리뷰 답글 내용을 입력해주세요.
+            """.trimMargin()
+            it("리뷰 답글을 등록할 수 있다.") {
+                val replyId = 1L
+                every { adminReviewService.registerReply(any(), any(), any()) } returns replyId
+
+                documentation(
+                    identifier = "관리자_리뷰답글_등록_성공",
+                    tag = tag,
+                    summary = summary,
+                    description = description,
+                    privateResource = privateResource,
+                ) {
+                    requestLine(HttpMethod.POST, "/admin/reviews/{reviewId}/reply") {
+                        pathVariable("reviewId", "리뷰 아이디", 1)
+                    }
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                    }
+
+                    requestBody {
+                        field("content", "답글 내용", "감사합니다.")
+                    }
+
+                    responseBody {
+                        field("data.replyId", "리뷰 답글 아이디", 1)
+                        ignoredField("error")
+                    }
+                }
+            }
+        }
+
+        describe("PUT /admin/reviews/reply/{replyId} - 리뷰 답글수정") {
+            val summary = "관리자의 리뷰 답글 수정"
+            val description = """
+                RVW-102: 리뷰 답글 내용을 입력해주세요.
+                RVW-103: 리뷰 답글을 조회할 수 없습니다.
+            """.trimMargin()
+            it("리뷰 답글을 수정할 수 있다.") {
+                every { adminReviewService.updateReply(any(), any(), any()) } just Runs
+
+                documentation(
+                    identifier = "관리자_리뷰답글_수정_성공",
+                    tag = tag,
+                    summary = summary,
+                    description = description,
+                    privateResource = privateResource,
+                ) {
+                    requestLine(HttpMethod.PUT, "/admin/reviews/reply/{replyId}") {
+                        pathVariable("replyId", "리뷰 답글 아이디", 1)
+                    }
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                    }
+
+                    requestBody {
+                        field("content", "답글 내용", "감사합니다.")
+                    }
+
+                    responseBody {
+                        field("data.replyId", "리뷰 답글 아이디", 1)
                         ignoredField("error")
                     }
                 }
