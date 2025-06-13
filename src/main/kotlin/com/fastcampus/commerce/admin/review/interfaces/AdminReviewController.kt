@@ -8,7 +8,9 @@ import com.fastcampus.commerce.admin.review.interfaces.response.RegisterReviewRe
 import com.fastcampus.commerce.admin.review.interfaces.response.SearchReviewAdminApiResponse
 import com.fastcampus.commerce.admin.review.interfaces.response.UpdateReviewReplyApiResponse
 import com.fastcampus.commerce.common.response.PagedData
+import com.fastcampus.commerce.review.interfaces.response.DeleteReviewReplyApiResponse
 import org.springframework.data.domain.Pageable
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
@@ -50,5 +52,14 @@ class AdminReviewController(
         val adminId = 1L
         adminReviewService.updateReply(adminId, replyId, request.content)
         return UpdateReviewReplyApiResponse(replyId)
+    }
+
+    @DeleteMapping("/reply/{replyId}")
+    fun deleteReply(
+        @PathVariable replyId: Long,
+    ): DeleteReviewReplyApiResponse {
+        val adminId = 1L
+        adminReviewService.deleteReply(adminId, replyId)
+        return DeleteReviewReplyApiResponse()
     }
 }

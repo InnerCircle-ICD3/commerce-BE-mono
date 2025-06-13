@@ -23,4 +23,8 @@ class ReviewAdminStore(
             ),
         )
     }
+
+    fun deleteReply(adminId: Long, reply: ReviewReply) {
+        reviewAdminRepository.deleteReply(reply)
+    }
 }

@@ -15,4 +15,6 @@ interface ReviewAdminRepository {
     fun registerReply(reviewReply: ReviewReply): ReviewReply
 
     fun findReply(replyId: Long): Optional<ReviewReply>
+
+    fun deleteReply(reply: ReviewReply)
 }

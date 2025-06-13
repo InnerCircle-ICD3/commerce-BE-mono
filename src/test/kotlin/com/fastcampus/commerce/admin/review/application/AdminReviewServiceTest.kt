@@ -259,4 +259,34 @@ class AdminReviewServiceTest : FunSpec({
             verify(exactly = 1) { reviewAdminReader.getReply(replyId) }
         }
     }
+
+    context("deleteReply") {
+        val adminId = 1L
+        val replyId = 10L
+
+        test("관리자가 답글을 삭제할 수 있다") {
+            val reviewReply = mockk<ReviewReply>(relaxed = true)
+
+            every { reviewAdminReader.getReply(replyId) } returns reviewReply
+            every { reviewAdminStore.deleteReply(adminId, reviewReply) } returns Unit
+
+            adminReviewService.deleteReply(adminId, replyId)
+
+            verify(exactly = 1) { reviewAdminReader.getReply(replyId) }
+            verify(exactly = 1) { reviewAdminStore.deleteReply(adminId, reviewReply) }
+        }
+
+        test("존재하지 않는 답글을 삭제하려고 하면 예외가 발생한다") {
+            val nonExistentReplyId = 999L
+
+            every { reviewAdminReader.getReply(nonExistentReplyId) } throws
+                CoreException(ReviewErrorCode.REPLY_NOT_FOUND)
+
+            shouldThrow<CoreException> {
+                adminReviewService.deleteReply(adminId, nonExistentReplyId)
+            }.errorCode shouldBe ReviewErrorCode.REPLY_NOT_FOUND
+
+            verify(exactly = 1) { reviewAdminReader.getReply(nonExistentReplyId) }
+        }
+    }
 })

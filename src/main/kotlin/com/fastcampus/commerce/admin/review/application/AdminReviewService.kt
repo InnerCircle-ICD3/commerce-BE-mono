@@ -36,4 +36,10 @@ class AdminReviewService(
         val reply = reviewAdminReader.getReply(replyId)
         reply.updateContent(adminId, content)
     }
+
+    @Transactional
+    fun deleteReply(adminId: Long, replyId: Long) {
+        val reply = reviewAdminReader.getReply(replyId)
+        reviewAdminStore.deleteReply(adminId, reply)
+    }
 }

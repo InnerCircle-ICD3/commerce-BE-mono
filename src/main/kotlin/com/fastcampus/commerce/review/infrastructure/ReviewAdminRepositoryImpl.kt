@@ -106,6 +106,10 @@ class ReviewAdminRepositoryImpl(
         return reviewReplyJpaRepository.findById(replyId)
     }
 
+    override fun deleteReply(reply: ReviewReply) {
+        reviewReplyJpaRepository.delete(reply)
+    }
+
     private fun productIdEq(productId: Long?) = if (productId == null) null else product.id.eq(productId)
 
     private fun productNameContainsIgnore(productName: String?): BooleanExpression? =
