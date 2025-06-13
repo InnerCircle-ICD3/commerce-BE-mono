@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import jakarta.validation.Valid
 
 @RestController
 class CartItemController(
@@ -22,7 +23,7 @@ class CartItemController(
 
     @PostMapping("/cart-items")
     fun addToCart(
-        @RequestBody request: CartCreateRequest,
+        @RequestBody @Valid request: CartCreateRequest,
     ): CartCreateResponse {
         val userId = 1L
         val response = cartItemService.addToCart(userId, request.productId, request.quantity)
@@ -32,7 +33,7 @@ class CartItemController(
     @PatchMapping("/cart-items/{cartItemId}")
     fun updateCartItem(
         @PathVariable cartItemId: Long,
-        @RequestBody request: CartUpdateRequest,
+        @RequestBody @Valid request: CartUpdateRequest,
     ): CartUpdateResponse {
         val userId = 1L
         val cartResponse = cartItemService.updateCartItem(userId, cartItemId,request)
