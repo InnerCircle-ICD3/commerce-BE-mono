@@ -30,4 +30,10 @@ class AdminReviewService(
         val reviewReply = reviewAdminStore.registerReply(adminId, reviewAdminInfo, content)
         return reviewReply.id!!
     }
+
+    @Transactional
+    fun updateReply(adminId: Long, replyId: Long, content: String) {
+        val reply = reviewAdminReader.getReply(replyId)
+        reply.updateContent(adminId, content)
+    }
 }

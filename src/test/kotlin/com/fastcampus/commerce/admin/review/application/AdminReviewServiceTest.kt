@@ -19,6 +19,7 @@ import com.fastcampus.commerce.review.domain.service.ReviewAdminStore
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -33,6 +34,10 @@ class AdminReviewServiceTest : FunSpec({
     val reviewAdminReader = mockk<ReviewAdminReader>()
     val reviewAdminStore = mockk<ReviewAdminStore>()
     val adminReviewService = AdminReviewService(timeProvider, reviewAdminReader, reviewAdminStore)
+
+    beforeTest {
+        clearAllMocks()
+    }
 
     context("search") {
         val now = LocalDateTime.of(2024, 6, 15, 14, 30, 0)
@@ -191,6 +196,67 @@ class AdminReviewServiceTest : FunSpec({
             }.errorCode shouldBe ReviewErrorCode.REVIEW_NOT_FOUND
 
             verify(exactly = 1) { reviewAdminReader.getReview(nonExistentReviewId) }
+        }
+    }
+
+    context("updateReply") {
+        val adminId = 1L
+        val replyId = 10L
+        val newContent = "수정된 답글입니다. 더 나은 서비스로 보답하겠습니다."
+
+        test("관리자가 답글을 수정할 수 있다") {
+            val reviewReply = mockk<ReviewReply>(relaxed = true)
+
+            every { reviewAdminReader.getReply(replyId) } returns reviewReply
+
+            adminReviewService.updateReply(adminId, replyId, newContent)
+
+            verify(exactly = 1) { reviewAdminReader.getReply(replyId) }
+            verify(exactly = 1) { reviewReply.updateContent(adminId, newContent) }
+        }
+
+        test("존재하지 않는 답글을 수정하려고 하면 예외가 발생한다") {
+            val nonExistentReplyId = 999L
+
+            every { reviewAdminReader.getReply(nonExistentReplyId) } throws
+                CoreException(ReviewErrorCode.REPLY_NOT_FOUND)
+
+            shouldThrow<CoreException> {
+                adminReviewService.updateReply(adminId, nonExistentReplyId, newContent)
+            }.errorCode shouldBe ReviewErrorCode.REPLY_NOT_FOUND
+
+            verify(exactly = 1) { reviewAdminReader.getReply(nonExistentReplyId) }
+        }
+
+        test("빈 내용으로 답글을 수정하려고 하면 예외가 발생한다") {
+            val reviewReply = ReviewReply(
+                reviewId = 100L,
+                replierId = 2L,
+                content = "기존 답글 내용",
+            )
+            every { reviewAdminReader.getReply(replyId) } returns reviewReply
+
+            shouldThrow<CoreException> {
+                adminReviewService.updateReply(adminId, replyId, "")
+            }.errorCode shouldBe ReviewErrorCode.REPLY_CONTENT_EMPTY
+
+            verify(exactly = 1) { reviewAdminReader.getReply(replyId) }
+        }
+
+        test("공백만 있는 내용으로 답글을 수정하려고 하면 예외가 발생한다") {
+            val reviewReply = ReviewReply(
+                reviewId = 100L,
+                replierId = 2L,
+                content = "기존 답글 내용",
+            )
+
+            every { reviewAdminReader.getReply(replyId) } returns reviewReply
+
+            shouldThrow<CoreException> {
+                adminReviewService.updateReply(adminId, replyId, "   ")
+            }.errorCode shouldBe ReviewErrorCode.REPLY_CONTENT_EMPTY
+
+            verify(exactly = 1) { reviewAdminReader.getReply(replyId) }
         }
     }
 })

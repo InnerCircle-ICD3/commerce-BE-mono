@@ -1,6 +1,7 @@
 package com.fastcampus.commerce.review.domain.service
 
 import com.fastcampus.commerce.common.error.CoreException
+import com.fastcampus.commerce.review.domain.entity.ReviewReply
 import com.fastcampus.commerce.review.domain.error.ReviewErrorCode
 import com.fastcampus.commerce.review.domain.model.AdminReply
 import com.fastcampus.commerce.review.domain.model.ReviewAdminInfoFlat
@@ -270,6 +271,38 @@ class ReviewAdminReaderTest : FunSpec({
             shouldThrow<CoreException> {
                 reviewAdminReader.getReview(reviewId)
             }.errorCode shouldBe ReviewErrorCode.REVIEW_NOT_FOUND
+        }
+    }
+
+    context("getReply") {
+        test("답글 ID로 답글을 조회할 수 있다") {
+            val replyId = 1L
+            val reviewReply = ReviewReply(
+                reviewId = 100L,
+                replierId = 1L,
+                content = "감사합니다. 좋은 리뷰 남겨주셔서 기쁩니다.",
+            ).apply {
+                id = replyId
+            }
+
+            every { reviewAdminRepository.findReply(replyId) } returns java.util.Optional.of(reviewReply)
+
+            val result = reviewAdminReader.getReply(replyId)
+
+            result.id shouldBe replyId
+            result.reviewId shouldBe 100L
+            result.replierId shouldBe 1L
+            result.content shouldBe "감사합니다. 좋은 리뷰 남겨주셔서 기쁩니다."
+        }
+
+        test("존재하지 않는 답글 ID로 조회하면 REPLY_NOT_FOUND 예외가 발생한다") {
+            val replyId = 999L
+
+            every { reviewAdminRepository.findReply(replyId) } returns java.util.Optional.empty()
+
+            shouldThrow<CoreException> {
+                reviewAdminReader.getReply(replyId)
+            }.errorCode shouldBe ReviewErrorCode.REPLY_NOT_FOUND
         }
     }
 })

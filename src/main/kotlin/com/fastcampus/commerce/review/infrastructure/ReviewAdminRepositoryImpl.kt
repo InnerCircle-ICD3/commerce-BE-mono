@@ -21,6 +21,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.data.support.PageableExecutionUtils
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
+import java.util.Optional
 
 @Repository
 class ReviewAdminRepositoryImpl(
@@ -99,6 +100,10 @@ class ReviewAdminRepositoryImpl(
 
     override fun registerReply(reviewReply: ReviewReply): ReviewReply {
         return reviewReplyJpaRepository.save(reviewReply)
+    }
+
+    override fun findReply(replyId: Long): Optional<ReviewReply> {
+        return reviewReplyJpaRepository.findById(replyId)
     }
 
     private fun productIdEq(productId: Long?) = if (productId == null) null else product.id.eq(productId)

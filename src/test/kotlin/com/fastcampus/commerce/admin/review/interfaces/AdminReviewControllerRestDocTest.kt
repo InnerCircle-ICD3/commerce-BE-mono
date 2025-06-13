@@ -10,7 +10,9 @@ import com.fastcampus.commerce.restdoc.documentation
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.restassured.module.mockmvc.RestAssuredMockMvc
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
@@ -119,6 +121,37 @@ class AdminReviewControllerRestDocTest : DescribeSpec() {
                 ) {
                     requestLine(HttpMethod.POST, "/admin/reviews/{reviewId}/reply") {
                         pathVariable("reviewId", "리뷰 아이디", 1)
+                    }
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                    }
+
+                    requestBody {
+                        field("content", "답글 내용", "감사합니다.")
+                    }
+
+                    responseBody {
+                        field("data.replyId", "리뷰 답글 아이디", 1)
+                        ignoredField("error")
+                    }
+                }
+            }
+        }
+
+        describe("PUT /admin/reviews/reply/{replyId} - 리뷰 답글수정") {
+            val summary = "관리자의 리뷰 답글 수정"
+            it("리뷰 답글을 수정할 수 있다.") {
+                every { adminReviewService.updateReply(any(), any(), any()) } just Runs
+
+                documentation(
+                    identifier = "관리자_리뷰답글_수정_성공",
+                    tag = tag,
+                    summary = summary,
+                    privateResource = privateResource,
+                ) {
+                    requestLine(HttpMethod.PUT, "/admin/reviews/reply/{replyId}") {
+                        pathVariable("replyId", "리뷰 답글 아이디", 1)
                     }
 
                     requestHeaders {

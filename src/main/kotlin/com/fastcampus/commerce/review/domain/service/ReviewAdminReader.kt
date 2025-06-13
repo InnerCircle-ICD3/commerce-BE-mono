@@ -1,6 +1,7 @@
 package com.fastcampus.commerce.review.domain.service
 
 import com.fastcampus.commerce.common.error.CoreException
+import com.fastcampus.commerce.review.domain.entity.ReviewReply
 import com.fastcampus.commerce.review.domain.error.ReviewErrorCode
 import com.fastcampus.commerce.review.domain.model.ReviewAdminInfo
 import com.fastcampus.commerce.review.domain.model.SearchReviewAdminCondition
@@ -21,5 +22,10 @@ class ReviewAdminReader(
     fun getReview(reviewId: Long): ReviewAdminInfo {
         return reviewAdminRepository.getReview(reviewId)?.let(ReviewAdminInfo::from)
             ?: throw CoreException(ReviewErrorCode.REVIEW_NOT_FOUND)
+    }
+
+    fun getReply(replyId: Long): ReviewReply {
+        return reviewAdminRepository.findReply(replyId)
+            .orElseThrow { CoreException(ReviewErrorCode.REPLY_NOT_FOUND) }
     }
 }

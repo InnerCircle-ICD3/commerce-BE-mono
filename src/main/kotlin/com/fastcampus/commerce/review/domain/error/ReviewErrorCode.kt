@@ -19,4 +19,5 @@ enum class ReviewErrorCode(
 
     REPLY_EXISTS("RVW-101", "이미 답글이 작성된 리뷰입니다.", LogLevel.WARN),
     REPLY_CONTENT_EMPTY("RVW-102", "리뷰 답글 내용을 입력해주세요.", LogLevel.WARN),
+    REPLY_NOT_FOUND("RVW-103", "리뷰 답글을 조회할 수 없습니다.", LogLevel.WARN),
 }

@@ -22,7 +22,7 @@ class ReviewReply(
     @Column(name = "review_id", nullable = false)
     val reviewId: Long,
     @Column(name = "replier_id", nullable = false)
-    val replierId: Long,
+    var replierId: Long,
     @Column(nullable = false, columnDefinition = "text")
     var content: String,
 ) : BaseEntity() {
@@ -45,5 +45,11 @@ class ReviewReply(
         if (content.isBlank()) {
             throw CoreException(ReviewErrorCode.REPLY_CONTENT_EMPTY)
         }
+    }
+
+    fun updateContent(adminId: Long, content: String) {
+        this.replierId = adminId
+        this.content = content
+        validate()
     }
 }
