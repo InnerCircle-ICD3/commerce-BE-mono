@@ -22,6 +22,12 @@ paths:
       tags:
       - Admin-Product
       summary: 상품을 등록할 수 있다.
+      description: |2-
+                        PRD-101: 상품명이 비어있습니다.
+                        PRD-102: 상품명이 너무 깁니다.
+                        PRD-103: 가격은 양수여야합니다.
+                        PRD-104: 재고는 음수일 수 없습니다.
+                        PRD-105: 유효하지 않은 카테고리입니다.
       operationId: 상품_등록_성공
       parameters:
       - name: Authorization
@@ -107,6 +113,12 @@ paths:
         required: false
         schema:
           type: string
+      - name: sort
+        in: query
+        description: "정렬(기본값: createdAt / e.g. sort=createdAt, sort=-createdAt)"
+        required: false
+        schema:
+          type: string
       - name: Authorization
         in: header
         description: Authorization
@@ -187,6 +199,14 @@ paths:
       tags:
       - Admin-Product
       summary: 상품을 수정할 수 있다.
+      description: |2-
+                        PRO-001: 상품을 찾을 수 없습니다.
+                        PRO-002: 상품 재고를 찾을 수 없습니다.
+                        PRD-101: 상품명이 비어있습니다.
+                        PRD-102: 상품명이 너무 깁니다.
+                        PRD-103: 가격은 양수여야합니다.
+                        PRD-104: 재고는 음수일 수 없습니다.
+                        PRD-105: 유효하지 않은 카테고리입니다.
       operationId: 상품_수정_성공
       parameters:
       - name: productId
@@ -240,6 +260,9 @@ paths:
       tags:
       - Admin-Product
       summary: 상품을 삭제할 수 있다.
+      description: |2-
+                        PRO-001: 상품을 찾을 수 없습니다.
+                        PRO-002: 상품 재고를 찾을 수 없습니다.
       operationId: 상품_삭제_성공
       parameters:
       - name: productId
@@ -261,13 +284,113 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/admin-products-productId1686665306"
+                $ref: "#/components/schemas/reviews-reviewId1686665306"
               examples:
                 상품_삭제_성공:
                   value: |-
                     {
                       "data" : {
                         "message" : "OK"
+                      },
+                      "error" : null
+                    }
+  /admin/reviews/reply/{replyId}:
+    put:
+      tags:
+      - Admin-Review
+      summary: 관리자의 리뷰 답글 수정
+      description: |2-
+                        RVW-102: 리뷰 답글 내용을 입력해주세요.
+                        RVW-103: 리뷰 답글을 조회할 수 없습니다.
+      operationId: 관리자_리뷰답글_수정_성공
+      parameters:
+      - name: replyId
+        in: path
+        description: 리뷰 답글 아이디
+        required: true
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/admin-reviews-reply-replyId800783421"
+            examples:
+              관리자_리뷰답글_수정_성공:
+                value: |-
+                  {
+                    "content" : "감사합니다."
+                  }
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/admin-reviews-reply-replyId1254049025"
+              examples:
+                관리자_리뷰답글_수정_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "replyId" : 1
+                      },
+                      "error" : null
+                    }
+  /admin/reviews/{reviewId}/reply:
+    post:
+      tags:
+      - Admin-Review
+      summary: 관리자의 리뷰 답글 등록
+      description: |2-
+                        RVW-101: 이미 답글이 작성된 리뷰입니다.
+                        RVW-102: 리뷰 답글 내용을 입력해주세요.
+      operationId: 관리자_리뷰답글_등록_성공
+      parameters:
+      - name: reviewId
+        in: path
+        description: 리뷰 아이디
+        required: true
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/admin-reviews-reply-replyId800783421"
+            examples:
+              관리자_리뷰답글_등록_성공:
+                value: |-
+                  {
+                    "content" : "감사합니다."
+                  }
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/admin-reviews-reply-replyId1254049025"
+              examples:
+                관리자_리뷰답글_등록_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "replyId" : 1
                       },
                       "error" : null
                     }
@@ -442,7 +565,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/admin-products-productId1686665306"
+                $ref: "#/components/schemas/reviews-reviewId1686665306"
               examples:
                 장바구니_상품_삭제_성공:
                   value: |-
@@ -857,6 +980,9 @@ paths:
       tags:
       - Product
       summary: 상품 상세 정보를 조회할 수 있다.
+      description: |2-
+                        PRO-001: 상품을 찾을 수 없습니다.
+                        PRO-002: 상품 재고를 찾을 수 없습니다.
       operationId: 상품_상세_조회_성공
       parameters:
       - name: productId
@@ -978,6 +1104,12 @@ paths:
       tags:
       - Review
       summary: 배송완료된 상품에 리뷰를 등록할 수 있다.
+      description: |2-
+                        RVW-001: 리뷰 내용을 입력해주세요.
+                        RVW-002: 별점은 1~5점 사이로 선택해주세요.
+                        RVW-003: 배송완료된 주문건에 대해서만 리뷰를 작성할 수 있습니다.
+                        RVW-004: 배송완료 후 30일 이내의 주문건에 대해서만 리뷰를 작성 및 수정할 수 있습니다.
+                        RVW-005: 리뷰는 주문 당 한번만 작성가능합니다.
       operationId: 리뷰_등록_성공
       parameters:
       - name: Authorization
@@ -1022,6 +1154,11 @@ paths:
       tags:
       - Review
       summary: 리뷰를 수정할 수 있다.
+      description: |2-
+                        RVW-001: 리뷰 내용을 입력해주세요.
+                        RVW-002: 별점은 1~5점 사이로 선택해주세요.
+                        RVW-006: 리뷰를 찾을 수 없습니다.
+                        RVW-007: 다른 사람의 리뷰를 수정할 수 없습니다
       operationId: 리뷰_수정_성공
       parameters:
       - name: reviewId
@@ -1069,6 +1206,9 @@ paths:
       tags:
       - Review
       summary: 리뷰를 삭제할 수 있다.
+      description: |2-
+                        RVW-006: 리뷰를 찾을 수 없습니다.
+                        RVW-008: 다른 사람의 리뷰를 삭제할 수 없습니다
       operationId: 리뷰_삭제_성공
       parameters:
       - name: reviewId
@@ -1090,13 +1230,72 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/admin-products-productId1686665306"
+                $ref: "#/components/schemas/reviews-reviewId1686665306"
               examples:
                 리뷰_삭제_성공:
                   value: |-
                     {
                       "data" : {
                         "message" : "OK"
+                      },
+                      "error" : null
+                    }
+  /reviews:byAuthor:
+    get:
+      tags:
+      - Review
+      summary: 사용자가 등록한 리뷰 목록 조회
+      operationId: 사용자_리뷰목록_조회_성공
+      parameters:
+      - name: page
+        in: query
+        description: "페이지(기본 값: 1)"
+        required: false
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: "정렬(기본값: createdAt / e.g. sort=createdAt, sort=-createdAt)"
+        required: false
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/reviews:byAuthor2129595722"
+              examples:
+                사용자_리뷰목록_조회_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "content" : [ {
+                          "reviewId" : 1,
+                          "rating" : 5,
+                          "content" : "아주 만족해요",
+                          "adminReply" : {
+                            "content" : "감사합니다",
+                            "createdAt" : "2025-06-01T12:00"
+                          },
+                          "product" : {
+                            "productId" : 1,
+                            "productName" : "상품"
+                          },
+                          "createdAt" : "2025-06-01T12:00"
+                        } ],
+                        "page" : 1,
+                        "size" : 10,
+                        "totalPages" : 2,
+                        "totalElements" : 11
                       },
                       "error" : null
                     }
@@ -1237,6 +1436,9 @@ paths:
       tags:
       - Address
       summary: 유저 배송지 수정
+      description: |2-
+                        USR-101: 유저 배송지를 찾을 수 없습니다.
+                        USR-102: 본인의 배송지만 변경할 수 있습니다.
       operationId: 배송지_수정_성공
       parameters:
       - name: addressId
@@ -1289,6 +1491,9 @@ paths:
       tags:
       - Address
       summary: 유저 배송지 삭제
+      description: |2-
+                        USR-101: 유저 배송지를 찾을 수 없습니다.
+                        USR-103: 본인의 배송지만 삭제할 수 있습니다.
       operationId: 배송지_삭제_성공
       parameters:
       - name: addressId
@@ -1310,7 +1515,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/admin-products-productId1686665306"
+                $ref: "#/components/schemas/reviews-reviewId1686665306"
               examples:
                 배송지_삭제_성공:
                   value: |-
@@ -1415,6 +1620,14 @@ components:
                   id:
                     type: string
                     description: 카테고리 ID
+    admin-reviews-reply-replyId800783421:
+      required:
+      - content
+      type: object
+      properties:
+        content:
+          type: string
+          description: 답글 내용
     carts-delete1623445193:
       required:
       - cartItemIds
@@ -1575,7 +1788,7 @@ components:
                   type: number
                   description: 배송지 ID
               description: 기본 배송지
-    admin-products-productId1686665306:
+    reviews-reviewId1686665306:
       type: object
       properties:
         data:
@@ -1699,6 +1912,42 @@ components:
             key:
               type: string
               description: S3 Object Key
+    admin-products-productId-1789436874:
+      required:
+      - cupSizeId
+      - detailImage
+      - intensityId
+      - name
+      - price
+      - quantity
+      - status
+      - thumbnail
+      type: object
+      properties:
+        thumbnail:
+          type: string
+          description: 썸네일 이미지
+        intensityId:
+          type: number
+          description: 강도 카테고리 아이디
+        quantity:
+          type: number
+          description: 재고 수량
+        price:
+          type: number
+          description: 가격
+        cupSizeId:
+          type: number
+          description: 컵사이즈 카테고리 아이디
+        name:
+          type: string
+          description: 상품명
+        status:
+          type: string
+          description: 판매상태 코드
+        detailImage:
+          type: string
+          description: 상세 이미지
     admin-reviews1949273614:
       type: object
       properties:
@@ -1779,42 +2028,6 @@ components:
             totalElements:
               type: number
               description: 총 수
-    admin-products-productId-1789436874:
-      required:
-      - cupSizeId
-      - detailImage
-      - intensityId
-      - name
-      - price
-      - quantity
-      - status
-      - thumbnail
-      type: object
-      properties:
-        thumbnail:
-          type: string
-          description: 썸네일 이미지
-        intensityId:
-          type: number
-          description: 강도 카테고리 아이디
-        quantity:
-          type: number
-          description: 재고 수량
-        price:
-          type: number
-          description: 가격
-        cupSizeId:
-          type: number
-          description: 컵사이즈 카테고리 아이디
-        name:
-          type: string
-          description: 상품명
-        status:
-          type: string
-          description: 판매상태 코드
-        detailImage:
-          type: string
-          description: 상세 이미지
     users-addresses414680085:
       type: object
       properties:
@@ -1966,6 +2179,74 @@ components:
             totalElements:
               type: number
               description: 총 상품 수
+    reviews:byAuthor2129595722:
+      type: object
+      properties:
+        data:
+          required:
+          - page
+          - size
+          - totalElements
+          - totalPages
+          type: object
+          properties:
+            size:
+              type: number
+              description: 페이지 사이즈(기본값 10)
+            totalPages:
+              type: number
+              description: 전체 페이지 수
+            page:
+              type: number
+              description: 현재 페이지 (기본값 1)
+            content:
+              type: array
+              items:
+                required:
+                - content
+                - createdAt
+                - rating
+                - reviewId
+                type: object
+                properties:
+                  createdAt:
+                    type: string
+                    description: 리뷰 작성일
+                  product:
+                    required:
+                    - productId
+                    - productName
+                    type: object
+                    properties:
+                      productId:
+                        type: number
+                        description: 상품 아이디
+                      productName:
+                        type: string
+                        description: 상품명
+                  rating:
+                    type: number
+                    description: 별점
+                  reviewId:
+                    type: number
+                    description: 리뷰 아이디
+                  adminReply:
+                    type: object
+                    properties:
+                      createdAt:
+                        type: string
+                        description: 관리자 답글 작성일
+                        nullable: true
+                      content:
+                        type: string
+                        description: 관리자 답글 내용
+                        nullable: true
+                  content:
+                    type: string
+                    description: 리뷰 내용
+            totalElements:
+              type: number
+              description: 총 수
     orders-orderNumber1806927897:
       type: object
       properties:
@@ -2426,17 +2707,6 @@ components:
             totalElements:
               type: number
               description: 총 수
-    admin-products-productId-1712578160:
-      type: object
-      properties:
-        data:
-          required:
-          - productId
-          type: object
-          properties:
-            productId:
-              type: number
-              description: 수정된 상품 아이디
     cart-items1349440338:
       required:
       - productId
@@ -2449,6 +2719,17 @@ components:
         productId:
           type: number
           description: 상품Id
+    admin-products-productId-1712578160:
+      type: object
+      properties:
+        data:
+          required:
+          - productId
+          type: object
+          properties:
+            productId:
+              type: number
+              description: 수정된 상품 아이디
     orders-prepare-1188466473:
       type: object
       properties:
@@ -2546,3 +2827,14 @@ components:
                   name:
                     type: string
                     description: 상품명
+    admin-reviews-reply-replyId1254049025:
+      type: object
+      properties:
+        data:
+          required:
+          - replyId
+          type: object
+          properties:
+            replyId:
+              type: number
+              description: 리뷰 답글 아이디

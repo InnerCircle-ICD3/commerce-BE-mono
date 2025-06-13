@@ -43,7 +43,13 @@ class ReviewControllerRestDocTest : DescribeSpec() {
 
         describe("POST /reviews - 리뷰 등록") {
             val summary = "배송완료된 상품에 리뷰를 등록할 수 있다."
-
+            val description = """
+                RVW-001: 리뷰 내용을 입력해주세요.
+                RVW-002: 별점은 1~5점 사이로 선택해주세요.
+                RVW-003: 배송완료된 주문건에 대해서만 리뷰를 작성할 수 있습니다.
+                RVW-004: 배송완료 후 30일 이내의 주문건에 대해서만 리뷰를 작성 및 수정할 수 있습니다.
+                RVW-005: 리뷰는 주문 당 한번만 작성가능합니다.
+            """.trimMargin()
             it("배송완료된 상품에 리뷰를 등록할 수 있다.") {
                 val userId = 1L
                 val request = RegisterReviewApiRequest(
@@ -59,6 +65,7 @@ class ReviewControllerRestDocTest : DescribeSpec() {
                     identifier = "리뷰_등록_성공",
                     tag = tag,
                     summary = summary,
+                    description = description,
                 ) {
                     requestLine(HttpMethod.POST, "/reviews")
 
@@ -83,6 +90,12 @@ class ReviewControllerRestDocTest : DescribeSpec() {
 
         describe("PUT /reviews/{reviewId} - 리뷰 수정") {
             val summary = "리뷰를 수정할 수 있다."
+            val description = """
+                RVW-001: 리뷰 내용을 입력해주세요.
+                RVW-002: 별점은 1~5점 사이로 선택해주세요.
+                RVW-006: 리뷰를 찾을 수 없습니다.
+                RVW-007: 다른 사람의 리뷰를 수정할 수 없습니다
+            """.trimMargin()
 
             it("리뷰를 수정할 수 있다.") {
                 val reviewId = 10L
@@ -98,6 +111,7 @@ class ReviewControllerRestDocTest : DescribeSpec() {
                     identifier = "리뷰_수정_성공",
                     tag = tag,
                     summary = summary,
+                    description = description,
                 ) {
                     requestLine(HttpMethod.PUT, "/reviews/{reviewId}") {
                         pathVariable("reviewId", "리뷰 아이디", reviewId)
@@ -122,7 +136,10 @@ class ReviewControllerRestDocTest : DescribeSpec() {
 
         describe("DELETE /reviews/{reviewId} - 리뷰 삭제") {
             val summary = "리뷰를 삭제할 수 있다."
-
+            val description = """
+                RVW-006: 리뷰를 찾을 수 없습니다.
+                RVW-008: 다른 사람의 리뷰를 삭제할 수 없습니다
+            """.trimMargin()
             it("리뷰를 삭제할 수 있다.") {
                 val userId = 1L
                 val reviewId = 10L
@@ -133,6 +150,7 @@ class ReviewControllerRestDocTest : DescribeSpec() {
                     identifier = "리뷰_삭제_성공",
                     tag = tag,
                     summary = summary,
+                    description = description,
                 ) {
                     requestLine(HttpMethod.DELETE, "/reviews/{reviewId}") {
                         pathVariable("reviewId", "리뷰 아이디", reviewId)

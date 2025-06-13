@@ -231,6 +231,10 @@ class UserAddressControllerRestDocTest : DescribeSpec() {
 
         describe("PUT /users/addresses/{addressId}") {
             val summary = "유저 배송지 수정"
+            val description = """
+                USR-101: 유저 배송지를 찾을 수 없습니다.
+                USR-102: 본인의 배송지만 변경할 수 있습니다.
+            """.trimMargin()
             it("배송지 정보를 수정할 수 있다.") {
                 every { userAddressService.update(any(), any(), any()) } just Runs
 
@@ -238,6 +242,7 @@ class UserAddressControllerRestDocTest : DescribeSpec() {
                     identifier = "배송지_수정_성공",
                     tag = tag,
                     summary = summary,
+                    description = description,
                 ) {
                     requestLine(HttpMethod.PUT, "/users/addresses/{addressId}") {
                         pathVariable("addressId", "배송지 아이디", 10)
@@ -267,6 +272,10 @@ class UserAddressControllerRestDocTest : DescribeSpec() {
 
         describe("DELETE /users/addresses/{addressId}") {
             val summary = "유저 배송지 삭제"
+            val description = """
+                USR-101: 유저 배송지를 찾을 수 없습니다.
+                USR-103: 본인의 배송지만 삭제할 수 있습니다.
+            """.trimMargin()
             it("배송지 정보를 삭제할 수 있다.") {
                 every { userAddressService.delete(any(), any()) } just Runs
 
@@ -274,6 +283,7 @@ class UserAddressControllerRestDocTest : DescribeSpec() {
                     identifier = "배송지_삭제_성공",
                     tag = tag,
                     summary = summary,
+                    description = description,
                 ) {
                     requestLine(HttpMethod.DELETE, "/users/addresses/{addressId}") {
                         pathVariable("addressId", "배송지 아이디", 10)

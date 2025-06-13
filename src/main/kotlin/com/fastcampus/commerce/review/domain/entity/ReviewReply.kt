@@ -1,6 +1,8 @@
 package com.fastcampus.commerce.review.domain.entity
 
 import com.fastcampus.commerce.common.entity.BaseEntity
+import com.fastcampus.commerce.common.error.CoreException
+import com.fastcampus.commerce.review.domain.error.ReviewErrorCode
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
 import org.springframework.data.annotation.LastModifiedDate
@@ -20,7 +22,7 @@ class ReviewReply(
     @Column(name = "review_id", nullable = false)
     val reviewId: Long,
     @Column(name = "replier_id", nullable = false)
-    val replierId: Long,
+    var replierId: Long,
     @Column(nullable = false, columnDefinition = "text")
     var content: String,
 ) : BaseEntity() {
@@ -34,4 +36,20 @@ class ReviewReply(
 
     @Column
     var deletedAt: LocalDateTime? = null
+
+    init {
+        validate()
+    }
+
+    private fun validate() {
+        if (content.isBlank()) {
+            throw CoreException(ReviewErrorCode.REPLY_CONTENT_EMPTY)
+        }
+    }
+
+    fun updateContent(adminId: Long, content: String) {
+        this.replierId = adminId
+        this.content = content
+        validate()
+    }
 }
