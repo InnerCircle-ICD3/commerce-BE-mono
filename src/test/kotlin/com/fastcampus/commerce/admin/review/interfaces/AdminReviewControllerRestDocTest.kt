@@ -84,6 +84,7 @@ class AdminReviewControllerRestDocTest : DescribeSpec() {
                         optionalField("content", "리뷰 내용", "좋아요")
                         optionalField("period", "작성일 기간(3, 6, 9, 12월)", 3)
                         optionalField("page", "페이지(기본 값: 1)", 1)
+                        optionalField("sort", "정렬(기본값: createdAt / e.g. sort=createdAt, sort=-createdAt)", "createdAt")
                     }
 
                     responseBody {
@@ -109,6 +110,10 @@ class AdminReviewControllerRestDocTest : DescribeSpec() {
 
         describe("POST /admin/reviews/{reviewId}/reply - 리뷰 답글등록") {
             val summary = "관리자의 리뷰 답글 등록"
+            val description = """
+                RVW-101: 이미 답글이 작성된 리뷰입니다.
+                RVW-102: 리뷰 답글 내용을 입력해주세요.
+            """.trimMargin()
             it("리뷰 답글을 등록할 수 있다.") {
                 val replyId = 1L
                 every { adminReviewService.registerReply(any(), any(), any()) } returns replyId
@@ -117,6 +122,7 @@ class AdminReviewControllerRestDocTest : DescribeSpec() {
                     identifier = "관리자_리뷰답글_등록_성공",
                     tag = tag,
                     summary = summary,
+                    description = description,
                     privateResource = privateResource,
                 ) {
                     requestLine(HttpMethod.POST, "/admin/reviews/{reviewId}/reply") {
@@ -141,6 +147,10 @@ class AdminReviewControllerRestDocTest : DescribeSpec() {
 
         describe("PUT /admin/reviews/reply/{replyId} - 리뷰 답글수정") {
             val summary = "관리자의 리뷰 답글 수정"
+            val description = """
+                RVW-102: 리뷰 답글 내용을 입력해주세요.
+                RVW-103: 리뷰 답글을 조회할 수 없습니다.
+            """.trimMargin()
             it("리뷰 답글을 수정할 수 있다.") {
                 every { adminReviewService.updateReply(any(), any(), any()) } just Runs
 
@@ -148,6 +158,7 @@ class AdminReviewControllerRestDocTest : DescribeSpec() {
                     identifier = "관리자_리뷰답글_수정_성공",
                     tag = tag,
                     summary = summary,
+                    description = description,
                     privateResource = privateResource,
                 ) {
                     requestLine(HttpMethod.PUT, "/admin/reviews/reply/{replyId}") {
