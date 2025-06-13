@@ -30,8 +30,8 @@ data class AdminReplyResponse(
     companion object {
         fun from(adminReply: AdminReply): AdminReplyResponse =
             AdminReplyResponse(
-                content = adminReply.content,
-                createdAt = adminReply.createdAt,
+                content = adminReply.content!!,
+                createdAt = adminReply.createdAt!!,
             )
     }
 }

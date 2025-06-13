@@ -1,9 +1,9 @@
 package com.fastcampus.commerce.review.domain.service
 
-import com.fastcampus.commerce.review.domain.model.AdminReply
-import com.fastcampus.commerce.review.domain.model.ReviewAdminInfo
-import com.fastcampus.commerce.review.domain.model.ReviewAuthor
-import com.fastcampus.commerce.review.domain.model.ReviewProduct
+import com.fastcampus.commerce.common.error.CoreException
+import com.fastcampus.commerce.review.domain.entity.ReviewReply
+import com.fastcampus.commerce.review.domain.error.ReviewErrorCode
+import com.fastcampus.commerce.review.domain.model.ReviewInfo
 import com.fastcampus.commerce.review.domain.model.SearchReviewAdminCondition
 import com.fastcampus.commerce.review.domain.repository.ReviewAdminRepository
 import org.springframework.data.domain.Page
@@ -14,21 +14,18 @@ import org.springframework.stereotype.Component
 class ReviewAdminReader(
     private val reviewAdminRepository: ReviewAdminRepository,
 ) {
-    fun searchReviews(condition: SearchReviewAdminCondition, pageable: Pageable): Page<ReviewAdminInfo> {
-        return reviewAdminRepository.searchReviews(condition, pageable).map {
-            ReviewAdminInfo(
-                reviewId = it.reviewId,
-                rating = it.rating,
-                content = it.content,
-                adminReply = if (it.adminReplyContent != null && it.adminReplyCreatedAt != null) {
-                    AdminReply(it.adminReplyContent, it.adminReplyCreatedAt)
-                } else {
-                    null
-                },
-                user = ReviewAuthor(it.userId, it.userNickname),
-                product = ReviewProduct(it.productId, it.productName),
-                createdAt = it.createdAt,
-            )
-        }
+    fun searchReviews(condition: SearchReviewAdminCondition, pageable: Pageable): Page<ReviewInfo> {
+        return reviewAdminRepository.searchReviews(condition, pageable)
+            .map(ReviewInfo::from)
+    }
+
+    fun getReview(reviewId: Long): ReviewInfo {
+        return reviewAdminRepository.getReview(reviewId)?.let(ReviewInfo::from)
+            ?: throw CoreException(ReviewErrorCode.REVIEW_NOT_FOUND)
+    }
+
+    fun getReply(replyId: Long): ReviewReply {
+        return reviewAdminRepository.findReply(replyId)
+            .orElseThrow { CoreException(ReviewErrorCode.REPLY_NOT_FOUND) }
     }
 }

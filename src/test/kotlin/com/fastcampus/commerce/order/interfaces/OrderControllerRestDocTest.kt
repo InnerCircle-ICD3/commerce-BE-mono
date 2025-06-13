@@ -1,6 +1,6 @@
 package com.fastcampus.commerce.order.interfaces
 
-import com.fastcampus.commerce.config.TestSecurityConfig
+import com.fastcampus.commerce.config.TestConfig
 import com.fastcampus.commerce.order.interfaces.request.OrderShippingInfoApiRequest
 import com.fastcampus.commerce.restdoc.documentation
 import io.kotest.core.spec.style.DescribeSpec
@@ -19,7 +19,7 @@ import java.time.LocalDateTime
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
 @WebMvcTest(OrderController::class)
-@Import(TestSecurityConfig::class)
+@Import(TestConfig::class)
 class OrderControllerRestDocTest : DescribeSpec() {
     override fun extensions() = listOf(SpringExtension)
 

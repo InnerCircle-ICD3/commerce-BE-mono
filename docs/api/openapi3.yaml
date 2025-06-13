@@ -107,6 +107,12 @@ paths:
         required: false
         schema:
           type: string
+      - name: sort
+        in: query
+        description: "정렬(기본값: createdAt / e.g. sort=createdAt, sort=-createdAt)"
+        required: false
+        schema:
+          type: string
       - name: Authorization
         in: header
         description: Authorization
@@ -268,6 +274,106 @@ paths:
                     {
                       "data" : {
                         "message" : "OK"
+                      },
+                      "error" : null
+                    }
+  /admin/reviews/reply/{replyId}:
+    put:
+      tags:
+      - Admin-Review
+      summary: 관리자의 리뷰 답글 수정
+      description: |2-
+                        RVW-102: 리뷰 답글 내용을 입력해주세요.
+                        RVW-103: 리뷰 답글을 조회할 수 없습니다.
+      operationId: 관리자_리뷰답글_수정_성공
+      parameters:
+      - name: replyId
+        in: path
+        description: 리뷰 답글 아이디
+        required: true
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/admin-reviews-reply-replyId800783421"
+            examples:
+              관리자_리뷰답글_수정_성공:
+                value: |-
+                  {
+                    "content" : "감사합니다."
+                  }
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/admin-reviews-reply-replyId1254049025"
+              examples:
+                관리자_리뷰답글_수정_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "replyId" : 1
+                      },
+                      "error" : null
+                    }
+  /admin/reviews/{reviewId}/reply:
+    post:
+      tags:
+      - Admin-Review
+      summary: 관리자의 리뷰 답글 등록
+      description: |2-
+                        RVW-101: 이미 답글이 작성된 리뷰입니다.
+                        RVW-102: 리뷰 답글 내용을 입력해주세요.
+      operationId: 관리자_리뷰답글_등록_성공
+      parameters:
+      - name: reviewId
+        in: path
+        description: 리뷰 아이디
+        required: true
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/admin-reviews-reply-replyId800783421"
+            examples:
+              관리자_리뷰답글_등록_성공:
+                value: |-
+                  {
+                    "content" : "감사합니다."
+                  }
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/admin-reviews-reply-replyId1254049025"
+              examples:
+                관리자_리뷰답글_등록_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "replyId" : 1
                       },
                       "error" : null
                     }
@@ -1100,6 +1206,65 @@ paths:
                       },
                       "error" : null
                     }
+  /reviews:byAuthor:
+    get:
+      tags:
+      - Review
+      summary: 사용자가 등록한 리뷰 목록 조회
+      operationId: 사용자_리뷰목록_조회_성공
+      parameters:
+      - name: page
+        in: query
+        description: "페이지(기본 값: 1)"
+        required: false
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: "정렬(기본값: createdAt / e.g. sort=createdAt, sort=-createdAt)"
+        required: false
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/reviews:byAuthor2129595722"
+              examples:
+                사용자_리뷰목록_조회_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "content" : [ {
+                          "reviewId" : 1,
+                          "rating" : 5,
+                          "content" : "아주 만족해요",
+                          "adminReply" : {
+                            "content" : "감사합니다",
+                            "createdAt" : "2025-06-01T12:00"
+                          },
+                          "product" : {
+                            "productId" : 1,
+                            "productName" : "상품"
+                          },
+                          "createdAt" : "2025-06-01T12:00"
+                        } ],
+                        "page" : 1,
+                        "size" : 10,
+                        "totalPages" : 2,
+                        "totalElements" : 11
+                      },
+                      "error" : null
+                    }
   /users/addresses:
     get:
       tags:
@@ -1415,6 +1580,14 @@ components:
                   id:
                     type: string
                     description: 카테고리 ID
+    admin-reviews-reply-replyId800783421:
+      required:
+      - content
+      type: object
+      properties:
+        content:
+          type: string
+          description: 답글 내용
     carts-delete1623445193:
       required:
       - cartItemIds
@@ -1699,6 +1872,42 @@ components:
             key:
               type: string
               description: S3 Object Key
+    admin-products-productId-1789436874:
+      required:
+      - cupSizeId
+      - detailImage
+      - intensityId
+      - name
+      - price
+      - quantity
+      - status
+      - thumbnail
+      type: object
+      properties:
+        thumbnail:
+          type: string
+          description: 썸네일 이미지
+        intensityId:
+          type: number
+          description: 강도 카테고리 아이디
+        quantity:
+          type: number
+          description: 재고 수량
+        price:
+          type: number
+          description: 가격
+        cupSizeId:
+          type: number
+          description: 컵사이즈 카테고리 아이디
+        name:
+          type: string
+          description: 상품명
+        status:
+          type: string
+          description: 판매상태 코드
+        detailImage:
+          type: string
+          description: 상세 이미지
     admin-reviews1949273614:
       type: object
       properties:
@@ -1779,42 +1988,6 @@ components:
             totalElements:
               type: number
               description: 총 수
-    admin-products-productId-1789436874:
-      required:
-      - cupSizeId
-      - detailImage
-      - intensityId
-      - name
-      - price
-      - quantity
-      - status
-      - thumbnail
-      type: object
-      properties:
-        thumbnail:
-          type: string
-          description: 썸네일 이미지
-        intensityId:
-          type: number
-          description: 강도 카테고리 아이디
-        quantity:
-          type: number
-          description: 재고 수량
-        price:
-          type: number
-          description: 가격
-        cupSizeId:
-          type: number
-          description: 컵사이즈 카테고리 아이디
-        name:
-          type: string
-          description: 상품명
-        status:
-          type: string
-          description: 판매상태 코드
-        detailImage:
-          type: string
-          description: 상세 이미지
     users-addresses414680085:
       type: object
       properties:
@@ -1966,6 +2139,74 @@ components:
             totalElements:
               type: number
               description: 총 상품 수
+    reviews:byAuthor2129595722:
+      type: object
+      properties:
+        data:
+          required:
+          - page
+          - size
+          - totalElements
+          - totalPages
+          type: object
+          properties:
+            size:
+              type: number
+              description: 페이지 사이즈(기본값 10)
+            totalPages:
+              type: number
+              description: 전체 페이지 수
+            page:
+              type: number
+              description: 현재 페이지 (기본값 1)
+            content:
+              type: array
+              items:
+                required:
+                - content
+                - createdAt
+                - rating
+                - reviewId
+                type: object
+                properties:
+                  createdAt:
+                    type: string
+                    description: 리뷰 작성일
+                  product:
+                    required:
+                    - productId
+                    - productName
+                    type: object
+                    properties:
+                      productId:
+                        type: number
+                        description: 상품 아이디
+                      productName:
+                        type: string
+                        description: 상품명
+                  rating:
+                    type: number
+                    description: 별점
+                  reviewId:
+                    type: number
+                    description: 리뷰 아이디
+                  adminReply:
+                    type: object
+                    properties:
+                      createdAt:
+                        type: string
+                        description: 관리자 답글 작성일
+                        nullable: true
+                      content:
+                        type: string
+                        description: 관리자 답글 내용
+                        nullable: true
+                  content:
+                    type: string
+                    description: 리뷰 내용
+            totalElements:
+              type: number
+              description: 총 수
     orders-orderNumber1806927897:
       type: object
       properties:
@@ -2546,3 +2787,14 @@ components:
                   name:
                     type: string
                     description: 상품명
+    admin-reviews-reply-replyId1254049025:
+      type: object
+      properties:
+        data:
+          required:
+          - replyId
+          type: object
+          properties:
+            replyId:
+              type: number
+              description: 리뷰 답글 아이디
