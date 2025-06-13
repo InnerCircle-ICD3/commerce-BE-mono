@@ -4,8 +4,8 @@ import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.review.domain.entity.ReviewReply
 import com.fastcampus.commerce.review.domain.error.ReviewErrorCode
 import com.fastcampus.commerce.review.domain.model.AdminReply
-import com.fastcampus.commerce.review.domain.model.ReviewAdminInfo
 import com.fastcampus.commerce.review.domain.model.ReviewAuthor
+import com.fastcampus.commerce.review.domain.model.ReviewInfo
 import com.fastcampus.commerce.review.domain.model.ReviewProduct
 import com.fastcampus.commerce.review.domain.repository.ReviewAdminRepository
 import io.kotest.assertions.throwables.shouldThrow
@@ -34,7 +34,7 @@ class ReviewAdminStoreTest : FunSpec(
             val reviewCreatedAt = LocalDateTime.of(2024, 6, 10, 14, 20)
 
             test("관리자 답글이 없는 리뷰에 답글을 등록할 수 있다") {
-                val reviewAdminInfo = ReviewAdminInfo(
+                val reviewInfo = ReviewInfo(
                     reviewId = reviewId,
                     rating = 5,
                     content = "정말 좋은 상품입니다",
@@ -60,7 +60,7 @@ class ReviewAdminStoreTest : FunSpec(
                     )
                 } returns expectedReviewReply
 
-                val result = reviewAdminStore.registerReply(replierId, reviewAdminInfo, replyContent)
+                val result = reviewAdminStore.registerReply(replierId, reviewInfo, replyContent)
 
                 result.reviewId shouldBe reviewId
                 result.replierId shouldBe replierId
@@ -79,7 +79,7 @@ class ReviewAdminStoreTest : FunSpec(
 
             test("이미 관리자 답글이 있는 리뷰에 답글을 등록하려고 하면 REPLY_EXISTS 예외가 발생한다") {
                 val adminReplyCreatedAt = LocalDateTime.of(2024, 6, 15, 10, 30)
-                val reviewAdminInfo = ReviewAdminInfo(
+                val reviewInfo = ReviewInfo(
                     reviewId = reviewId,
                     rating = 5,
                     content = "정말 좋은 상품입니다",
@@ -90,14 +90,14 @@ class ReviewAdminStoreTest : FunSpec(
                 )
 
                 shouldThrow<CoreException> {
-                    reviewAdminStore.registerReply(replierId, reviewAdminInfo, replyContent)
+                    reviewAdminStore.registerReply(replierId, reviewInfo, replyContent)
                 }.errorCode shouldBe ReviewErrorCode.REPLY_EXISTS
 
                 verify(exactly = 0) { reviewAdminRepository.registerReply(any()) }
             }
 
             test("빈 내용으로 답글을 등록하려고 하면 REPLY_CONTENT_EMPTY 예외가 발생한다") {
-                val reviewAdminInfo = ReviewAdminInfo(
+                val reviewInfo = ReviewInfo(
                     reviewId = reviewId,
                     rating = 3,
                     content = "보통입니다",
@@ -110,14 +110,14 @@ class ReviewAdminStoreTest : FunSpec(
                 val emptyContent = ""
 
                 shouldThrow<CoreException> {
-                    reviewAdminStore.registerReply(replierId, reviewAdminInfo, emptyContent)
+                    reviewAdminStore.registerReply(replierId, reviewInfo, emptyContent)
                 }.errorCode shouldBe ReviewErrorCode.REPLY_CONTENT_EMPTY
 
                 verify(exactly = 0) { reviewAdminRepository.registerReply(any()) }
             }
 
             test("공백만 있는 내용으로 답글을 등록하려고 하면 REPLY_CONTENT_EMPTY 예외가 발생한다") {
-                val reviewAdminInfo = ReviewAdminInfo(
+                val reviewInfo = ReviewInfo(
                     reviewId = reviewId,
                     rating = 4,
                     content = "괜찮아요",
@@ -130,7 +130,7 @@ class ReviewAdminStoreTest : FunSpec(
                 val blankContent = "   "
 
                 shouldThrow<CoreException> {
-                    reviewAdminStore.registerReply(replierId, reviewAdminInfo, blankContent)
+                    reviewAdminStore.registerReply(replierId, reviewInfo, blankContent)
                 }.errorCode shouldBe ReviewErrorCode.REPLY_CONTENT_EMPTY
 
                 verify(exactly = 0) { reviewAdminRepository.registerReply(any()) }
@@ -141,7 +141,7 @@ class ReviewAdminStoreTest : FunSpec(
                 val reviewId2 = 102L
                 val replierId2 = 2L
 
-                val reviewAdminInfo1 = ReviewAdminInfo(
+                val reviewInfo1 = ReviewInfo(
                     reviewId = reviewId1,
                     rating = 5,
                     content = "첫 번째 리뷰",
@@ -151,7 +151,7 @@ class ReviewAdminStoreTest : FunSpec(
                     createdAt = reviewCreatedAt,
                 )
 
-                val reviewAdminInfo2 = ReviewAdminInfo(
+                val reviewInfo2 = ReviewInfo(
                     reviewId = reviewId2,
                     rating = 4,
                     content = "두 번째 리뷰",
@@ -185,8 +185,8 @@ class ReviewAdminStoreTest : FunSpec(
                     )
                 } returns reply2
 
-                val result1 = reviewAdminStore.registerReply(replierId, reviewAdminInfo1, "첫 번째 답글")
-                val result2 = reviewAdminStore.registerReply(replierId2, reviewAdminInfo2, "두 번째 답글")
+                val result1 = reviewAdminStore.registerReply(replierId, reviewInfo1, "첫 번째 답글")
+                val result2 = reviewAdminStore.registerReply(replierId2, reviewInfo2, "두 번째 답글")
 
                 result1.reviewId shouldBe reviewId1
                 result1.content shouldBe "첫 번째 답글"

@@ -7,8 +7,8 @@ import com.fastcampus.commerce.review.domain.entity.QReview.review
 import com.fastcampus.commerce.review.domain.entity.QReviewReply.reviewReply
 import com.fastcampus.commerce.review.domain.entity.Review
 import com.fastcampus.commerce.review.domain.entity.ReviewReply
-import com.fastcampus.commerce.review.domain.model.QReviewAdminInfoFlat
-import com.fastcampus.commerce.review.domain.model.ReviewAdminInfoFlat
+import com.fastcampus.commerce.review.domain.model.QReviewInfoFlat
+import com.fastcampus.commerce.review.domain.model.ReviewInfoFlat
 import com.fastcampus.commerce.review.domain.model.SearchReviewAdminCondition
 import com.fastcampus.commerce.review.domain.repository.ReviewAdminRepository
 import com.fastcampus.commerce.user.domain.entity.QUser.user
@@ -28,7 +28,7 @@ class ReviewAdminRepositoryImpl(
     private val queryFactory: JPAQueryFactory,
     private val reviewReplyJpaRepository: ReviewReplyJpaRepository,
 ) : ReviewAdminRepository, QuerydslRepositorySupport(Review::class.java) {
-    override fun searchReviews(condition: SearchReviewAdminCondition, pageable: Pageable): Page<ReviewAdminInfoFlat> {
+    override fun searchReviews(condition: SearchReviewAdminCondition, pageable: Pageable): Page<ReviewInfoFlat> {
         val whereCondition = BooleanBuilder()
             .and(productIdEq(condition.productId))
             .and(productNameContainsIgnore(condition.productName))
@@ -38,7 +38,7 @@ class ReviewAdminRepositoryImpl(
 
         val query = queryFactory
             .select(
-                QReviewAdminInfoFlat(
+                QReviewInfoFlat(
                     review.id,
                     review.rating,
                     review.content,
@@ -74,10 +74,10 @@ class ReviewAdminRepositoryImpl(
         }
     }
 
-    override fun getReview(reviewId: Long): ReviewAdminInfoFlat? {
+    override fun getReview(reviewId: Long): ReviewInfoFlat? {
         return queryFactory
             .select(
-                QReviewAdminInfoFlat(
+                QReviewInfoFlat(
                     review.id,
                     review.rating,
                     review.content,

@@ -4,8 +4,8 @@ import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.review.domain.entity.ReviewReply
 import com.fastcampus.commerce.review.domain.error.ReviewErrorCode
 import com.fastcampus.commerce.review.domain.model.AdminReply
-import com.fastcampus.commerce.review.domain.model.ReviewAdminInfoFlat
 import com.fastcampus.commerce.review.domain.model.ReviewAuthor
+import com.fastcampus.commerce.review.domain.model.ReviewInfoFlat
 import com.fastcampus.commerce.review.domain.model.ReviewProduct
 import com.fastcampus.commerce.review.domain.model.SearchReviewAdminCondition
 import com.fastcampus.commerce.review.domain.repository.ReviewAdminRepository
@@ -39,7 +39,7 @@ class ReviewAdminReaderTest : FunSpec({
             val adminReplyCreatedAt = LocalDateTime.of(2024, 6, 15, 10, 30)
             val reviewCreatedAt = LocalDateTime.of(2024, 6, 10, 14, 20)
 
-            val flatReview = ReviewAdminInfoFlat(
+            val flatReview = ReviewInfoFlat(
                 reviewId = 1L,
                 rating = 5,
                 content = "정말 좋은 상품입니다",
@@ -75,7 +75,7 @@ class ReviewAdminReaderTest : FunSpec({
         test("관리자 답글이 없는 리뷰를 올바르게 변환한다") {
             val reviewCreatedAt = LocalDateTime.of(2024, 6, 10, 14, 20)
 
-            val flatReview = ReviewAdminInfoFlat(
+            val flatReview = ReviewInfoFlat(
                 reviewId = 2L,
                 rating = 3,
                 content = "보통입니다",
@@ -112,7 +112,7 @@ class ReviewAdminReaderTest : FunSpec({
             val reviewCreatedAt = LocalDateTime.of(2024, 6, 10, 14, 20)
             val adminReplyCreatedAt = LocalDateTime.of(2024, 6, 15, 10, 30)
 
-            val flatReview = ReviewAdminInfoFlat(
+            val flatReview = ReviewInfoFlat(
                 reviewId = 4L,
                 rating = 2,
                 content = "별로입니다",
@@ -141,7 +141,7 @@ class ReviewAdminReaderTest : FunSpec({
             val reviewCreatedAt2 = LocalDateTime.of(2024, 6, 11, 15, 30)
             val adminReplyCreatedAt = LocalDateTime.of(2024, 6, 15, 10, 30)
 
-            val flatReview1 = ReviewAdminInfoFlat(
+            val flatReview1 = ReviewInfoFlat(
                 reviewId = 1L,
                 rating = 5,
                 content = "좋습니다",
@@ -154,7 +154,7 @@ class ReviewAdminReaderTest : FunSpec({
                 createdAt = reviewCreatedAt1,
             )
 
-            val flatReview2 = ReviewAdminInfoFlat(
+            val flatReview2 = ReviewInfoFlat(
                 reviewId = 2L,
                 rating = 3,
                 content = "보통입니다",
@@ -189,7 +189,7 @@ class ReviewAdminReaderTest : FunSpec({
         }
 
         test("빈 결과를 올바르게 처리한다") {
-            val emptyPage = PageImpl<ReviewAdminInfoFlat>(emptyList(), pageable, 0)
+            val emptyPage = PageImpl<ReviewInfoFlat>(emptyList(), pageable, 0)
 
             every { reviewAdminRepository.searchReviews(condition, pageable) } returns emptyPage
 
@@ -207,7 +207,7 @@ class ReviewAdminReaderTest : FunSpec({
             val adminReplyCreatedAt = LocalDateTime.of(2024, 6, 15, 10, 30)
             val reviewCreatedAt = LocalDateTime.of(2024, 6, 10, 14, 20)
 
-            val flatReview = ReviewAdminInfoFlat(
+            val flatReview = ReviewInfoFlat(
                 reviewId = reviewId,
                 rating = 5,
                 content = "정말 좋은 상품입니다",
@@ -237,7 +237,7 @@ class ReviewAdminReaderTest : FunSpec({
             val reviewId = 2L
             val reviewCreatedAt = LocalDateTime.of(2024, 6, 10, 14, 20)
 
-            val flatReview = ReviewAdminInfoFlat(
+            val flatReview = ReviewInfoFlat(
                 reviewId = reviewId,
                 rating = 3,
                 content = "보통입니다",

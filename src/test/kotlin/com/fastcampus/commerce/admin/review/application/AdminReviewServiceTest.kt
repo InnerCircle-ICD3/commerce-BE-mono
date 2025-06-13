@@ -10,8 +10,8 @@ import com.fastcampus.commerce.common.util.TimeProvider
 import com.fastcampus.commerce.review.domain.entity.ReviewReply
 import com.fastcampus.commerce.review.domain.error.ReviewErrorCode
 import com.fastcampus.commerce.review.domain.model.AdminReply
-import com.fastcampus.commerce.review.domain.model.ReviewAdminInfo
 import com.fastcampus.commerce.review.domain.model.ReviewAuthor
+import com.fastcampus.commerce.review.domain.model.ReviewInfo
 import com.fastcampus.commerce.review.domain.model.ReviewProduct
 import com.fastcampus.commerce.review.domain.model.SearchReviewAdminCondition
 import com.fastcampus.commerce.review.domain.service.ReviewAdminReader
@@ -62,7 +62,7 @@ class AdminReviewServiceTest : FunSpec({
             )
 
             val adminReply = AdminReply("감사합니다", LocalDateTime.of(2024, 6, 16, 10, 0))
-            val reviewAdminInfo = ReviewAdminInfo(
+            val reviewInfo = ReviewInfo(
                 reviewId = 1L,
                 rating = 5,
                 content = "정말 좋은 상품입니다",
@@ -72,7 +72,7 @@ class AdminReviewServiceTest : FunSpec({
                 createdAt = LocalDateTime.of(2024, 6, 10, 14, 20),
             )
 
-            val reviewPage = PageImpl(listOf(reviewAdminInfo), pageable, 1)
+            val reviewPage = PageImpl(listOf(reviewInfo), pageable, 1)
 
             every { timeProvider.now() } returns now
             every { reviewAdminReader.searchReviews(expectedCondition, pageable) } returns reviewPage
@@ -109,7 +109,7 @@ class AdminReviewServiceTest : FunSpec({
                 to = LocalDate.of(2024, 6, 15),
             )
 
-            val reviewAdminInfo1 = ReviewAdminInfo(
+            val reviewInfo1 = ReviewInfo(
                 reviewId = 1L,
                 rating = 5,
                 content = "최고예요",
@@ -119,7 +119,7 @@ class AdminReviewServiceTest : FunSpec({
                 createdAt = LocalDateTime.of(2024, 6, 1, 12, 0),
             )
 
-            val reviewAdminInfo2 = ReviewAdminInfo(
+            val reviewInfo2 = ReviewInfo(
                 reviewId = 2L,
                 rating = 2,
                 content = "별로예요",
@@ -129,7 +129,7 @@ class AdminReviewServiceTest : FunSpec({
                 createdAt = LocalDateTime.of(2024, 6, 2, 13, 0),
             )
 
-            val reviewPage = PageImpl(listOf(reviewAdminInfo1, reviewAdminInfo2), pageable, 2)
+            val reviewPage = PageImpl(listOf(reviewInfo1, reviewInfo2), pageable, 2)
 
             every { timeProvider.now() } returns now
             every { reviewAdminReader.searchReviews(expectedCondition, pageable) } returns reviewPage
@@ -157,7 +157,7 @@ class AdminReviewServiceTest : FunSpec({
         val replyContent = "감사합니다. 더 좋은 서비스로 보답하겠습니다."
 
         test("관리자가 리뷰에 답글을 등록할 수 있다") {
-            val reviewAdminInfo = ReviewAdminInfo(
+            val reviewInfo = ReviewInfo(
                 reviewId = reviewId,
                 rating = 5,
                 content = "정말 좋은 상품입니다",
@@ -172,15 +172,15 @@ class AdminReviewServiceTest : FunSpec({
                 every { id } returns expectedReplyId
             }
 
-            every { reviewAdminReader.getReview(reviewId) } returns reviewAdminInfo
-            every { reviewAdminStore.registerReply(adminId, reviewAdminInfo, replyContent) } returns reviewReply
+            every { reviewAdminReader.getReview(reviewId) } returns reviewInfo
+            every { reviewAdminStore.registerReply(adminId, reviewInfo, replyContent) } returns reviewReply
 
             val result = adminReviewService.registerReply(adminId, reviewId, replyContent)
 
             result shouldBe expectedReplyId
 
             verify(exactly = 1) { reviewAdminReader.getReview(reviewId) }
-            verify(exactly = 1) { reviewAdminStore.registerReply(adminId, reviewAdminInfo, replyContent) }
+            verify(exactly = 1) { reviewAdminStore.registerReply(adminId, reviewInfo, replyContent) }
         }
 
         test("존재하지 않는 리뷰에 답글을 등록하려고 하면 예외가 발생한다") {

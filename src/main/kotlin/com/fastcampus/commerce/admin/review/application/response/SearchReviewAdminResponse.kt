@@ -1,6 +1,6 @@
 package com.fastcampus.commerce.admin.review.application.response
 
-import com.fastcampus.commerce.review.domain.model.ReviewAdminInfo
+import com.fastcampus.commerce.review.domain.model.ReviewInfo
 import java.time.LocalDateTime
 
 data class SearchReviewAdminResponse(
@@ -13,18 +13,18 @@ data class SearchReviewAdminResponse(
     val createdAt: LocalDateTime,
 ) {
     companion object {
-        fun from(reviewAdminInfo: ReviewAdminInfo) =
+        fun from(reviewInfo: ReviewInfo) =
             SearchReviewAdminResponse(
-                reviewId = reviewAdminInfo.reviewId,
-                rating = reviewAdminInfo.rating,
-                content = reviewAdminInfo.content,
-                adminReply = reviewAdminInfo.adminReply?.let { SearchReviewAdminReplyResponse(it.content, it.createdAt) },
-                user = SearchReviewAdminAuthorResponse(userId = reviewAdminInfo.user.userId, nickname = reviewAdminInfo.user.nickname),
+                reviewId = reviewInfo.reviewId,
+                rating = reviewInfo.rating,
+                content = reviewInfo.content,
+                adminReply = reviewInfo.adminReply?.let { SearchReviewAdminReplyResponse(it.content, it.createdAt) },
+                user = SearchReviewAdminAuthorResponse(userId = reviewInfo.user.userId, nickname = reviewInfo.user.nickname),
                 product = SearchReviewAdminProductResponse(
-                    productId = reviewAdminInfo.product.productId,
-                    productName = reviewAdminInfo.product.productName,
+                    productId = reviewInfo.product.productId,
+                    productName = reviewInfo.product.productName,
                 ),
-                createdAt = reviewAdminInfo.createdAt,
+                createdAt = reviewInfo.createdAt,
             )
     }
 }
