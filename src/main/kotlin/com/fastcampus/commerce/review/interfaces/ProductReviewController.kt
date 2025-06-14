@@ -12,25 +12,25 @@ import org.springframework.data.web.PageableDefault
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
-@RequestMapping("/products")
 @RestController
 class ProductReviewController(
     private val productReviewService: ProductReviewService,
 ) {
-    @GetMapping("/{productId}/reviews")
+    @GetMapping("/reviews:byProduct")
     fun getProductReviews(
-        @PathVariable productId: Long,
+        @RequestParam productId: Long,
         @PageableDefault pageable: Pageable,
     ): PagedData<ProductReviewApiResponse> {
         val productReviews: Page<ProductReviewResponse> = productReviewService.getProductReviews(productId, pageable)
         return PagedData.of(productReviews.map(ProductReviewApiResponse::from))
     }
 
-    @GetMapping("/{productId}/reviews/rating")
+    @GetMapping("/reviews/rating:byProduct")
     fun getProductReviewRating(
-        @PathVariable productId: Long,
+        @RequestParam productId: Long,
     ): ProductReviewRatingApiResponse {
         val reviewRating: ProductReviewRatingResponse = productReviewService.getProductReviewRating(productId)
         return ProductReviewRatingApiResponse.from(reviewRating)

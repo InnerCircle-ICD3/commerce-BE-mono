@@ -125,9 +125,9 @@ configure<com.epages.restdocs.apispec.gradle.OpenApi3Extension> {
 
 tasks.register<Copy>("copyOasToDocs") {
     dependsOn("clean", "openapi3")
-    delete("docs/api/openapi3.yaml")
+    delete("src/main/resources/static/swagger-ui/openapi3.yaml")
     from(project.layout.buildDirectory.file("api-spec/openapi3.yaml"))
-    into("resources/api/.")
+    into("src/main/resources/static/swagger-ui/.")
 }
 
 tasks.matching { it.name.contains("ktlintCheck", ignoreCase = true) }.configureEach {

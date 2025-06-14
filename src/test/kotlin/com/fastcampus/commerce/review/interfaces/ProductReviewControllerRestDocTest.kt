@@ -76,11 +76,10 @@ class ProductReviewControllerRestDocTest : DescribeSpec() {
                     tag = tag,
                     summary = summary,
                 ) {
-                    requestLine(HttpMethod.GET, "/products/{productId}/reviews") {
-                        pathVariable("productId", "상품 아이디", productId)
-                    }
+                    requestLine(HttpMethod.GET, "/reviews:byProduct")
 
                     queryParameters {
+                        field("productId", "상품 아이디", productId)
                         optionalField("page", "페이지(기본 값: 1)", 1)
                     }
 
@@ -131,8 +130,10 @@ class ProductReviewControllerRestDocTest : DescribeSpec() {
                     tag = tag,
                     summary = summary,
                 ) {
-                    requestLine(HttpMethod.GET, "/products/{productId}/reviews/rating") {
-                        pathVariable("productId", "상품 아이디", 1)
+                    requestLine(HttpMethod.GET, "/reviews/rating:byProduct")
+
+                    queryParameters {
+                        field("productId", "상품 아이디", 1)
                     }
 
                     responseBody {
