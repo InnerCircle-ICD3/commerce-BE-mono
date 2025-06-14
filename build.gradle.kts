@@ -127,7 +127,7 @@ tasks.register<Copy>("copyOasToDocs") {
     dependsOn("clean", "openapi3")
     delete("docs/api/openapi3.yaml")
     from(project.layout.buildDirectory.file("api-spec/openapi3.yaml"))
-    into("docs/api/.")
+    into("resources/api/.")
 }
 
 tasks.matching { it.name.contains("ktlintCheck", ignoreCase = true) }.configureEach {
