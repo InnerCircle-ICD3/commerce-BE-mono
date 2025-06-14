@@ -32,4 +32,18 @@ class PaymentService(
         order.paid(paidAt)
         return PaymentProcessResponse(payment.paymentNumber)
     }
+
+    @Transactional(readOnly = false)
+    fun cancelPayment(userId: Long, orderNumber: String) {
+        val order = orderPaymentService.getOrder(orderNumber)
+        order.verifyCancelable(userId)
+        val payment = paymentReader.getByOrderId(order.id!!)
+        if (payment.transactionId == null) {
+            throw CoreException(PaymentErrorCode.TRANSACTION_ID_EMPTY)
+        }
+        pgClient.refund(payment.transactionId!!, payment.amount)
+        val cancelledAt = timeProvider.now()
+        payment.cancel(cancelledAt)
+        order.cancel(cancelledAt)
+    }
 }

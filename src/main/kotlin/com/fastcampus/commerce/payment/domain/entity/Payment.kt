@@ -57,4 +57,11 @@ class Payment(
             updatedAt = now
         }
     }
+
+    fun cancel(cancelledAt: LocalDateTime) {
+        if (this.status == PaymentStatus.COMPLETED || this.status == PaymentStatus.WAITING) {
+            status = PaymentStatus.CANCELLED
+            updatedAt = cancelledAt
+        }
+    }
 }

@@ -9,4 +9,8 @@ class MockPgClient : PgClient {
     override fun getPaymentInfo(transactionId: String): PgPaymentInfo? {
         return PgPaymentInfo(10000, "OK")
     }
+
+    override fun refund(transactionId: String, amount: Int) {
+
+    }
 }

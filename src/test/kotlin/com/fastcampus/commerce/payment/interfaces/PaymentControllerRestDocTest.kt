@@ -7,7 +7,9 @@ import com.fastcampus.commerce.restdoc.documentation
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.restassured.module.mockmvc.RestAssuredMockMvc
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
@@ -72,6 +74,44 @@ class PaymentControllerRestDocTest : DescribeSpec() {
 
                     responseBody {
                         field("data.paymentNumber", "결제번호", paymentNumber)
+                        ignoredField("error")
+                    }
+                }
+            }
+        }
+
+        describe("POST /payments/cancel") {
+            val summary = "결제 취소 한다."
+            val description = """
+                ORD-001: 주문 내역을 찾을 수 없습니다.
+                PAY-001: PG사 결제정보를 찾을 수 업습니다.
+                PAY-002: 결제 정보를 찾을 수 없습니다.
+                PAY-006: 결제 대기중, 결제 완료 상태인 주문만 취소할 수 있습니다.
+                PAY-007: 다른 사람의 결제를 취소할 수 없습니다.
+                PAY-008: PG사 결제 아이디가 누락되었습니다.
+            """.trimMargin()
+            it("결제취소할 수 있다.") {
+                val paymentNumber = "PAY00001"
+                every { paymentService.cancelPayment(any(), any()) } just Runs
+
+                documentation(
+                    identifier = "결제취소_성공",
+                    tag = tag,
+                    summary = summary,
+                    description = description,
+                ) {
+                    requestLine(HttpMethod.POST, "/payments/cancel")
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                    }
+
+                    requestBody {
+                        field("orderNumber", "주분번호", "ORD123123123")
+                    }
+
+                    responseBody {
+                        field("data.message", "응답 메시지", "OK")
                         ignoredField("error")
                     }
                 }

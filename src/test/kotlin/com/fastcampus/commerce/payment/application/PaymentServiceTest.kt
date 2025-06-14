@@ -258,5 +258,170 @@ class PaymentServiceTest : FunSpec(
                 verify(exactly = 0) { timeProvider.now() }
             }
         }
+
+        context("cancelPayment") {
+            test("정상적으로 결제를 취소한다") {
+                // given
+                val userId = 100L
+                val orderNumber = "ORD-20241214-001"
+                val now = LocalDateTime.of(2024, 12, 14, 15, 0, 0)
+
+                val order = Order(
+                    orderNumber = orderNumber,
+                    userId = userId,
+                    totalAmount = 50000,
+                    recipientName = "홍길동",
+                    recipientPhone = "010-1234-5678",
+                    zipCode = "12345",
+                    address1 = "서울시 강남구",
+                    status = OrderStatus.PAID,
+                ).apply {
+                    id = 1L
+                }
+
+                val payment = Payment(
+                    paymentNumber = "PAY-20241214-001",
+                    orderId = 1L,
+                    userId = userId,
+                    amount = 50000,
+                    paymentMethod = PaymentMethod.TOSS_PAY,
+                    status = PaymentStatus.COMPLETED,
+                ).apply {
+                    id = 1L
+                    transactionId = "TRANSACTION_ID"
+                }
+
+                every { orderPaymentService.getOrder(orderNumber) } returns order
+                every { paymentReader.getByOrderId(1L) } returns payment
+                every { timeProvider.now() } returns now
+                every { pgClient.refund(any(), any()) } just Runs
+
+                // when
+                paymentService.cancelPayment(userId, orderNumber)
+
+                // then
+                payment.status shouldBe PaymentStatus.CANCELLED
+                order.status shouldBe OrderStatus.CANCELLED
+                order.canceledAt shouldBe now
+
+                verify(exactly = 1) { orderPaymentService.getOrder(orderNumber) }
+                verify(exactly = 1) { paymentReader.getByOrderId(1L) }
+                verify(exactly = 1) { timeProvider.now() }
+            }
+
+            test("다른 사용자가 주문을 취소하려고 하면 예외가 발생한다") {
+                // given
+                val orderUserId = 100L
+                val cancelUserId = 200L
+                val orderNumber = "ORD-20241214-001"
+
+                val order = Order(
+                    orderNumber = orderNumber,
+                    userId = orderUserId,
+                    totalAmount = 50000,
+                    recipientName = "홍길동",
+                    recipientPhone = "010-1234-5678",
+                    zipCode = "12345",
+                    address1 = "서울시 강남구",
+                    status = OrderStatus.PAID,
+                ).apply {
+                    id = 1L
+                }
+
+                every { orderPaymentService.getOrder(orderNumber) } returns order
+
+                // when & then
+                val exception = shouldThrow<CoreException> {
+                    paymentService.cancelPayment(cancelUserId, orderNumber)
+                }
+
+                exception.errorCode shouldBe PaymentErrorCode.UNAUTHORIZED_ORDER_CANCEL
+
+                verify(exactly = 1) { orderPaymentService.getOrder(orderNumber) }
+                verify(exactly = 0) { paymentReader.getByOrderId(any()) }
+                verify(exactly = 0) { timeProvider.now() }
+            }
+
+            test("취소 불가능한 상태의 주문을 취소하려고 하면 예외가 발생한다") {
+                // given
+                val userId = 100L
+                val orderNumber = "ORD-20241214-001"
+
+                val order = Order(
+                    orderNumber = orderNumber,
+                    userId = userId,
+                    totalAmount = 50000,
+                    recipientName = "홍길동",
+                    recipientPhone = "010-1234-5678",
+                    zipCode = "12345",
+                    address1 = "서울시 강남구",
+                    status = OrderStatus.SHIPPED, // 배송 중인 상태
+                ).apply {
+                    id = 1L
+                }
+
+                every { orderPaymentService.getOrder(orderNumber) } returns order
+
+                // when & then
+                val exception = shouldThrow<CoreException> {
+                    paymentService.cancelPayment(userId, orderNumber)
+                }
+
+                exception.errorCode shouldBe PaymentErrorCode.CANNOT_CANCEL
+
+                verify(exactly = 1) { orderPaymentService.getOrder(orderNumber) }
+                verify(exactly = 0) { paymentReader.getByOrderId(any()) }
+                verify(exactly = 0) { timeProvider.now() }
+            }
+
+            test("결제 대기 중인 주문을 취소할 수 있다") {
+                // given
+                val userId = 100L
+                val orderNumber = "ORD-20241214-001"
+                val now = LocalDateTime.of(2024, 12, 14, 15, 0, 0)
+
+                val order = Order(
+                    orderNumber = orderNumber,
+                    userId = userId,
+                    totalAmount = 50000,
+                    recipientName = "홍길동",
+                    recipientPhone = "010-1234-5678",
+                    zipCode = "12345",
+                    address1 = "서울시 강남구",
+                    status = OrderStatus.WAITING_FOR_PAYMENT,
+                ).apply {
+                    id = 1L
+                }
+
+                val payment = Payment(
+                    paymentNumber = "PAY-20241214-001",
+                    orderId = 1L,
+                    userId = userId,
+                    amount = 50000,
+                    paymentMethod = PaymentMethod.TOSS_PAY,
+                    status = PaymentStatus.WAITING,
+                ).apply {
+                    id = 1L
+                    transactionId = "TRANSACTION_ID"
+                }
+
+                every { orderPaymentService.getOrder(orderNumber) } returns order
+                every { paymentReader.getByOrderId(1L) } returns payment
+                every { timeProvider.now() } returns now
+                every { pgClient.refund(any(), any()) } just Runs
+
+                // when
+                paymentService.cancelPayment(userId, orderNumber)
+
+                // then
+                payment.status shouldBe PaymentStatus.CANCELLED
+                order.status shouldBe OrderStatus.CANCELLED
+                order.canceledAt shouldBe now
+
+                verify(exactly = 1) { orderPaymentService.getOrder(orderNumber) }
+                verify(exactly = 1) { paymentReader.getByOrderId(1L) }
+                verify(exactly = 1) { timeProvider.now() }
+            }
+        }
     },
 )
