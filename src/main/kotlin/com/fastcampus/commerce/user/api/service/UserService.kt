@@ -108,7 +108,12 @@ class UserService(
 
     @Transactional(rollbackFor = [Exception::class])
     fun deleteUser(userId: Long) {
-        // TODO: delete 처리
+        val user = userRepository.findById(userId)
+            .orElseThrow { throw CoreException(AuthErrorCode.USER_NOT_FOUND) }
+
+        user.isDeleted = true
+        user.deletedAt = java.time.LocalDateTime.now()
+        userRepository.save(user)
     }
 
     fun findById(userId: Long): User {

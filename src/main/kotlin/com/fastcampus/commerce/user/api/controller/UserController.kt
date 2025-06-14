@@ -34,8 +34,8 @@ class UserController(
      *
      * @param userId the ID of the user to delete
      */
-    @DeleteMapping("/delete/{userId}")
-    fun deleteUser(@PathVariable userId: Long) {
+    @DeleteMapping("/delete")
+    fun deleteUser(@RequestBody userId: Long) {
         userService.deleteUser(userId)
     }
 
