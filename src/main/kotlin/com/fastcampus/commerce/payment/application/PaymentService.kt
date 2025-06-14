@@ -46,4 +46,10 @@ class PaymentService(
         payment.cancel(cancelledAt)
         order.cancel(cancelledAt)
     }
+
+    @Transactional(readOnly = false)
+    fun refundRequestPayment(userId: Long, orderNumber: String) {
+        val order = orderPaymentService.getOrder(orderNumber)
+        order.refundRequest(userId, timeProvider.now())
+    }
 }

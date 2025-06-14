@@ -423,5 +423,188 @@ class PaymentServiceTest : FunSpec(
                 verify(exactly = 1) { timeProvider.now() }
             }
         }
+
+        context("refundRequestPayment") {
+            test("배송 완료된 주문을 정상적으로 환불 요청한다") {
+                // given
+                val userId = 100L
+                val orderNumber = "ORD-20241214-001"
+                val now = LocalDateTime.of(2024, 12, 14, 17, 0, 0)
+
+                val order = Order(
+                    orderNumber = orderNumber,
+                    userId = userId,
+                    totalAmount = 50000,
+                    recipientName = "홍길동",
+                    recipientPhone = "010-1234-5678",
+                    zipCode = "12345",
+                    address1 = "서울시 강남구",
+                    status = OrderStatus.DELIVERED,
+                ).apply {
+                    id = 1L
+                }
+
+                val payment = Payment(
+                    paymentNumber = "PAY-20241214-001",
+                    orderId = 1L,
+                    userId = userId,
+                    amount = 50000,
+                    paymentMethod = PaymentMethod.TOSS_PAY,
+                    status = PaymentStatus.COMPLETED,
+                ).apply {
+                    id = 1L
+                    transactionId = "TRANSACTION_ID"
+                }
+
+                every { orderPaymentService.getOrder(orderNumber) } returns order
+                every { timeProvider.now() } returns now
+
+                // when
+                paymentService.refundRequestPayment(userId, orderNumber)
+
+                // then
+                order.status shouldBe OrderStatus.REFUND_REQUESTED
+                order.refundRequestedAt shouldBe now
+
+                verify(exactly = 1) { orderPaymentService.getOrder(orderNumber) }
+                verify(exactly = 1) { timeProvider.now() }
+            }
+
+            test("배송 중인 주문을 정상적으로 환불요청한다") {
+                // given
+                val userId = 100L
+                val orderNumber = "ORD-20241214-001"
+                val now = LocalDateTime.of(2024, 12, 14, 17, 0, 0)
+
+                val order = Order(
+                    orderNumber = orderNumber,
+                    userId = userId,
+                    totalAmount = 30000,
+                    recipientName = "김철수",
+                    recipientPhone = "010-9876-5432",
+                    zipCode = "54321",
+                    address1 = "서울시 서초구",
+                    status = OrderStatus.SHIPPED,
+                ).apply {
+                    id = 2L
+                }
+
+                val payment = Payment(
+                    paymentNumber = "PAY-20241214-002",
+                    orderId = 2L,
+                    userId = userId,
+                    amount = 30000,
+                    paymentMethod = PaymentMethod.MOCK,
+                    status = PaymentStatus.COMPLETED,
+                ).apply {
+                    id = 2L
+                    transactionId = "KAKAO_TX_12345"
+                }
+
+                every { orderPaymentService.getOrder(orderNumber) } returns order
+                every { timeProvider.now() } returns now
+
+                // when
+                paymentService.refundRequestPayment(userId, orderNumber)
+
+                // then
+                order.status shouldBe OrderStatus.REFUND_REQUESTED
+                order.refundRequestedAt shouldBe now
+
+                verify(exactly = 1) { orderPaymentService.getOrder(orderNumber) }
+                verify(exactly = 1) { timeProvider.now() }
+            }
+
+            test("다른 사용자가 환불을 요청하면 예외가 발생한다") {
+                // given
+                val orderUserId = 100L
+                val refundUserId = 200L
+                val orderNumber = "ORD-20241214-001"
+                val now = LocalDateTime.of(2024, 12, 14, 17, 0, 0)
+
+                val order = Order(
+                    orderNumber = orderNumber,
+                    userId = orderUserId,
+                    totalAmount = 50000,
+                    recipientName = "홍길동",
+                    recipientPhone = "010-1234-5678",
+                    zipCode = "12345",
+                    address1 = "서울시 강남구",
+                    status = OrderStatus.DELIVERED,
+                ).apply {
+                    id = 1L
+                }
+
+                every { orderPaymentService.getOrder(orderNumber) } returns order
+                every { timeProvider.now() } returns now
+
+                shouldThrow<CoreException> {
+                    paymentService.refundRequestPayment(refundUserId, orderNumber)
+                }.errorCode shouldBe PaymentErrorCode.UNAUTHORIZED_ORDER_REFUND
+
+                verify(exactly = 1) { orderPaymentService.getOrder(orderNumber) }
+                verify(exactly = 1) { timeProvider.now() }
+            }
+
+            test("환불 불가능한 상태의 주문에 대해 환불을 요청하면 예외가 발생한다") {
+                // given
+                val userId = 100L
+                val orderNumber = "ORD-20241214-001"
+                val now = LocalDateTime.of(2024, 12, 14, 17, 0, 0)
+
+                val order = Order(
+                    orderNumber = orderNumber,
+                    userId = userId,
+                    totalAmount = 50000,
+                    recipientName = "홍길동",
+                    recipientPhone = "010-1234-5678",
+                    zipCode = "12345",
+                    address1 = "서울시 강남구",
+                    status = OrderStatus.PAID, // 아직 배송 전
+                ).apply {
+                    id = 1L
+                }
+
+                every { orderPaymentService.getOrder(orderNumber) } returns order
+                every { timeProvider.now() } returns now
+
+                shouldThrow<CoreException> {
+                    paymentService.refundRequestPayment(userId, orderNumber)
+                }.errorCode shouldBe PaymentErrorCode.CANNOT_REFUND
+
+                verify(exactly = 1) { orderPaymentService.getOrder(orderNumber) }
+                verify(exactly = 1) { timeProvider.now() }
+            }
+
+            test("이미 취소된 주문에 대해 환불을 요청하면 예외가 발생한다") {
+                // given
+                val userId = 100L
+                val orderNumber = "ORD-20241214-001"
+                val now = LocalDateTime.of(2024, 12, 14, 17, 0, 0)
+
+                val order = Order(
+                    orderNumber = orderNumber,
+                    userId = userId,
+                    totalAmount = 50000,
+                    recipientName = "홍길동",
+                    recipientPhone = "010-1234-5678",
+                    zipCode = "12345",
+                    address1 = "서울시 강남구",
+                    status = OrderStatus.CANCELLED, // 이미 취소됨
+                ).apply {
+                    id = 1L
+                }
+
+                every { orderPaymentService.getOrder(orderNumber) } returns order
+                every { timeProvider.now() } returns now
+
+                shouldThrow<CoreException> {
+                    paymentService.refundRequestPayment(userId, orderNumber)
+                }.errorCode shouldBe PaymentErrorCode.CANNOT_REFUND
+
+                verify(exactly = 1) { orderPaymentService.getOrder(orderNumber) }
+                verify(exactly = 1) { timeProvider.now() }
+            }
+        }
     },
 )

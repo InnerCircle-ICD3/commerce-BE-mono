@@ -1,6 +1,8 @@
 package com.fastcampus.commerce.order.domain.entity
 
 import com.fastcampus.commerce.common.entity.BaseEntity
+import com.fastcampus.commerce.common.error.CoreException
+import com.fastcampus.commerce.payment.domain.error.PaymentErrorCode
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
 import java.time.LocalDateTime
@@ -47,6 +49,9 @@ class Order(
     var paidAt: LocalDateTime? = null
     var shippedAt: LocalDateTime? = null
     var deliveredAt: LocalDateTime? = null
+    var canceledAt: LocalDateTime? = null
+    var refundRequestedAt: LocalDateTime? = null
+    var refundedAt: LocalDateTime? = null
 
     var isDeleted: Boolean = false
     var deletedAt: LocalDateTime? = null
@@ -56,5 +61,36 @@ class Order(
             this.paidAt = paidAt
             this.status = OrderStatus.PAID
         }
+    }
+
+    fun verifyCancelable(requestUserId: Long) {
+        if (this.status != OrderStatus.PAID && this.status != OrderStatus.WAITING_FOR_PAYMENT) {
+            throw CoreException(PaymentErrorCode.CANNOT_CANCEL)
+        }
+        if (this.userId != requestUserId) {
+            throw CoreException(PaymentErrorCode.UNAUTHORIZED_ORDER_CANCEL)
+        }
+    }
+
+    fun cancel(cancelledAt: LocalDateTime) {
+        if (this.status == OrderStatus.PAID || this.status == OrderStatus.WAITING_FOR_PAYMENT) {
+            this.canceledAt = cancelledAt
+            this.status = OrderStatus.CANCELLED
+        }
+    }
+
+    fun verifyRefundable(requestUserId: Long) {
+        if (this.status != OrderStatus.SHIPPED && this.status != OrderStatus.DELIVERED) {
+            throw CoreException(PaymentErrorCode.CANNOT_REFUND)
+        }
+        if (this.userId != requestUserId) {
+            throw CoreException(PaymentErrorCode.UNAUTHORIZED_ORDER_REFUND)
+        }
+    }
+
+    fun refundRequest(requestuserId: Long, refundRequestedAt: LocalDateTime) {
+        verifyRefundable(requestuserId)
+        this.refundRequestedAt = refundRequestedAt
+        this.status = OrderStatus.REFUND_REQUESTED
     }
 }

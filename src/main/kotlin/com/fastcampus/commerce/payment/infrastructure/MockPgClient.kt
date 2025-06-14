@@ -11,6 +11,5 @@ class MockPgClient : PgClient {
     }
 
     override fun refund(transactionId: String, amount: Int) {
-
     }
 }

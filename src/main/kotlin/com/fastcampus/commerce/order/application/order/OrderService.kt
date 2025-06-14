@@ -1,7 +1,6 @@
 package com.fastcampus.commerce.order.application.order
 
 import com.fastcampus.commerce.order.domain.entity.Order
-import com.fastcampus.commerce.order.domain.entity.OrderItem
 import com.fastcampus.commerce.order.domain.entity.OrderStatus
 import com.fastcampus.commerce.order.domain.repository.OrderItemRepository
 import com.fastcampus.commerce.order.domain.repository.OrderRepository
@@ -15,10 +14,9 @@ import org.springframework.transaction.annotation.Transactional
 class OrderService(
     private val orderRepository: OrderRepository,
     private val orderItemRepository: OrderItemRepository,
-    //private val cartItemReader: CartItemReader, // 장바구니 조회용 컴포넌트
+    // private val cartItemReader: CartItemReader, // 장바구니 조회용 컴포넌트
     private val orderNumberGenerator: OrderNumberGenerator,
-){
-
+) {
     @Transactional
     fun createOrder(userId: Long, request: OrderApiRequest): OrderApiResponse {
         // 1. 장바구니 아이템 정보 조회 (상품ID, 수량, 가격)
@@ -37,7 +35,7 @@ class OrderService(
         val order = Order(
             orderNumber = orderNumber,
             userId = userId,
-            //totalAmount = totalAmount,
+            // totalAmount = totalAmount,
             totalAmount = 0,
             recipientName = request.shippingInfo.recipientName,
             recipientPhone = request.shippingInfo.recipientPhone,
@@ -45,7 +43,7 @@ class OrderService(
             address1 = request.shippingInfo.address1,
             address2 = request.shippingInfo.address2,
             deliveryMessage = request.shippingInfo.deliveryMessage,
-            status = OrderStatus.WAITING_FOR_PAYMENT // 상태 초기화
+            status = OrderStatus.WAITING_FOR_PAYMENT, // 상태 초기화
         )
         orderRepository.save(order)
 
@@ -63,5 +61,4 @@ class OrderService(
         // 6. 응답 반환
         return OrderApiResponse(orderNumber)
     }
-
 }

@@ -117,5 +117,39 @@ class PaymentControllerRestDocTest : DescribeSpec() {
                 }
             }
         }
+
+        describe("POST /payments/refund") {
+            val summary = "결제 환불요청 한다."
+            val description = """
+                ORD-001: 주문 내역을 찾을 수 없습니다.
+                PAY-009: 배송중, 배송 완료 상태인 주문만 환불할 수 있습니다.
+                PAY-0010: 다른 사람의 결제를 환불할 수 없습니다.
+            """.trimMargin()
+            it("결제환불할 수 있다.") {
+                every { paymentService.refundRequestPayment(any(), any()) } just Runs
+
+                documentation(
+                    identifier = "결제환불요청_성공",
+                    tag = tag,
+                    summary = summary,
+                    description = description,
+                ) {
+                    requestLine(HttpMethod.POST, "/payments/refund")
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                    }
+
+                    requestBody {
+                        field("orderNumber", "주분번호", "ORD123123123")
+                    }
+
+                    responseBody {
+                        field("data.message", "응답 메시지", "OK")
+                        ignoredField("error")
+                    }
+                }
+            }
+        }
     }
 }
