@@ -1,6 +1,8 @@
 package com.fastcampus.commerce.admin.product.interfaces
 
 import com.fastcampus.commerce.admin.product.application.AdminProductService
+import com.fastcampus.commerce.admin.product.application.response.AdminProductDetailResponse
+import com.fastcampus.commerce.admin.product.application.response.SearchAdminProductResponse
 import com.fastcampus.commerce.admin.product.application.response.SellingStatusResponse
 import com.fastcampus.commerce.admin.product.interfaces.request.RegisterProductApiRequest
 import com.fastcampus.commerce.admin.product.interfaces.request.UpdateProductApiRequest
@@ -19,6 +21,8 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.context.annotation.Import
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.test.web.servlet.MockMvc
@@ -64,6 +68,114 @@ class AdminProductControllerRestDocTest : DescribeSpec() {
                     responseBody {
                         field("data[0].code", "판매상태 코드", "ON_SALE")
                         field("data[0].label", "판매상태", "판매중")
+                        ignoredField("error")
+                    }
+                }
+            }
+        }
+
+        describe("GET /admin/products - 상품 목록 조회") {
+            val summary = "상품 목록을 조회할 수 있다."
+            it("상품 목록을 조회할 수 있다.") {
+                val searchProductResponses = listOf(
+                    SearchAdminProductResponse(
+                        id = 1L,
+                        name = "콜드브루",
+                        price = 3500,
+                        quantity = 100,
+                        thumbnail = "https://test.com/thumbnail.png",
+                        intensity = "Strong",
+                        cupSize = "Large",
+                        status = SellingStatus.ON_SALE,
+                    ),
+                )
+                val response = PageImpl(searchProductResponses, PageRequest.of(0, 10), 1L)
+                every { adminProductService.searchProducts(any(), any()) } returns response
+
+                documentation(
+                    identifier = "관리자_상품_목록_조회_성공",
+                    tag = tag,
+                    summary = summary,
+                    privateResource = privateResource,
+                ) {
+                    requestLine(HttpMethod.GET, "/admin/products")
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                    }
+
+                    queryParameters {
+                        optionalField("name", "상품명", "콜드")
+                        optionalField("intensityId", "원두 강도 카테고리 ID", 1)
+                        optionalField("cupSizeId", "컵 사이즈 카테고리 ID", 2)
+                        optionalField("status", "판매상태(ON_SALE, UNAVAILABLE, HIDDEN)", SellingStatus.ON_SALE)
+                        optionalField("page", "페이지 번호 (1부터 시작, 기본값: 1)", 1)
+                    }
+
+                    responseBody {
+                        field("data.content[0].id", "상품 ID", searchProductResponses[0].id.toInt())
+                        field("data.content[0].name", "상품명", searchProductResponses[0].name)
+                        field("data.content[0].price", "가격", searchProductResponses[0].price)
+                        field("data.content[0].thumbnail", "썸네일 이미지 URL", searchProductResponses[0].thumbnail)
+                        field("data.content[0].status", "판매상태", searchProductResponses[0].status.name)
+                        field("data.content[0].quantity", "재고", searchProductResponses[0].quantity)
+                        field("data.content[0].intensity", "원두 강도", searchProductResponses[0].intensity)
+                        field("data.content[0].cupSize", "컵 사이즈", searchProductResponses[0].cupSize)
+                        field("data.page", "현재 페이지 번호", response.number)
+                        field("data.size", "페이지 크기", response.size)
+                        field("data.totalPages", "전체 페이지 수", response.totalPages)
+                        field("data.totalElements", "총 상품 수", response.totalElements.toInt())
+                        ignoredField("error")
+                    }
+                }
+            }
+        }
+
+        describe("GET /admin/products/{productId} - 상품 상세 조회") {
+            val summary = "상품 상세 정보를 조회할 수 있다."
+            val description = """
+                PRO-001: 상품을 찾을 수 없습니다.
+                PRO-002: 상품 재고를 찾을 수 없습니다.
+            """.trimMargin()
+
+            it("상품 ID로 상품 상세 정보를 조회할 수 있다.") {
+                val productId = 1L
+                val productDetailResponse = AdminProductDetailResponse(
+                    id = productId,
+                    name = "콜드브루",
+                    price = 3500,
+                    quantity = 100,
+                    thumbnail = "https://test.com/thumbnail.png",
+                    detailImage = "https://test.com/detail.png",
+                    intensity = "Strong",
+                    cupSize = "Large",
+                    status = SellingStatus.ON_SALE,
+                )
+
+                every {
+                    adminProductService.getProduct(productId)
+                } returns productDetailResponse
+
+                documentation(
+                    identifier = "관리자_상품_상세_조회_성공",
+                    tag = tag,
+                    summary = summary,
+                    description = description,
+                ) {
+                    requestLine(HttpMethod.GET, "/admin/products/{productId}") {
+                        pathVariable("productId", "상품 ID", productId)
+                    }
+
+                    responseBody {
+                        field("data.id", "상품 ID", productDetailResponse.id.toInt())
+                        field("data.name", "상품명", productDetailResponse.name)
+                        field("data.price", "가격", productDetailResponse.price)
+                        field("data.quantity", "재고 수량", productDetailResponse.quantity)
+                        field("data.thumbnail", "썸네일 이미지 URL", productDetailResponse.thumbnail)
+                        field("data.detailImage", "상세 이미지 URL", productDetailResponse.detailImage)
+                        field("data.intensity", "원두 강도", productDetailResponse.intensity)
+                        field("data.cupSize", "컵 사이즈", productDetailResponse.cupSize)
+                        field("data.status", "판매상태", productDetailResponse.status.name)
                         ignoredField("error")
                     }
                 }

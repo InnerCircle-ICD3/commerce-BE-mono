@@ -3,6 +3,7 @@ package com.fastcampus.commerce.product.domain.service
 import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.product.domain.entity.Inventory
 import com.fastcampus.commerce.product.domain.entity.Product
+import com.fastcampus.commerce.product.domain.entity.SellingStatus
 import com.fastcampus.commerce.product.domain.error.ProductErrorCode
 import com.fastcampus.commerce.product.domain.model.ProductInfo
 import com.fastcampus.commerce.product.domain.model.SearchProductCondition
@@ -108,6 +109,7 @@ class ProductReaderTest : FunSpec(
                         quantity = 100,
                         thumbnail = "https://test.com/thumbnail.png",
                         detailImage = "https://test.com/detailImage.png",
+                        status = SellingStatus.ON_SALE,
                     ),
                 )
                 val expectedPage = PageImpl(expectedProductInfos, pageable, 1L)
@@ -155,6 +157,7 @@ class ProductReaderTest : FunSpec(
                     quantity = 100,
                     thumbnail = "https://test.com/thumbnail.png",
                     detailImage = "https://test.com/detailImage.png",
+                    status = SellingStatus.ON_SALE,
                 )
 
                 every { productRepository.findById(productId) } returns Optional.of(product)

@@ -133,8 +133,8 @@ class ProductControllerRestDocTest : DescribeSpec() {
                         optionalField("name", "상품명 (부분 검색)", "콜드브루")
                         optionalField("intensityId", "원두 강도 카테고리 ID", 1)
                         optionalField("cupSizeId", "컵 사이즈 카테고리 ID", 2)
-                        optionalField("page", "페이지 번호 (0부터 시작, 기본값: 0)", 0)
-                        optionalField("size", "페이지 크기 (기본값: 20, 최대: 50)", 20)
+                        optionalField("page", "페이지 번호 (1부터 시작, 기본값: 1)", 1)
+                        optionalField("size", "페이지 크기 (기본값: 10, 최대: 50)", 10)
                     }
 
                     responseBody {
@@ -229,6 +229,56 @@ class ProductControllerRestDocTest : DescribeSpec() {
                         field("data.detailImage", "상세 이미지 URL", productDetailResponse.detailImage)
                         field("data.intensity", "원두 강도", productDetailResponse.intensity)
                         field("data.cupSize", "컵 사이즈", productDetailResponse.cupSize)
+                        ignoredField("error")
+                    }
+                }
+            }
+        }
+
+        describe("GET /products/main - 메인 전시상품 조회") {
+            val summary = "메인 상품 목록을 조회할 수 있다."
+
+            it("메인 상품 목록을 조회할 수 있다.") {
+                val element = SearchProductResponse(
+                    id = 1L,
+                    name = "콜드브루",
+                    price = 3500,
+                    quantity = 100,
+                    thumbnail = "https://test.com/thumbnail.png",
+                    detailImage = "https://test.com/detail.png",
+                    intensity = "Strong",
+                    cupSize = "Large",
+                )
+
+                every { productQueryService.getNewProducts() } returns listOf(element)
+                every { productQueryService.getBestProducts() } returns listOf(element)
+
+                documentation(
+                    identifier = "메인_상품목록_조회",
+                    tag = tag,
+                    summary = summary,
+                ) {
+                    requestLine(HttpMethod.GET, "/products/main")
+
+                    responseBody {
+                        field("data.new[0].id", "상품 ID", element.id.toInt())
+                        field("data.new[0].name", "상품명", element.name)
+                        field("data.new[0].price", "가격", element.price)
+                        field("data.new[0].quantity", "재고 수량", element.quantity)
+                        field("data.new[0].thumbnail", "썸네일 이미지 URL", element.thumbnail)
+                        field("data.new[0].detailImage", "상세 이미지 URL", element.detailImage)
+                        field("data.new[0].intensity", "원두 강도", element.intensity)
+                        field("data.new[0].cupSize", "컵 사이즈", element.cupSize)
+                        field("data.new[0].isSoldOut", "품절 여부", false)
+                        field("data.best[0].id", "상품 ID", element.id.toInt())
+                        field("data.best[0].name", "상품명", element.name)
+                        field("data.best[0].price", "가격", element.price)
+                        field("data.best[0].quantity", "재고 수량", element.quantity)
+                        field("data.best[0].thumbnail", "썸네일 이미지 URL", element.thumbnail)
+                        field("data.best[0].detailImage", "상세 이미지 URL", element.detailImage)
+                        field("data.best[0].intensity", "원두 강도", element.intensity)
+                        field("data.best[0].cupSize", "컵 사이즈", element.cupSize)
+                        field("data.best[0].isSoldOut", "품절 여부", false)
                         ignoredField("error")
                     }
                 }

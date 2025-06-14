@@ -2,6 +2,7 @@ package com.fastcampus.commerce.product.domain.model
 
 import com.fastcampus.commerce.product.domain.entity.Inventory
 import com.fastcampus.commerce.product.domain.entity.Product
+import com.fastcampus.commerce.product.domain.entity.SellingStatus
 import com.querydsl.core.annotations.QueryProjection
 
 data class ProductInfo
@@ -13,6 +14,7 @@ data class ProductInfo
         val quantity: Int,
         val thumbnail: String,
         val detailImage: String,
+        val status: SellingStatus,
     ) {
         companion object {
             fun of(product: Product, inventory: Inventory): ProductInfo {
@@ -23,6 +25,7 @@ data class ProductInfo
                     quantity = inventory.quantity,
                     thumbnail = product.thumbnail,
                     detailImage = product.detailImage,
+                    status = product.status,
                 )
             }
         }

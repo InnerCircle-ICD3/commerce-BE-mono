@@ -1,14 +1,20 @@
 package com.fastcampus.commerce.admin.product.application
 
 import com.fastcampus.commerce.admin.product.application.request.RegisterProductRequest
+import com.fastcampus.commerce.admin.product.application.request.SearchAdminProductRequest
 import com.fastcampus.commerce.admin.product.application.request.UpdateProductRequest
+import com.fastcampus.commerce.admin.product.application.response.AdminProductDetailResponse
+import com.fastcampus.commerce.admin.product.application.response.SearchAdminProductResponse
 import com.fastcampus.commerce.admin.product.application.response.SellingStatusResponse
 import com.fastcampus.commerce.common.error.CommonErrorCode
 import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.file.application.FileCommandService
 import com.fastcampus.commerce.file.domain.service.UploadedFileVerifier
 import com.fastcampus.commerce.product.application.ProductCommandService
+import com.fastcampus.commerce.product.application.ProductQueryService
 import com.fastcampus.commerce.product.domain.entity.SellingStatus
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.support.TransactionTemplate
 
@@ -16,6 +22,7 @@ import org.springframework.transaction.support.TransactionTemplate
 class AdminProductService(
     private val uploadedFileVerifier: UploadedFileVerifier,
     private val productCommandService: ProductCommandService,
+    private val productQueryService: ProductQueryService,
     private val fileCommandService: FileCommandService,
     private val transactionTemplate: TransactionTemplate,
 ) {
@@ -58,5 +65,14 @@ class AdminProductService(
         transactionTemplate.execute {
             productCommandService.deleteProduct(productId)
         }
+    }
+
+    fun searchProducts(request: SearchAdminProductRequest, pageable: Pageable): Page<SearchAdminProductResponse> {
+        val products = productQueryService.searchProductsForAdmin(request, pageable)
+        return products
+    }
+
+    fun getProduct(productId: Long): AdminProductDetailResponse {
+        return productQueryService.getProductDetailForAdmin(productId)
     }
 }

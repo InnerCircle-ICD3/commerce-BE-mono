@@ -5,4 +5,8 @@ enum class OrderStatus {
     PAID,
     SHIPPED,
     DELIVERED,
+    CANCELLED,
+    REFUND_REQUESTED,
+    REFUNDED,
+    REFUND_REJECTED,
 }

@@ -1,5 +1,10 @@
 Cart: 장바구니 API
 Review: 사용자 리뷰 API
 Address: 배송지 API
+Order: 주문 API
+Payment: 결제 API
+Product: 상품 API
 Admin-File: 관리자 파일 업로드 API
 Admin-Product: 관리자 상품 API
+Admin-Payment: 관리자 결제 API
+Admin-Review: 관리자 리뷰 API

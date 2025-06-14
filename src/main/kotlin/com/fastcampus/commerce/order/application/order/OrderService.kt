@@ -18,8 +18,7 @@ class OrderService(
     private val orderItemRepository: OrderItemRepository,
     private val cartItemReader: CartItemReader, // 장바구니 조회용 컴포넌트
     private val orderNumberGenerator: OrderNumberGenerator,
-){
-
+) {
     @Transactional
     fun createOrder(userId: Long, request: OrderApiRequest): OrderApiResponse {
         // 1. 장바구니 아이템 정보 조회 (상품ID, 수량, 가격)
