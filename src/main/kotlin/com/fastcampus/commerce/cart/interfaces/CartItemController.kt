@@ -36,13 +36,13 @@ class CartItemController(
         @RequestBody @Valid request: CartUpdateRequest,
     ): CartUpdateResponse {
         val userId = 1L
-        val cartResponse = cartItemService.updateCartItem(userId, cartItemId,request)
+        val cartResponse = cartItemService.updateCartItem(userId, cartItemId, request)
         return cartResponse
     }
 
     @DeleteMapping("/cart-items")
     fun deleteCartItems(
-        @RequestParam cartItemIds: List<Long>
+        @RequestParam(value = "cartItems", required = true) cartItemIds: List<Long>,
     ): CartDeleteResponse {
         val deletedCount = cartItemService.deleteCartItems(cartItemIds)
         val response = CartDeleteResponse("Successfully deleted $deletedCount cart items")

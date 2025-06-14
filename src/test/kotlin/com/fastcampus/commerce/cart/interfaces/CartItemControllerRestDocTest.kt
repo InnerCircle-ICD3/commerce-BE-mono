@@ -119,7 +119,7 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                     requiresQuantityAdjustment = true,
                 )
 
-                every { cartItemService.updateCartItem(userId, cartItemId,request) } returns response
+                every { cartItemService.updateCartItem(userId, cartItemId, request) } returns response
 
                 documentation(
                     identifier = "장바구니_상품_수정_성공",
@@ -127,7 +127,7 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                     summary = summary,
                     privateResource = privateResource,
                 ) {
-                    requestLine(HttpMethod.PATCH, "/cart-items/{cartItemId}"){
+                    requestLine(HttpMethod.PATCH, "/cart-items/{cartItemId}") {
                         pathVariable("cartItemId", "장바구니 상품 아이디", cartItemId)
                     }
 
@@ -248,30 +248,22 @@ class CartItemControllerRestDocTest : DescribeSpec() {
             val summary = "장바구니에 추가된 상품을 삭제할 수 있다."
 
             it("장바구니에 추가된 상품을 삭제할 수 있다.") {
-                val cartItemIds = listOf(2L, 4L, 6L)
-                val deletedCount = cartItemIds.size
-                val response = CartDeleteResponse("Successfully deleted $deletedCount cart items")
-
-                every { cartItemService.deleteCartItems(cartItemIds) } returns deletedCount
+                val ids = listOf(2L)
+                every { cartItemService.deleteCartItems(ids) } returns ids.size
 
                 documentation(
                     identifier = "장바구니_상품_삭제_성공",
                     tag = tag,
                     summary = summary,
-                    privateResource = privateResource,
                 ) {
                     requestLine(HttpMethod.DELETE, "/cart-items")
 
                     queryParameters {
-                        field("cartItemIds", "삭제할 장바구니 아이템 ID 목록", "2,4,6")
-                    }
-
-                    requestHeaders {
-                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                        optionalField("cartItems", "상품 아이디", listOf(2))
                     }
 
                     responseBody {
-                        field("data.message", "응답 메시지", response.message)
+                        field("data.message", "응답 메시지", "Successfully deleted ${ids.size} cart items")
                         ignoredField("error")
                     }
                 }
