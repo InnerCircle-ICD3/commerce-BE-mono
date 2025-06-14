@@ -8,5 +8,6 @@ enum class OrderErrorCode(
     override val message: String,
     override val logLevel: LogLevel,
 ) : ErrorCode {
+    ORDER_NOT_FOUND("ORD-001", "주문 내역을 찾을 수 없습니다.", LogLevel.WARN),
     ORDER_DATA_FOR_REVIEW_NOT_FOUND("ORD-501", "리뷰 작성을 위한 주문데이터를 찾을 수 없습니다.", LogLevel.WARN),
 }

@@ -50,4 +50,11 @@ class Order(
 
     var isDeleted: Boolean = false
     var deletedAt: LocalDateTime? = null
+
+    fun paid(paidAt: LocalDateTime) {
+        if (this.status == OrderStatus.WAITING_FOR_PAYMENT) {
+            this.paidAt = paidAt
+            this.status = OrderStatus.PAID
+        }
+    }
 }
