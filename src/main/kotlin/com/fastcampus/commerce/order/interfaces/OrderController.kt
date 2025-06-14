@@ -1,7 +1,7 @@
 package com.fastcampus.commerce.order.interfaces
 
-import com.fastcampus.commerce.common.response.EnumResponse
 import com.fastcampus.commerce.common.response.PagedData
+import com.fastcampus.commerce.order.application.order.OrderService
 import com.fastcampus.commerce.order.interfaces.request.OrderApiRequest
 import com.fastcampus.commerce.order.interfaces.request.SearchOrderApiRequest
 import com.fastcampus.commerce.order.interfaces.response.GetOrderApiResponse
@@ -9,8 +9,6 @@ import com.fastcampus.commerce.order.interfaces.response.GetOrderItemApiResponse
 import com.fastcampus.commerce.order.interfaces.response.GetOrderShippingInfoApiResponse
 import com.fastcampus.commerce.order.interfaces.response.OrderApiResponse
 import com.fastcampus.commerce.order.interfaces.response.PrepareOrderApiResponse
-import com.fastcampus.commerce.order.interfaces.response.PrepareOrderItemApiResponse
-import com.fastcampus.commerce.order.interfaces.response.PrepareOrderShippingInfoApiResponse
 import com.fastcampus.commerce.order.interfaces.response.SearchOrderApiResponse
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
@@ -28,8 +26,10 @@ import java.time.LocalDateTime
 
 @RequestMapping("/orders")
 @RestController
-class OrderController {
-    @GetMapping("/prepare")
+class OrderController(
+    private val orderService: OrderService
+) {
+    /*@GetMapping("/prepare")
     fun prepareOrders(
         @RequestParam cartItemIds: String,
     ): PrepareOrderApiResponse {
@@ -52,6 +52,7 @@ class OrderController {
                 recipientName = "홍길동",
                 recipientPhone = "010-1234-1234",
                 zipCode = "12345",
+                addressId = 1L,
                 address1 = "서울특별시 관악구",
                 address2 = "서울대입구역 6번출구",
             ),
@@ -59,16 +60,27 @@ class OrderController {
                 EnumResponse("MOCK", "테스트"),
             ),
         )
+    }*/
+    @GetMapping("/prepare")
+    fun prepareOrders(
+        @RequestParam cartItemIds: String,
+    ): PrepareOrderApiResponse {
+        // cartItemIds: "1,2,3" 형태라고 가정
+        val cartItemIdList: Set<Long> = cartItemIds.split(",")
+            .map { it.trim().toLong() }
+            .toSet()
+        return orderService.prepareOrder(cartItemIdList)
     }
 
     @PostMapping
     fun orders(
         @RequestBody request: OrderApiRequest,
     ): OrderApiResponse {
-        return OrderApiResponse("ORD20250609123456789")
+        //TODO: 인증된 사용자 ID 값 넘길 수 있도록 수정 필요 (request.userId <- 이 부분 제거후 수정 필요)
+        return orderService.createOrder(request.userId, request)
     }
 
-    @GetMapping
+    /*@GetMapping
     fun getOrders(
         @ModelAttribute request: SearchOrderApiRequest,
         @PageableDefault(page = 1, size = 10) pageable: Pageable,
@@ -85,9 +97,17 @@ class OrderController {
         )
         val page = PageImpl(listOf(searchOrderApiResponse), PageRequest.of(1, 10), 1L)
         return PagedData.of(page)
+    }*/
+
+    @GetMapping
+    fun getOrders(
+        @ModelAttribute request: SearchOrderApiRequest,
+        @PageableDefault(page = 1, size = 10) pageable: Pageable,
+    ): PagedData<SearchOrderApiResponse> {
+        return orderService.getOrders(request, pageable)
     }
 
-    @GetMapping("/{orderNumber}")
+    /*@GetMapping("/{orderNumber}")
     fun getOrders(
         @PathVariable orderNumber: String,
     ): GetOrderApiResponse {
@@ -133,5 +153,12 @@ class OrderController {
             reviewable = true,
             reviewWritten = false,
         )
+    }*/
+
+    @GetMapping("/{orderNumber}")
+    fun getOrders(
+        @PathVariable orderNumber: String,
+    ): GetOrderApiResponse {
+        return orderService.getOrderDetail(orderNumber)
     }
 }
