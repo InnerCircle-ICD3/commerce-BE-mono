@@ -4,6 +4,7 @@ import com.fastcampus.commerce.common.response.PagedData
 import com.fastcampus.commerce.product.application.ProductQueryService
 import com.fastcampus.commerce.product.interfaces.request.SearchProductApiRequest
 import com.fastcampus.commerce.product.interfaces.response.CategoryApiResponse
+import com.fastcampus.commerce.product.interfaces.response.MainProductApiResponse
 import com.fastcampus.commerce.product.interfaces.response.ProductDetailApiResponse
 import com.fastcampus.commerce.product.interfaces.response.SearchProductApiResponse
 import org.springframework.data.domain.Pageable
@@ -39,5 +40,15 @@ class ProductController(
         @PathVariable productId: Long,
     ): ProductDetailApiResponse {
         return ProductDetailApiResponse.from(productQueryService.getProductDetail(productId))
+    }
+
+    @GetMapping("/main")
+    fun getMainProducts(): MainProductApiResponse {
+        val new = productQueryService.getNewProducts()
+        val best = productQueryService.getBestProducts()
+        return MainProductApiResponse(
+            new = new.map(SearchProductApiResponse::from),
+            best = best.map(SearchProductApiResponse::from),
+        )
     }
 }

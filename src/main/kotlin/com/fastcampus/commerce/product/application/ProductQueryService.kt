@@ -56,4 +56,12 @@ class ProductQueryService(
         val productCategoryInfo = categoryReader.getProductCategory(productId)
         return AdminProductDetailResponse.of(productInfo, productCategoryInfo)
     }
+
+    fun getNewProducts(): List<SearchProductResponse> {
+        TODO("Not yet implemented")
+    }
+
+    fun getBestProducts(): List<SearchProductResponse> {
+        TODO("Not yet implemented")
+    }
 }
