@@ -37,7 +37,7 @@ class OrderPaymentServiceTest : FunSpec({
             every { orderPaymentRepository.findOrderByOrderNumber(orderNumber) } returns Optional.of(expectedOrder)
 
             // When
-            val result = orderPaymentService.getOrder(orderNumber)
+            val result = orderPaymentService.getOrderByOrderNumber(orderNumber)
 
             // Then
             result shouldBe expectedOrder
@@ -52,7 +52,7 @@ class OrderPaymentServiceTest : FunSpec({
 
             // When & Then
             val exception = shouldThrow<CoreException> {
-                orderPaymentService.getOrder(nonExistentOrderNumber)
+                orderPaymentService.getOrderByOrderNumber(nonExistentOrderNumber)
             }
 
             exception.errorCode shouldBe OrderErrorCode.ORDER_NOT_FOUND

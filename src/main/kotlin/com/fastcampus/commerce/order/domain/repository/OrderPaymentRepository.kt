@@ -5,4 +5,6 @@ import java.util.Optional
 
 interface OrderPaymentRepository {
     fun findOrderByOrderNumber(orderNumber: String): Optional<Order>
+
+    fun findOrderById(orderId: Long): Optional<Order>
 }

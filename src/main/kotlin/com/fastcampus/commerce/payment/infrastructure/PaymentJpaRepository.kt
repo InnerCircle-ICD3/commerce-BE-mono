@@ -6,4 +6,6 @@ import java.util.Optional
 
 interface PaymentJpaRepository : JpaRepository<Payment, Long> {
     fun findByOrderId(orderId: Long): Optional<Payment>
+
+    fun findByPaymentNumber(paymentNumber: String): Optional<Payment>
 }

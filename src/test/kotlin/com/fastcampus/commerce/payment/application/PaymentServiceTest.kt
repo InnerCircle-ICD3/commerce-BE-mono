@@ -5,6 +5,7 @@ import com.fastcampus.commerce.common.util.TimeProvider
 import com.fastcampus.commerce.order.application.OrderPaymentService
 import com.fastcampus.commerce.order.domain.entity.Order
 import com.fastcampus.commerce.order.domain.entity.OrderStatus
+import com.fastcampus.commerce.order.domain.error.OrderErrorCode
 import com.fastcampus.commerce.payment.application.request.PaymentProcessRequest
 import com.fastcampus.commerce.payment.domain.entity.Payment
 import com.fastcampus.commerce.payment.domain.entity.PaymentMethod
@@ -89,7 +90,7 @@ class PaymentServiceTest : FunSpec(
                 }
 
                 every { pgClient.getPaymentInfo(pgTransactionId) } returns pgPaymentInfo
-                every { orderPaymentService.getOrder(orderNumber) } returns order
+                every { orderPaymentService.getOrderByOrderNumber(orderNumber) } returns order
                 every { paymentReader.getByOrderId(1L) } returns payment
                 every { paymentValidator.validateProcessPayment(pgPaymentInfo, order, payment) } just Runs
                 every { timeProvider.now() } returns now
@@ -104,7 +105,7 @@ class PaymentServiceTest : FunSpec(
                 order.paidAt shouldBe now
 
                 verify(exactly = 1) { pgClient.getPaymentInfo(pgTransactionId) }
-                verify(exactly = 1) { orderPaymentService.getOrder(orderNumber) }
+                verify(exactly = 1) { orderPaymentService.getOrderByOrderNumber(orderNumber) }
                 verify(exactly = 1) { paymentReader.getByOrderId(1L) }
                 verify(exactly = 1) { paymentValidator.validateProcessPayment(pgPaymentInfo, order, payment) }
                 verify(exactly = 1) { timeProvider.now() }
@@ -130,7 +131,7 @@ class PaymentServiceTest : FunSpec(
                 exception.errorCode shouldBe PaymentErrorCode.PG_RESULT_NOT_FOUND
 
                 verify(exactly = 1) { pgClient.getPaymentInfo(transactionId) }
-                verify(exactly = 0) { orderPaymentService.getOrder(any()) }
+                verify(exactly = 0) { orderPaymentService.getOrderByOrderNumber(any()) }
                 verify(exactly = 0) { paymentReader.getByOrderId(any()) }
                 verify(exactly = 0) { paymentValidator.validateProcessPayment(any(), any(), any()) }
             }
@@ -177,7 +178,7 @@ class PaymentServiceTest : FunSpec(
                 }
 
                 every { pgClient.getPaymentInfo(pgTransactionId) } returns pgPaymentInfo
-                every { orderPaymentService.getOrder(orderNumber) } returns order
+                every { orderPaymentService.getOrderByOrderNumber(orderNumber) } returns order
                 every { paymentReader.getByOrderId(1L) } returns payment
                 every {
                     paymentValidator.validateProcessPayment(pgPaymentInfo, order, payment)
@@ -191,7 +192,7 @@ class PaymentServiceTest : FunSpec(
                 exception.errorCode shouldBe PaymentErrorCode.ALREADY_PAID_ORDER
 
                 verify(exactly = 1) { pgClient.getPaymentInfo(pgTransactionId) }
-                verify(exactly = 1) { orderPaymentService.getOrder(orderNumber) }
+                verify(exactly = 1) { orderPaymentService.getOrderByOrderNumber(orderNumber) }
                 verify(exactly = 1) { paymentReader.getByOrderId(1L) }
                 verify(exactly = 1) { paymentValidator.validateProcessPayment(pgPaymentInfo, order, payment) }
                 verify(exactly = 0) { timeProvider.now() }
@@ -238,7 +239,7 @@ class PaymentServiceTest : FunSpec(
                 }
 
                 every { pgClient.getPaymentInfo(pgTransactionId) } returns pgPaymentInfo
-                every { orderPaymentService.getOrder(orderNumber) } returns order
+                every { orderPaymentService.getOrderByOrderNumber(orderNumber) } returns order
                 every { paymentReader.getByOrderId(1L) } returns payment
                 every {
                     paymentValidator.validateProcessPayment(pgPaymentInfo, order, payment)
@@ -252,7 +253,7 @@ class PaymentServiceTest : FunSpec(
                 exception.errorCode shouldBe PaymentErrorCode.PG_RESULT_NOT_MATCH_PAYMENT
 
                 verify(exactly = 1) { pgClient.getPaymentInfo(pgTransactionId) }
-                verify(exactly = 1) { orderPaymentService.getOrder(orderNumber) }
+                verify(exactly = 1) { orderPaymentService.getOrderByOrderNumber(orderNumber) }
                 verify(exactly = 1) { paymentReader.getByOrderId(1L) }
                 verify(exactly = 1) { paymentValidator.validateProcessPayment(pgPaymentInfo, order, payment) }
                 verify(exactly = 0) { timeProvider.now() }
@@ -291,7 +292,7 @@ class PaymentServiceTest : FunSpec(
                     transactionId = "TRANSACTION_ID"
                 }
 
-                every { orderPaymentService.getOrder(orderNumber) } returns order
+                every { orderPaymentService.getOrderByOrderNumber(orderNumber) } returns order
                 every { paymentReader.getByOrderId(1L) } returns payment
                 every { timeProvider.now() } returns now
                 every { pgClient.refund(any(), any()) } just Runs
@@ -304,7 +305,7 @@ class PaymentServiceTest : FunSpec(
                 order.status shouldBe OrderStatus.CANCELLED
                 order.canceledAt shouldBe now
 
-                verify(exactly = 1) { orderPaymentService.getOrder(orderNumber) }
+                verify(exactly = 1) { orderPaymentService.getOrderByOrderNumber(orderNumber) }
                 verify(exactly = 1) { paymentReader.getByOrderId(1L) }
                 verify(exactly = 1) { timeProvider.now() }
             }
@@ -328,16 +329,16 @@ class PaymentServiceTest : FunSpec(
                     id = 1L
                 }
 
-                every { orderPaymentService.getOrder(orderNumber) } returns order
+                every { orderPaymentService.getOrderByOrderNumber(orderNumber) } returns order
 
                 // when & then
                 val exception = shouldThrow<CoreException> {
                     paymentService.cancelPayment(cancelUserId, orderNumber)
                 }
 
-                exception.errorCode shouldBe PaymentErrorCode.UNAUTHORIZED_ORDER_CANCEL
+                exception.errorCode shouldBe OrderErrorCode.UNAUTHORIZED_ORDER_CANCEL
 
-                verify(exactly = 1) { orderPaymentService.getOrder(orderNumber) }
+                verify(exactly = 1) { orderPaymentService.getOrderByOrderNumber(orderNumber) }
                 verify(exactly = 0) { paymentReader.getByOrderId(any()) }
                 verify(exactly = 0) { timeProvider.now() }
             }
@@ -360,16 +361,16 @@ class PaymentServiceTest : FunSpec(
                     id = 1L
                 }
 
-                every { orderPaymentService.getOrder(orderNumber) } returns order
+                every { orderPaymentService.getOrderByOrderNumber(orderNumber) } returns order
 
                 // when & then
                 val exception = shouldThrow<CoreException> {
                     paymentService.cancelPayment(userId, orderNumber)
                 }
 
-                exception.errorCode shouldBe PaymentErrorCode.CANNOT_CANCEL
+                exception.errorCode shouldBe OrderErrorCode.CANNOT_CANCEL
 
-                verify(exactly = 1) { orderPaymentService.getOrder(orderNumber) }
+                verify(exactly = 1) { orderPaymentService.getOrderByOrderNumber(orderNumber) }
                 verify(exactly = 0) { paymentReader.getByOrderId(any()) }
                 verify(exactly = 0) { timeProvider.now() }
             }
@@ -405,7 +406,7 @@ class PaymentServiceTest : FunSpec(
                     transactionId = "TRANSACTION_ID"
                 }
 
-                every { orderPaymentService.getOrder(orderNumber) } returns order
+                every { orderPaymentService.getOrderByOrderNumber(orderNumber) } returns order
                 every { paymentReader.getByOrderId(1L) } returns payment
                 every { timeProvider.now() } returns now
                 every { pgClient.refund(any(), any()) } just Runs
@@ -418,7 +419,7 @@ class PaymentServiceTest : FunSpec(
                 order.status shouldBe OrderStatus.CANCELLED
                 order.canceledAt shouldBe now
 
-                verify(exactly = 1) { orderPaymentService.getOrder(orderNumber) }
+                verify(exactly = 1) { orderPaymentService.getOrderByOrderNumber(orderNumber) }
                 verify(exactly = 1) { paymentReader.getByOrderId(1L) }
                 verify(exactly = 1) { timeProvider.now() }
             }
@@ -456,7 +457,7 @@ class PaymentServiceTest : FunSpec(
                     transactionId = "TRANSACTION_ID"
                 }
 
-                every { orderPaymentService.getOrder(orderNumber) } returns order
+                every { orderPaymentService.getOrderByOrderNumber(orderNumber) } returns order
                 every { timeProvider.now() } returns now
 
                 // when
@@ -466,7 +467,7 @@ class PaymentServiceTest : FunSpec(
                 order.status shouldBe OrderStatus.REFUND_REQUESTED
                 order.refundRequestedAt shouldBe now
 
-                verify(exactly = 1) { orderPaymentService.getOrder(orderNumber) }
+                verify(exactly = 1) { orderPaymentService.getOrderByOrderNumber(orderNumber) }
                 verify(exactly = 1) { timeProvider.now() }
             }
 
@@ -501,7 +502,7 @@ class PaymentServiceTest : FunSpec(
                     transactionId = "KAKAO_TX_12345"
                 }
 
-                every { orderPaymentService.getOrder(orderNumber) } returns order
+                every { orderPaymentService.getOrderByOrderNumber(orderNumber) } returns order
                 every { timeProvider.now() } returns now
 
                 // when
@@ -511,7 +512,7 @@ class PaymentServiceTest : FunSpec(
                 order.status shouldBe OrderStatus.REFUND_REQUESTED
                 order.refundRequestedAt shouldBe now
 
-                verify(exactly = 1) { orderPaymentService.getOrder(orderNumber) }
+                verify(exactly = 1) { orderPaymentService.getOrderByOrderNumber(orderNumber) }
                 verify(exactly = 1) { timeProvider.now() }
             }
 
@@ -535,14 +536,14 @@ class PaymentServiceTest : FunSpec(
                     id = 1L
                 }
 
-                every { orderPaymentService.getOrder(orderNumber) } returns order
+                every { orderPaymentService.getOrderByOrderNumber(orderNumber) } returns order
                 every { timeProvider.now() } returns now
 
                 shouldThrow<CoreException> {
                     paymentService.refundRequestPayment(refundUserId, orderNumber)
-                }.errorCode shouldBe PaymentErrorCode.UNAUTHORIZED_ORDER_REFUND
+                }.errorCode shouldBe OrderErrorCode.UNAUTHORIZED_ORDER_REFUND
 
-                verify(exactly = 1) { orderPaymentService.getOrder(orderNumber) }
+                verify(exactly = 1) { orderPaymentService.getOrderByOrderNumber(orderNumber) }
                 verify(exactly = 1) { timeProvider.now() }
             }
 
@@ -565,14 +566,14 @@ class PaymentServiceTest : FunSpec(
                     id = 1L
                 }
 
-                every { orderPaymentService.getOrder(orderNumber) } returns order
+                every { orderPaymentService.getOrderByOrderNumber(orderNumber) } returns order
                 every { timeProvider.now() } returns now
 
                 shouldThrow<CoreException> {
                     paymentService.refundRequestPayment(userId, orderNumber)
-                }.errorCode shouldBe PaymentErrorCode.CANNOT_REFUND
+                }.errorCode shouldBe OrderErrorCode.CANNOT_REFUND
 
-                verify(exactly = 1) { orderPaymentService.getOrder(orderNumber) }
+                verify(exactly = 1) { orderPaymentService.getOrderByOrderNumber(orderNumber) }
                 verify(exactly = 1) { timeProvider.now() }
             }
 
@@ -595,14 +596,14 @@ class PaymentServiceTest : FunSpec(
                     id = 1L
                 }
 
-                every { orderPaymentService.getOrder(orderNumber) } returns order
+                every { orderPaymentService.getOrderByOrderNumber(orderNumber) } returns order
                 every { timeProvider.now() } returns now
 
                 shouldThrow<CoreException> {
                     paymentService.refundRequestPayment(userId, orderNumber)
-                }.errorCode shouldBe PaymentErrorCode.CANNOT_REFUND
+                }.errorCode shouldBe OrderErrorCode.CANNOT_REFUND
 
-                verify(exactly = 1) { orderPaymentService.getOrder(orderNumber) }
+                verify(exactly = 1) { orderPaymentService.getOrderByOrderNumber(orderNumber) }
                 verify(exactly = 1) { timeProvider.now() }
             }
         }

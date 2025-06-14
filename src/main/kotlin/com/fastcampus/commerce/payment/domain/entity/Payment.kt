@@ -64,4 +64,11 @@ class Payment(
             updatedAt = cancelledAt
         }
     }
+
+    fun refundApprove(refundAt: LocalDateTime) {
+        if (this.status == PaymentStatus.COMPLETED || this.status == PaymentStatus.WAITING) {
+            status = PaymentStatus.REFUNDED
+            updatedAt = refundAt
+        }
+    }
 }

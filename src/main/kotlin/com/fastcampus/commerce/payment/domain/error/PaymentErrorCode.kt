@@ -13,10 +13,5 @@ enum class PaymentErrorCode(
     ALREADY_PAID_ORDER("PAY-003", "이미 결제처리한 주문입니다.=", LogLevel.WARN),
     ALREADY_PAID("PAY-004", "이미 결제되었습니다.", LogLevel.WARN),
     PG_RESULT_NOT_MATCH_PAYMENT("PAY-005", "결제금액이 일치하지 않습니다.", LogLevel.WARN),
-
-    CANNOT_CANCEL("PAY-006", "결제 대기중, 결제 완료 상태인 주문만 취소할 수 있습니다.", LogLevel.WARN),
-    UNAUTHORIZED_ORDER_CANCEL("PAY-007", "다른 사람의 결제를 취소할 수 없습니다.", LogLevel.WARN),
-    TRANSACTION_ID_EMPTY("PAY-008", "PG사 결제 아이디가 누락되었습니다.", LogLevel.WARN),
-    CANNOT_REFUND("PAY-009", "배송중, 배송 완료 상태인 주문만 환불할 수 있습니다.", LogLevel.WARN),
-    UNAUTHORIZED_ORDER_REFUND("PAY-010", "다른 사람의 결제를 환불할 수 없습니다.", LogLevel.WARN),
+    TRANSACTION_ID_EMPTY("PAY-006", "PG사 결제 아이디가 누락되었습니다.", LogLevel.WARN),
 }

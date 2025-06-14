@@ -1,0 +1,21 @@
+package com.fastcampus.commerce.admin.payment.interfaces
+
+import com.fastcampus.commerce.admin.payment.application.AdminPaymentService
+import com.fastcampus.commerce.admin.payment.interfaces.response.AdminPaymentApiResponse
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RestController
+
+@RestController
+class AdminPaymentController(
+    private val adminPaymentService: AdminPaymentService,
+) {
+    @PostMapping("/admin/payments/refund/approve")
+    fun refundApprove(
+        @RequestBody paymentNumber: String,
+    ): AdminPaymentApiResponse {
+        val adminId = 1L
+        adminPaymentService.refundApprove(adminId, paymentNumber)
+        return AdminPaymentApiResponse()
+    }
+}

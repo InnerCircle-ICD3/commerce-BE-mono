@@ -10,8 +10,13 @@ import org.springframework.stereotype.Service
 class OrderPaymentService(
     private val orderPaymentRepository: OrderPaymentRepository,
 ) {
-    fun getOrder(orderNumber: String): Order {
+    fun getOrderByOrderNumber(orderNumber: String): Order {
         return orderPaymentRepository.findOrderByOrderNumber(orderNumber)
+            .orElseThrow { CoreException(OrderErrorCode.ORDER_NOT_FOUND) }
+    }
+
+    fun getOrderByOrderId(orderId: Long): Order {
+        return orderPaymentRepository.findOrderById(orderId)
             .orElseThrow { CoreException(OrderErrorCode.ORDER_NOT_FOUND) }
     }
 }

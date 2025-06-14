@@ -24,7 +24,7 @@ class PaymentService(
         val paymentInfo = pgClient.getPaymentInfo(request.transactionId)
             ?: throw CoreException(PaymentErrorCode.PG_RESULT_NOT_FOUND)
 
-        val order = orderPaymentService.getOrder(request.orderNumber)
+        val order = orderPaymentService.getOrderByOrderNumber(request.orderNumber)
         val payment = paymentReader.getByOrderId(order.id!!)
         paymentValidator.validateProcessPayment(paymentInfo, order, payment)
         val paidAt = timeProvider.now()
@@ -35,7 +35,7 @@ class PaymentService(
 
     @Transactional(readOnly = false)
     fun cancelPayment(userId: Long, orderNumber: String) {
-        val order = orderPaymentService.getOrder(orderNumber)
+        val order = orderPaymentService.getOrderByOrderNumber(orderNumber)
         order.verifyCancelable(userId)
         val payment = paymentReader.getByOrderId(order.id!!)
         if (payment.transactionId == null) {
@@ -49,7 +49,7 @@ class PaymentService(
 
     @Transactional(readOnly = false)
     fun refundRequestPayment(userId: Long, orderNumber: String) {
-        val order = orderPaymentService.getOrder(orderNumber)
+        val order = orderPaymentService.getOrderByOrderNumber(orderNumber)
         order.refundRequest(userId, timeProvider.now())
     }
 }

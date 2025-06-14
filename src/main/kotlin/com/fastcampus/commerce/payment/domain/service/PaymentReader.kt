@@ -14,4 +14,9 @@ class PaymentReader(
         return paymentRepository.findByOrderId(orderId)
             .orElseThrow { CoreException(PaymentErrorCode.PAYMENT_NOT_FOUND) }
     }
+
+    fun getByPaymentNumber(paymentNumber: String): Payment {
+        return paymentRepository.findByPaymentNumber(paymentNumber)
+            .orElseThrow { CoreException(PaymentErrorCode.PAYMENT_NOT_FOUND) }
+    }
 }

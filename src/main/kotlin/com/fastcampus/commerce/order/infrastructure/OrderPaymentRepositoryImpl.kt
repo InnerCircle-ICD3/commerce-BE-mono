@@ -12,4 +12,8 @@ class OrderPaymentRepositoryImpl(
     override fun findOrderByOrderNumber(orderNumber: String): Optional<Order> {
         return orderJpaRepository.findByOrderNumber(orderNumber)
     }
+
+    override fun findOrderById(orderId: Long): Optional<Order> {
+        return orderJpaRepository.findById(orderId)
+    }
 }
