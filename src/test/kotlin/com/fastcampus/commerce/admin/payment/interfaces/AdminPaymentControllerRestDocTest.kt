@@ -72,5 +72,40 @@ class AdminPaymentControllerRestDocTest : DescribeSpec() {
                 }
             }
         }
+
+        describe("POST /admin/payments/refund/reject") {
+            val summary = "관리자 환불거절"
+            val description = """
+                PAY-002: 결제 정보를 찾을 수 없습니다.
+                ORD-001: 주문 내역을 찾을 수 없습니다.
+                ORD-105: 환불요청한 주문만 환불거절 가능합니다.
+            """.trimMargin()
+            it("환불을 거절할 수 있다.") {
+                every { adminPaymentService.refundReject(any(), any()) } returns Unit
+
+                documentation(
+                    identifier = "관리자_환불거절_성공",
+                    tag = tag,
+                    summary = summary,
+                    description = description,
+                    privateResource = privateResource,
+                ) {
+                    requestLine(HttpMethod.POST, "/admin/payments/refund/reject")
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                    }
+
+                    requestBody {
+                        field("paymentNumber", "결제 번호", "PAY00001")
+                    }
+
+                    responseBody {
+                        field("data.message", "응답 메시지", "OK")
+                        ignoredField("error")
+                    }
+                }
+            }
+        }
     }
 }

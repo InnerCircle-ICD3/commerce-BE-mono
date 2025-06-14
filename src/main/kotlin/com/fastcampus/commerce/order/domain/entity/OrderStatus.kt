@@ -8,4 +8,5 @@ enum class OrderStatus {
     CANCELLED,
     REFUND_REQUESTED,
     REFUNDED,
+    REFUND_REJECTED,
 }

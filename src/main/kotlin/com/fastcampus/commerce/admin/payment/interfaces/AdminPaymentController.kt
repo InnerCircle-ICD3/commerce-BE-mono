@@ -18,4 +18,13 @@ class AdminPaymentController(
         adminPaymentService.refundApprove(adminId, paymentNumber)
         return AdminPaymentApiResponse()
     }
+
+    @PostMapping("/admin/payments/refund/reject")
+    fun refundReject(
+        @RequestBody paymentNumber: String,
+    ): AdminPaymentApiResponse {
+        val adminId = 1L
+        adminPaymentService.refundReject(adminId, paymentNumber)
+        return AdminPaymentApiResponse()
+    }
 }

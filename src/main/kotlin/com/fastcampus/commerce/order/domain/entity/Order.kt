@@ -52,6 +52,7 @@ class Order(
     var canceledAt: LocalDateTime? = null
     var refundRequestedAt: LocalDateTime? = null
     var refundedAt: LocalDateTime? = null
+    var refundRejectedAt: LocalDateTime? = null
 
     var isDeleted: Boolean = false
     var deletedAt: LocalDateTime? = null
@@ -96,9 +97,17 @@ class Order(
 
     fun refundApprove(refundAt: LocalDateTime) {
         if (this.status != OrderStatus.REFUND_REQUESTED) {
-            throw CoreException(OrderErrorCode.NOT_REFUND_REQUESTED)
+            throw CoreException(OrderErrorCode.NOT_REFUND_REQUESTED_APPROVE)
         }
         this.refundedAt = refundAt
         this.status = OrderStatus.REFUNDED
+    }
+
+    fun refundReject(rejectedAt: LocalDateTime) {
+        if (this.status != OrderStatus.REFUND_REQUESTED) {
+            throw CoreException(OrderErrorCode.NOT_REFUND_REQUESTED_REJECT)
+        }
+        this.refundRejectedAt = rejectedAt
+        this.status = OrderStatus.REFUND_REJECTED
     }
 }

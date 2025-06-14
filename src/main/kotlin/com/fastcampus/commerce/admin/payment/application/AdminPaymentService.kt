@@ -20,4 +20,12 @@ class AdminPaymentService(
         payment.refundApprove(refundAt)
         order.refundApprove(refundAt)
     }
+
+    @Transactional(readOnly = false)
+    fun refundReject(adminId: Long, paymentNumber: String) {
+        val payment = paymentReader.getByPaymentNumber(paymentNumber)
+        val order = orderPaymentService.getOrderByOrderId(payment.orderId)
+        val rejectedAt = timeProvider.now()
+        order.refundReject(rejectedAt)
+    }
 }

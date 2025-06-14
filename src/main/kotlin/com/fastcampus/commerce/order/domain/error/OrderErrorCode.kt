@@ -15,5 +15,6 @@ enum class OrderErrorCode(
     UNAUTHORIZED_ORDER_CANCEL("ORD-102", "다른 사람의 결제를 취소할 수 없습니다.", LogLevel.WARN),
     CANNOT_REFUND("ORD-103", "배송중, 배송 완료 상태인 주문만 환불할 수 있습니다.", LogLevel.WARN),
     UNAUTHORIZED_ORDER_REFUND("ORD-104", "다른 사람의 결제를 환불할 수 없습니다.", LogLevel.WARN),
-    NOT_REFUND_REQUESTED("ORD-104", "환불요청한 주문만 환불가능합니다.", LogLevel.WARN),
+    NOT_REFUND_REQUESTED_APPROVE("ORD-104", "환불요청한 주문만 환불가능합니다.", LogLevel.WARN),
+    NOT_REFUND_REQUESTED_REJECT("ORD-105", "환불요청한 주문만 환불거절 가능합니다.", LogLevel.WARN),
 }
