@@ -4,12 +4,13 @@ import com.fastcampus.commerce.product.domain.entity.Product
 import com.fastcampus.commerce.product.domain.entity.QInventory.inventory
 import com.fastcampus.commerce.product.domain.entity.QProduct.product
 import com.fastcampus.commerce.product.domain.entity.QProductCategory.productCategory
+import com.fastcampus.commerce.product.domain.entity.SellingStatus
 import com.fastcampus.commerce.product.domain.model.ProductInfo
 import com.fastcampus.commerce.product.domain.model.QProductInfo
+import com.fastcampus.commerce.product.domain.model.SearchAdminProductCondition
 import com.fastcampus.commerce.product.domain.model.SearchProductCondition
 import com.fastcampus.commerce.product.domain.repository.ProductRepository
 import com.querydsl.core.BooleanBuilder
-import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.jpa.JPAExpressions
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.domain.Page
@@ -36,7 +37,10 @@ class ProductRepositoryImpl(
     }
 
     override fun searchProducts(condition: SearchProductCondition, pageable: Pageable): Page<ProductInfo> {
-        val whereCondition = buildSearchCondition(condition)
+        val whereCondition = BooleanBuilder()
+            .and(productNameContainsIgnore(condition.name))
+            .and(productCategoryIdsIn(condition.categories))
+
         val content = fetchProductDetails(whereCondition, pageable)
 
         return PageableExecutionUtils.getPage(content, pageable) {
@@ -48,35 +52,35 @@ class ProductRepositoryImpl(
         }
     }
 
-    private fun fetchProductDetails(whereCondition: BooleanBuilder, pageable: Pageable): List<ProductInfo> {
-        return queryFactory
-            .select(
-                QProductInfo(
-                    product.id,
-                    product.name,
-                    product.price,
-                    inventory.quantity,
-                    product.thumbnail,
-                    product.detailImage,
-                ),
-            )
-            .from(product)
-            .join(inventory).on(product.id.eq(inventory.productId))
-            .where(whereCondition)
-            .orderBy(product.createdAt.desc())
-            .offset(pageable.offset)
-            .limit(pageable.pageSize.toLong())
-            .fetch()
+    override fun searchProductsForAdmin(condition: SearchAdminProductCondition, pageable: Pageable): Page<ProductInfo> {
+        val whereCondition = BooleanBuilder()
+            .and(productNameContainsIgnore(condition.name))
+            .and(productStatusEq(condition.status))
+            .and(productCategoryIdsIn(condition.categories))
+
+        val content = fetchProductDetails(whereCondition, pageable)
+        return PageableExecutionUtils.getPage(content, pageable) {
+            queryFactory
+                .select(product.id.count())
+                .from(product)
+                .where(whereCondition)
+                .fetchOne() ?: 0L
+        }
     }
 
-    private fun buildSearchCondition(query: SearchProductCondition): BooleanBuilder {
-        val whereCondition = BooleanBuilder()
+    private fun productNameContainsIgnore(productName: String?) =
+        if (productName == null) {
+            null
+        } else {
+            product.name.containsIgnoreCase(
+                productName,
+            )
+        }
 
-        query.name?.let { whereCondition.and(product.name.containsIgnoreCase(it)) }
+    private fun productStatusEq(status: SellingStatus?) = if (status == null) null else product.status.eq(status)
 
-        val categoryIds = query.categories
-
-        val categoryCondition: BooleanExpression? = if (categoryIds.isNullOrEmpty()) {
+    private fun productCategoryIdsIn(categoryIds: List<Long>?) =
+        if (categoryIds.isNullOrEmpty()) {
             null
         } else {
             val subQuery = JPAExpressions
@@ -92,7 +96,25 @@ class ProductRepositoryImpl(
             product.id.`in`(subQuery)
         }
 
-        categoryCondition?.let { whereCondition.and(it) }
-        return whereCondition
+    private fun fetchProductDetails(whereCondition: BooleanBuilder, pageable: Pageable): List<ProductInfo> {
+        return queryFactory
+            .select(
+                QProductInfo(
+                    product.id,
+                    product.name,
+                    product.price,
+                    inventory.quantity,
+                    product.thumbnail,
+                    product.detailImage,
+                    product.status,
+                ),
+            )
+            .from(product)
+            .join(inventory).on(product.id.eq(inventory.productId))
+            .where(whereCondition)
+            .orderBy(product.createdAt.desc())
+            .offset(pageable.offset)
+            .limit(pageable.pageSize.toLong())
+            .fetch()
     }
 }

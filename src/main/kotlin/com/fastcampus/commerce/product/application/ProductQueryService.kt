@@ -1,5 +1,8 @@
 package com.fastcampus.commerce.product.application
 
+import com.fastcampus.commerce.admin.product.application.request.SearchAdminProductRequest
+import com.fastcampus.commerce.admin.product.application.response.AdminProductDetailResponse
+import com.fastcampus.commerce.admin.product.application.response.SearchAdminProductResponse
 import com.fastcampus.commerce.product.application.request.SearchProductRequest
 import com.fastcampus.commerce.product.application.response.CategoryResponse
 import com.fastcampus.commerce.product.application.response.ProductDetailResponse
@@ -36,5 +39,29 @@ class ProductQueryService(
         val productInfo = productReader.getProductInfo(productId)
         val productCategoryInfo = categoryReader.getProductCategory(productId)
         return ProductDetailResponse.of(productInfo, productCategoryInfo)
+    }
+
+    fun searchProductsForAdmin(request: SearchAdminProductRequest, pageable: Pageable): Page<SearchAdminProductResponse> {
+        val productInfos = productReader.searchProductsForAdmin(request.toCondition(), pageable)
+        val productIds = productInfos.content.map { it.id }
+        val categoryMap = categoryReader.getProductCategoryMap(productIds)
+        return productInfos.map { productInfo ->
+            val productCategoryInfo = categoryMap[productInfo.id] ?: ProductCategoryInfo.empty()
+            SearchAdminProductResponse.of(productInfo, productCategoryInfo)
+        }
+    }
+
+    fun getProductDetailForAdmin(productId: Long): AdminProductDetailResponse {
+        val productInfo = productReader.getProductInfo(productId)
+        val productCategoryInfo = categoryReader.getProductCategory(productId)
+        return AdminProductDetailResponse.of(productInfo, productCategoryInfo)
+    }
+
+    fun getNewProducts(): List<SearchProductResponse> {
+        TODO("Not yet implemented")
+    }
+
+    fun getBestProducts(): List<SearchProductResponse> {
+        TODO("Not yet implemented")
     }
 }
