@@ -303,7 +303,7 @@ class PaymentServiceTest : FunSpec(
                 // then
                 payment.status shouldBe PaymentStatus.CANCELLED
                 order.status shouldBe OrderStatus.CANCELLED
-                order.canceledAt shouldBe now
+                order.cancelledAt shouldBe now
 
                 verify(exactly = 1) { orderPaymentService.getOrderByOrderNumber(orderNumber) }
                 verify(exactly = 1) { paymentReader.getByOrderId(1L) }
@@ -417,7 +417,7 @@ class PaymentServiceTest : FunSpec(
                 // then
                 payment.status shouldBe PaymentStatus.CANCELLED
                 order.status shouldBe OrderStatus.CANCELLED
-                order.canceledAt shouldBe now
+                order.cancelledAt shouldBe now
 
                 verify(exactly = 1) { orderPaymentService.getOrderByOrderNumber(orderNumber) }
                 verify(exactly = 1) { paymentReader.getByOrderId(1L) }

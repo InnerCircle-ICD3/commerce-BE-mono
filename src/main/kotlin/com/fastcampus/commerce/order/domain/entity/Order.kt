@@ -49,7 +49,7 @@ class Order(
     var paidAt: LocalDateTime? = null
     var shippedAt: LocalDateTime? = null
     var deliveredAt: LocalDateTime? = null
-    var canceledAt: LocalDateTime? = null
+    var cancelledAt: LocalDateTime? = null
     var refundRequestedAt: LocalDateTime? = null
     var refundedAt: LocalDateTime? = null
     var refundRejectedAt: LocalDateTime? = null
@@ -75,7 +75,7 @@ class Order(
 
     fun cancel(cancelledAt: LocalDateTime) {
         if (this.status == OrderStatus.PAID || this.status == OrderStatus.WAITING_FOR_PAYMENT) {
-            this.canceledAt = cancelledAt
+            this.cancelledAt = cancelledAt
             this.status = OrderStatus.CANCELLED
         }
     }

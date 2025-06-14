@@ -131,7 +131,7 @@ class AdminPaymentServiceTest : FunSpec(
                     status = OrderStatus.CANCELLED, // 이미 취소됨
                 ).apply {
                     id = orderId
-                    canceledAt = LocalDateTime.of(2024, 12, 13, 15, 0, 0)
+                    cancelledAt = LocalDateTime.of(2024, 12, 13, 15, 0, 0)
                 }
 
                 every { paymentReader.getByPaymentNumber(paymentNumber) } returns payment
@@ -390,7 +390,7 @@ class AdminPaymentServiceTest : FunSpec(
                     status = OrderStatus.CANCELLED, // 취소된 상태
                 ).apply {
                     id = orderId
-                    canceledAt = LocalDateTime.of(2024, 12, 13, 17, 0, 0)
+                    cancelledAt = LocalDateTime.of(2024, 12, 13, 17, 0, 0)
                 }
 
                 every { paymentReader.getByPaymentNumber(paymentNumber) } returns payment
