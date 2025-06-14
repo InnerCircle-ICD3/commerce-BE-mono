@@ -1,5 +1,10 @@
 package com.fastcampus.commerce.auth
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.Authentication
+
 import com.fastcampus.commerce.common.error.AuthErrorCode
 import com.fastcampus.commerce.common.error.CoreException
 import io.jsonwebtoken.Claims
@@ -148,4 +153,26 @@ class TokenProvider(
             throw CoreException(AuthErrorCode.INVALID_TOKEN)
         }
     }
+
+    fun getAuthentication(token: String): Authentication {
+        val userId = extractUserIdFromToken(token)
+        val externalId = extractExternalIdFromToken(token)
+        val principal = org.springframework.security.core.userdetails.User(
+            externalId,
+            "",
+            listOf(SimpleGrantedAuthority("ROLE_USER"))
+        )
+        return UsernamePasswordAuthenticationToken(principal, token, principal.authorities)
+    }
+
+    fun validateToken(token: String): Boolean {
+        return try {
+            parseClaims(token)
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
 }
+
+

@@ -10,13 +10,15 @@ class JwtAuthenticationFilter(
     private val tokenProvider: TokenProvider,
 ) : OncePerRequestFilter() {
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
-        // TODO: 이후 token 인증 로직 수정 필요
-        /*val accessToken = request.getHeader(HttpHeaderKeys.ACCESS_TOKEN)
-            ?: throw CoreException(AuthErrorCode.TOKEN_NOT_FOUND)
+        val accessToken = request.getHeader("Authorization")?.removePrefix("Bearer ")
+            ?: return filterChain.doFilter(request, response)
 
-        val userId = tokenProvider.extractUserIdFromToken(accessToken)
+        if (!tokenProvider.validateToken(accessToken)) {
+            return filterChain.doFilter(request, response)
+        }
 
-        response.setHeader(HttpHeaderKeys.USER_ID, userId.toString())*/
+        val authentication = tokenProvider.getAuthentication(accessToken)
+        org.springframework.security.core.context.SecurityContextHolder.getContext().authentication = authentication
 
         filterChain.doFilter(request, response)
     }
