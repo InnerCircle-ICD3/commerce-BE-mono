@@ -16,6 +16,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   flyway:
     # TODO: ERD가 1차 완성되면 설정
     enabled: false
