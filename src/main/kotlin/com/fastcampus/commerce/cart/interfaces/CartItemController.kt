@@ -40,7 +40,7 @@ class CartItemController(
         return cartResponse
     }
 
-    @DeleteMapping("/cart-items/delete")
+    @DeleteMapping("/cart-items")
     fun deleteCartItems(
         @RequestParam cartItemIds: List<Long>
     ): CartDeleteResponse {
