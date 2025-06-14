@@ -2,13 +2,18 @@ package com.fastcampus.commerce.admin.product.interfaces
 
 import com.fastcampus.commerce.admin.product.application.AdminProductService
 import com.fastcampus.commerce.admin.product.interfaces.request.RegisterProductApiRequest
+import com.fastcampus.commerce.admin.product.interfaces.request.SearchAdminProductApiRequest
 import com.fastcampus.commerce.admin.product.interfaces.request.UpdateProductApiRequest
 import com.fastcampus.commerce.admin.product.interfaces.response.DeleteProductApiResponse
 import com.fastcampus.commerce.admin.product.interfaces.response.RegisterProductApiResponse
+import com.fastcampus.commerce.admin.product.interfaces.response.SearchAdminProductApiResponse
 import com.fastcampus.commerce.admin.product.interfaces.response.UpdateProductApiResponse
 import com.fastcampus.commerce.common.response.EnumResponse
+import com.fastcampus.commerce.common.response.PagedData
+import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -26,6 +31,15 @@ class AdminProductController(
     fun getSellingStatus(): List<EnumResponse> {
         val sellingStatuses = adminProductService.getSellingStatus()
         return sellingStatuses.map { EnumResponse(it.code, it.label) }
+    }
+
+    @GetMapping
+    fun searchProducts(
+        @ModelAttribute request: SearchAdminProductApiRequest,
+        pageable: Pageable,
+    ): PagedData<SearchAdminProductApiResponse> {
+        val products = adminProductService.searchProducts(request.toServiceRequest(), pageable)
+        return PagedData.of(products.map(SearchAdminProductApiResponse::from))
     }
 
     @PostMapping

@@ -3,6 +3,7 @@ package com.fastcampus.commerce.product.application
 import com.fastcampus.commerce.product.application.request.SearchProductRequest
 import com.fastcampus.commerce.product.application.response.CategoryResponse
 import com.fastcampus.commerce.product.application.response.SearchProductResponse
+import com.fastcampus.commerce.product.domain.entity.SellingStatus
 import com.fastcampus.commerce.product.domain.model.CategoryDetail
 import com.fastcampus.commerce.product.domain.model.ProductCategoryInfo
 import com.fastcampus.commerce.product.domain.model.ProductInfo
@@ -109,6 +110,7 @@ class ProductQueryServiceTest : DescribeSpec(
                             quantity = 100,
                             thumbnail = "https://test.com/thumbnail.png",
                             detailImage = "https://test.com/detail.png",
+                            status = SellingStatus.ON_SALE,
                         ),
                         ProductInfo(
                             id = 2L,
@@ -117,6 +119,7 @@ class ProductQueryServiceTest : DescribeSpec(
                             quantity = 50,
                             thumbnail = "https://test.com/thumbnail2.png",
                             detailImage = "https://test.com/detail2.png",
+                            status = SellingStatus.ON_SALE,
                         ),
                     )
                     val productPage = PageImpl(productInfos, pageable, 2L)
@@ -173,6 +176,7 @@ class ProductQueryServiceTest : DescribeSpec(
                             quantity = 200,
                             thumbnail = "https://test.com/americano.png",
                             detailImage = "https://test.com/americano-detail.png",
+                            status = SellingStatus.ON_SALE,
                         ),
                     )
                     val productPage = PageImpl(productInfos, pageable, 1L)
@@ -216,6 +220,7 @@ class ProductQueryServiceTest : DescribeSpec(
                             quantity = 10,
                             thumbnail = "https://test.com/test.png",
                             detailImage = "https://test.com/test-detail.png",
+                            status = SellingStatus.ON_SALE,
                         ),
                     )
                     val productPage = PageImpl(productInfos, pageable, 1L)
@@ -281,6 +286,7 @@ class ProductQueryServiceTest : DescribeSpec(
                         quantity = 100,
                         thumbnail = "https://test.com/thumbnail.png",
                         detailImage = "https://test.com/detail.png",
+                        status = SellingStatus.ON_SALE,
                     )
                     val productCategoryInfo = ProductCategoryInfo(
                         intensity = "Strong",
@@ -314,6 +320,7 @@ class ProductQueryServiceTest : DescribeSpec(
                         quantity = 50,
                         thumbnail = "https://test.com/test.png",
                         detailImage = "https://test.com/test-detail.png",
+                        status = SellingStatus.ON_SALE,
                     )
                     val emptyProductCategoryInfo = ProductCategoryInfo.empty()
 

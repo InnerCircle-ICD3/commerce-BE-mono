@@ -133,8 +133,8 @@ class ProductControllerRestDocTest : DescribeSpec() {
                         optionalField("name", "상품명 (부분 검색)", "콜드브루")
                         optionalField("intensityId", "원두 강도 카테고리 ID", 1)
                         optionalField("cupSizeId", "컵 사이즈 카테고리 ID", 2)
-                        optionalField("page", "페이지 번호 (0부터 시작, 기본값: 0)", 0)
-                        optionalField("size", "페이지 크기 (기본값: 20, 최대: 50)", 20)
+                        optionalField("page", "페이지 번호 (1부터 시작, 기본값: 1)", 1)
+                        optionalField("size", "페이지 크기 (기본값: 10, 최대: 50)", 10)
                     }
 
                     responseBody {

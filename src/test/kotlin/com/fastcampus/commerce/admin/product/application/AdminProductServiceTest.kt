@@ -1,13 +1,18 @@
 package com.fastcampus.commerce.admin.product.application
 
 import com.fastcampus.commerce.admin.product.application.request.RegisterProductRequest
+import com.fastcampus.commerce.admin.product.application.request.SearchAdminProductRequest
 import com.fastcampus.commerce.admin.product.application.request.UpdateProductRequest
+import com.fastcampus.commerce.admin.product.application.response.SearchAdminProductResponse
 import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.file.application.FileCommandService
 import com.fastcampus.commerce.file.domain.error.FileErrorCode
 import com.fastcampus.commerce.file.domain.service.UploadedFileVerifier
 import com.fastcampus.commerce.product.application.ProductCommandService
+import com.fastcampus.commerce.product.application.ProductQueryService
 import com.fastcampus.commerce.product.domain.entity.SellingStatus
+import com.fastcampus.commerce.product.domain.model.ProductCategoryInfo
+import com.fastcampus.commerce.product.domain.model.ProductInfo
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldHaveSize
@@ -16,6 +21,8 @@ import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.TransactionCallback
 import org.springframework.transaction.support.TransactionTemplate
@@ -24,11 +31,13 @@ class AdminProductServiceTest : DescribeSpec(
     {
         val uploadedFileVerifier = mockk<UploadedFileVerifier>()
         val productCommandService = mockk<ProductCommandService>()
+        val productQueryService = mockk<ProductQueryService>()
         val fileCommandService = mockk<FileCommandService>()
         val transactionTemplate = mockk<TransactionTemplate>()
         val service = AdminProductService(
             uploadedFileVerifier = uploadedFileVerifier,
             productCommandService = productCommandService,
+            productQueryService = productQueryService,
             fileCommandService = fileCommandService,
             transactionTemplate = transactionTemplate,
         )
@@ -163,6 +172,169 @@ class AdminProductServiceTest : DescribeSpec(
                 service.delete(deleterId, productId)
 
                 verify(exactly = 1) { productCommandService.deleteProduct(productId) }
+            }
+        }
+
+        describe("상품 검색") {
+            val request = SearchAdminProductRequest(
+                name = "커피",
+                intensityId = 1L,
+                cupSizeId = 10L,
+                status = SellingStatus.ON_SALE,
+            )
+            val pageable = mockk<Pageable>()
+
+            it("상품을 검색할 수 있다.") {
+                val productInfo = ProductInfo(
+                    id = 1L,
+                    name = "커피A",
+                    price = 10000,
+                    quantity = 100,
+                    thumbnail = "https://example.com/thumbnail.jpg",
+                    detailImage = "https://example.com/detailImage.jpg",
+                    status = SellingStatus.ON_SALE,
+                )
+                val productCategoryInfo = ProductCategoryInfo(
+                    intensity = "강함",
+                    cupSize = "L",
+                )
+                val expectedResponse = SearchAdminProductResponse.of(productInfo, productCategoryInfo)
+                val expectedPage = mockk<Page<SearchAdminProductResponse>> {
+                    every { content } returns listOf(expectedResponse)
+                    every { totalElements } returns 1L
+                    every { totalPages } returns 1
+                    every { number } returns 0
+                    every { size } returns 10
+                }
+
+                every { productQueryService.searchProductsForAdmin(request, pageable) } returns expectedPage
+
+                val result = service.searchProducts(request, pageable)
+
+                result shouldBe expectedPage
+                result.content shouldHaveSize 1
+                result.content[0] shouldBe expectedResponse
+                verify(exactly = 1) { productQueryService.searchProductsForAdmin(request, pageable) }
+            }
+
+            it("검색 조건이 없어도 모든 상품을 검색할 수 있다.") {
+                val emptyRequest = SearchAdminProductRequest()
+                val productInfo1 = ProductInfo(
+                    id = 1L,
+                    name = "커피A",
+                    price = 10000,
+                    quantity = 100,
+                    thumbnail = "https://example.com/thumbnail.jpg",
+                    detailImage = "https://example.com/detailImage.jpg",
+                    status = SellingStatus.ON_SALE,
+                )
+                val productCategoryInfo1 = ProductCategoryInfo(
+                    intensity = "강함",
+                    cupSize = "L",
+                )
+                val expectedResponse1 = SearchAdminProductResponse.of(productInfo1, productCategoryInfo1)
+                val expectedPage = mockk<Page<SearchAdminProductResponse>> {
+                    every { content } returns listOf(expectedResponse1)
+                    every { totalElements } returns 2L
+                    every { totalPages } returns 1
+                    every { number } returns 0
+                    every { size } returns 10
+                }
+
+                every { productQueryService.searchProductsForAdmin(emptyRequest, pageable) } returns expectedPage
+
+                val result = service.searchProducts(emptyRequest, pageable)
+
+                result shouldBe expectedPage
+                result.content shouldHaveSize 1
+                verify(exactly = 1) { productQueryService.searchProductsForAdmin(emptyRequest, pageable) }
+            }
+
+            it("검색 결과가 없으면 빈 페이지를 반환한다.") {
+                val noResultRequest = SearchAdminProductRequest(
+                    name = "존재하지않는상품",
+                )
+                val emptyPage = mockk<Page<SearchAdminProductResponse>> {
+                    every { content } returns emptyList()
+                    every { totalElements } returns 0L
+                    every { totalPages } returns 0
+                    every { number } returns 0
+                    every { size } returns 10
+                    every { isEmpty } returns true
+                }
+
+                every { productQueryService.searchProductsForAdmin(noResultRequest, pageable) } returns emptyPage
+
+                val result = service.searchProducts(noResultRequest, pageable)
+
+                result shouldBe emptyPage
+                result.content shouldHaveSize 0
+                result.isEmpty shouldBe true
+                verify(exactly = 1) { productQueryService.searchProductsForAdmin(noResultRequest, pageable) }
+            }
+
+            it("이름으로만 검색할 수 있다.") {
+                val nameOnlyRequest = SearchAdminProductRequest(name = "커피")
+                val productInfo = ProductInfo(
+                    id = 1L,
+                    name = "커피A",
+                    price = 10000,
+                    quantity = 100,
+                    thumbnail = "https://example.com/thumbnail.jpg",
+                    detailImage = "https://example.com/detailImage.jpg",
+                    status = SellingStatus.ON_SALE,
+                )
+                val productCategoryInfo = ProductCategoryInfo(
+                    intensity = "강함",
+                    cupSize = "L",
+                )
+                val expectedResponse = SearchAdminProductResponse.of(productInfo, productCategoryInfo)
+                val expectedPage = mockk<Page<SearchAdminProductResponse>> {
+                    every { content } returns listOf(expectedResponse)
+                    every { totalElements } returns 1L
+                    every { totalPages } returns 1
+                    every { number } returns 0
+                    every { size } returns 10
+                }
+
+                every { productQueryService.searchProductsForAdmin(nameOnlyRequest, pageable) } returns expectedPage
+
+                val result = service.searchProducts(nameOnlyRequest, pageable)
+
+                result shouldBe expectedPage
+                verify(exactly = 1) { productQueryService.searchProductsForAdmin(nameOnlyRequest, pageable) }
+            }
+
+            it("상태로만 검색할 수 있다.") {
+                val statusOnlyRequest = SearchAdminProductRequest(status = SellingStatus.UNAVAILABLE)
+                val productInfo = ProductInfo(
+                    id = 2L,
+                    name = "커피B",
+                    price = 15000,
+                    quantity = 100,
+                    thumbnail = "https://example.com/thumbnail.jpg",
+                    detailImage = "https://example.com/detailImage.jpg",
+                    status = SellingStatus.UNAVAILABLE,
+                )
+                val productCategoryInfo = ProductCategoryInfo(
+                    intensity = "중간",
+                    cupSize = "M",
+                )
+                val expectedResponse = SearchAdminProductResponse.of(productInfo, productCategoryInfo)
+                val expectedPage = mockk<Page<SearchAdminProductResponse>> {
+                    every { content } returns listOf(expectedResponse)
+                    every { totalElements } returns 1L
+                    every { totalPages } returns 1
+                    every { number } returns 0
+                    every { size } returns 10
+                }
+
+                every { productQueryService.searchProductsForAdmin(statusOnlyRequest, pageable) } returns expectedPage
+
+                val result = service.searchProducts(statusOnlyRequest, pageable)
+
+                result shouldBe expectedPage
+                verify(exactly = 1) { productQueryService.searchProductsForAdmin(statusOnlyRequest, pageable) }
             }
         }
     },
