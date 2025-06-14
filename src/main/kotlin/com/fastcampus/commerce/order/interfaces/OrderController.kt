@@ -107,7 +107,7 @@ class OrderController(
         return orderService.getOrders(request, pageable)
     }
 
-    @GetMapping("/{orderNumber}")
+    /*@GetMapping("/{orderNumber}")
     fun getOrders(
         @PathVariable orderNumber: String,
     ): GetOrderApiResponse {
@@ -153,5 +153,12 @@ class OrderController(
             reviewable = true,
             reviewWritten = false,
         )
+    }*/
+
+    @GetMapping("/{orderNumber}")
+    fun getOrders(
+        @PathVariable orderNumber: String,
+    ): GetOrderApiResponse {
+        return orderService.getOrderDetail(orderNumber)
     }
 }
