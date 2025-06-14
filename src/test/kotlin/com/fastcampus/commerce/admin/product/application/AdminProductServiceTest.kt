@@ -3,6 +3,7 @@ package com.fastcampus.commerce.admin.product.application
 import com.fastcampus.commerce.admin.product.application.request.RegisterProductRequest
 import com.fastcampus.commerce.admin.product.application.request.SearchAdminProductRequest
 import com.fastcampus.commerce.admin.product.application.request.UpdateProductRequest
+import com.fastcampus.commerce.admin.product.application.response.AdminProductDetailResponse
 import com.fastcampus.commerce.admin.product.application.response.SearchAdminProductResponse
 import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.file.application.FileCommandService
@@ -335,6 +336,77 @@ class AdminProductServiceTest : DescribeSpec(
 
                 result shouldBe expectedPage
                 verify(exactly = 1) { productQueryService.searchProductsForAdmin(statusOnlyRequest, pageable) }
+            }
+        }
+
+        describe("상품 상세 조회") {
+            val productId = 1L
+
+            it("상품 상세 정보를 조회할 수 있다.") {
+                val productInfo = ProductInfo(
+                    id = productId,
+                    name = "커피A",
+                    price = 10000,
+                    quantity = 100,
+                    thumbnail = "https://example.com/thumbnail.jpg",
+                    detailImage = "https://example.com/detailImage.jpg",
+                    status = SellingStatus.ON_SALE,
+                )
+                val productCategoryInfo = ProductCategoryInfo(
+                    intensity = "강함",
+                    cupSize = "L",
+                )
+                val expectedResponse = AdminProductDetailResponse.of(productInfo, productCategoryInfo)
+
+                every { productQueryService.getProductDetailForAdmin(productId) } returns expectedResponse
+
+                val result = service.getProduct(productId)
+
+                result shouldBe expectedResponse
+                result.id shouldBe productId
+                result.name shouldBe "커피A"
+                result.price shouldBe 10000
+                result.quantity shouldBe 100
+                result.thumbnail shouldBe "https://example.com/thumbnail.jpg"
+                result.detailImage shouldBe "https://example.com/detailImage.jpg"
+                result.intensity shouldBe "강함"
+                result.cupSize shouldBe "L"
+                result.status shouldBe SellingStatus.ON_SALE
+                verify(exactly = 1) { productQueryService.getProductDetailForAdmin(productId) }
+            }
+
+            it("상품 상세 정보에 모든 필드가 포함되어 있다.") {
+                val productInfo = ProductInfo(
+                    id = 3L,
+                    name = "프리미엄 커피",
+                    price = 25000,
+                    quantity = 50,
+                    thumbnail = "https://example.com/premium-thumbnail.jpg",
+                    detailImage = "https://example.com/premium-detail.jpg",
+                    status = SellingStatus.ON_SALE,
+                )
+                val productCategoryInfo = ProductCategoryInfo(
+                    intensity = "매우 강함",
+                    cupSize = "XL",
+                )
+                val expectedResponse = AdminProductDetailResponse.of(productInfo, productCategoryInfo)
+
+                every { productQueryService.getProductDetailForAdmin(3L) } returns expectedResponse
+
+                val result = service.getProduct(3L)
+
+                result shouldBe expectedResponse
+                // 모든 필드가 null이 아닌지 확인
+                result.id shouldBe 3L
+                result.name shouldBe "프리미엄 커피"
+                result.price shouldBe 25000
+                result.quantity shouldBe 50
+                result.thumbnail shouldBe "https://example.com/premium-thumbnail.jpg"
+                result.detailImage shouldBe "https://example.com/premium-detail.jpg"
+                result.intensity shouldBe "매우 강함"
+                result.cupSize shouldBe "XL"
+                result.status shouldBe SellingStatus.ON_SALE
+                verify(exactly = 1) { productQueryService.getProductDetailForAdmin(3L) }
             }
         }
     },

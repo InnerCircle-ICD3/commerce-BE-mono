@@ -7,11 +7,11 @@ data class SearchAdminProductApiResponse(
     val id: Long,
     val name: String,
     val price: Int,
+    val quantity: Int,
     val thumbnail: String,
-    val status: SellingStatus,
-    val stock: Int,
     val intensity: String,
     val cupSize: String,
+    val status: SellingStatus,
 ) {
     companion object {
         fun from(response: SearchAdminProductResponse): SearchAdminProductApiResponse =
@@ -19,11 +19,11 @@ data class SearchAdminProductApiResponse(
                 id = response.id,
                 name = response.name,
                 price = response.price,
+                quantity = response.quantity,
                 thumbnail = response.thumbnail,
-                status = response.status,
-                stock = response.stock,
                 intensity = response.intensity,
                 cupSize = response.cupSize,
+                status = response.status,
             )
     }
 }

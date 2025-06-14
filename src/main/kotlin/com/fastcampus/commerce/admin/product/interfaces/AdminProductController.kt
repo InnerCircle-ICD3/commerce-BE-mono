@@ -4,6 +4,7 @@ import com.fastcampus.commerce.admin.product.application.AdminProductService
 import com.fastcampus.commerce.admin.product.interfaces.request.RegisterProductApiRequest
 import com.fastcampus.commerce.admin.product.interfaces.request.SearchAdminProductApiRequest
 import com.fastcampus.commerce.admin.product.interfaces.request.UpdateProductApiRequest
+import com.fastcampus.commerce.admin.product.interfaces.response.AdminProductDetailApiResponse
 import com.fastcampus.commerce.admin.product.interfaces.response.DeleteProductApiResponse
 import com.fastcampus.commerce.admin.product.interfaces.response.RegisterProductApiResponse
 import com.fastcampus.commerce.admin.product.interfaces.response.SearchAdminProductApiResponse
@@ -40,6 +41,13 @@ class AdminProductController(
     ): PagedData<SearchAdminProductApiResponse> {
         val products = adminProductService.searchProducts(request.toServiceRequest(), pageable)
         return PagedData.of(products.map(SearchAdminProductApiResponse::from))
+    }
+
+    @GetMapping("/{productId}")
+    fun getProduct(
+        @PathVariable productId: Long,
+    ): AdminProductDetailApiResponse {
+        return AdminProductDetailApiResponse.from(adminProductService.getProduct(productId))
     }
 
     @PostMapping

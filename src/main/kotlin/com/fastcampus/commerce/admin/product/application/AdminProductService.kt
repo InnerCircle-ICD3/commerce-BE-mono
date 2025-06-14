@@ -3,6 +3,7 @@ package com.fastcampus.commerce.admin.product.application
 import com.fastcampus.commerce.admin.product.application.request.RegisterProductRequest
 import com.fastcampus.commerce.admin.product.application.request.SearchAdminProductRequest
 import com.fastcampus.commerce.admin.product.application.request.UpdateProductRequest
+import com.fastcampus.commerce.admin.product.application.response.AdminProductDetailResponse
 import com.fastcampus.commerce.admin.product.application.response.SearchAdminProductResponse
 import com.fastcampus.commerce.admin.product.application.response.SellingStatusResponse
 import com.fastcampus.commerce.common.error.CommonErrorCode
@@ -69,5 +70,9 @@ class AdminProductService(
     fun searchProducts(request: SearchAdminProductRequest, pageable: Pageable): Page<SearchAdminProductResponse> {
         val products = productQueryService.searchProductsForAdmin(request, pageable)
         return products
+    }
+
+    fun getProduct(productId: Long): AdminProductDetailResponse {
+        return productQueryService.getProductDetailForAdmin(productId)
     }
 }

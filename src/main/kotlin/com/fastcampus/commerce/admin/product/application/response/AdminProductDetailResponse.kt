@@ -4,24 +4,26 @@ import com.fastcampus.commerce.product.domain.entity.SellingStatus
 import com.fastcampus.commerce.product.domain.model.ProductCategoryInfo
 import com.fastcampus.commerce.product.domain.model.ProductInfo
 
-data class SearchAdminProductResponse(
+data class AdminProductDetailResponse(
     val id: Long,
     val name: String,
     val price: Int,
     val quantity: Int,
     val thumbnail: String,
+    val detailImage: String,
     val intensity: String,
     val cupSize: String,
     val status: SellingStatus,
 ) {
     companion object {
-        fun of(productInfo: ProductInfo, productCategoryInfo: ProductCategoryInfo): SearchAdminProductResponse {
-            return SearchAdminProductResponse(
+        fun of(productInfo: ProductInfo, productCategoryInfo: ProductCategoryInfo): AdminProductDetailResponse {
+            return AdminProductDetailResponse(
                 id = productInfo.id,
                 name = productInfo.name,
                 price = productInfo.price,
                 quantity = productInfo.quantity,
                 thumbnail = productInfo.thumbnail,
+                detailImage = productInfo.detailImage,
                 intensity = productCategoryInfo.intensity,
                 cupSize = productCategoryInfo.cupSize,
                 status = productInfo.status,
