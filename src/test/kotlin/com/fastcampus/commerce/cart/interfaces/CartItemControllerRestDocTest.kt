@@ -248,7 +248,7 @@ class CartItemControllerRestDocTest : DescribeSpec() {
             val summary = "장바구니에 추가된 상품을 삭제할 수 있다."
 
             it("장바구니에 추가된 상품을 삭제할 수 있다.") {
-                val cartItemIds = listOf(2L, 4L, 6)
+                val cartItemIds = listOf(2L, 4L, 6L)
                 val deletedCount = cartItemIds.size
                 val response = CartDeleteResponse("Successfully deleted $deletedCount cart items")
 
