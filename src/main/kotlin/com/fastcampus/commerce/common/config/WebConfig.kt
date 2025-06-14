@@ -12,7 +12,7 @@ class WebConfig(
 ) : WebMvcConfigurer {
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
         registry.addResourceHandler("/api/**")
-            .addResourceLocations("file:./docs/api/")
+            .addResourceLocations("file:./resources/api/")
             .setCachePeriod(0)
     }
 
