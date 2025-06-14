@@ -148,7 +148,7 @@ class CartItemServiceTest {
         `when`(cartItemRepository.save(any(CartItem::class.java))).thenReturn(cartItem)
 
         // When
-        val result = cartItemService.updateCartItem(userId, cartItemId,request)
+        val result = cartItemService.updateCartItem(userId, cartItemId, request)
 
         // Then
         verify(cartItemRepository).save(any(CartItem::class.java))
@@ -185,7 +185,7 @@ class CartItemServiceTest {
         `when`(cartItemRepository.save(any(CartItem::class.java))).thenReturn(cartItem)
 
         // When
-        val result = cartItemService.updateCartItem(userId, cartItemId,request)
+        val result = cartItemService.updateCartItem(userId, cartItemId, request)
 
         // Then
         verify(cartItemRepository).save(any(CartItem::class.java))
