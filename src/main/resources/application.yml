@@ -9,10 +9,6 @@ spring:
       - classpath:config/logging.yml
       - classpath:config/web.yml
       - classpath:config/auth.yml
-  web:
-    resources:
-      static-locations:
-        - classpath:/static/
 
 springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
@@ -20,7 +16,7 @@ springdoc:
   cache.disabled: true
   swagger-ui:
     enabled: true
-    url: /api/openapi3.yaml
+    url: /swagger-ui/openapi3.yaml
     tags-sorter: alpha
     operations-sorter: alpha
     path: /swagger-ui.html

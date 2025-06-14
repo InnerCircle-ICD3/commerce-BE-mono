@@ -11,8 +11,8 @@ class WebConfig(
     private val customPageableArgumentResolver: CustomPageableArgumentResolver,
 ) : WebMvcConfigurer {
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
-        registry.addResourceHandler("/api/**")
-            .addResourceLocations("file:./resources/api/")
+        registry.addResourceHandler("/swagger-ui/**")
+            .addResourceLocations("classpath:/static/swagger-ui/")
             .setCachePeriod(0)
     }
 
