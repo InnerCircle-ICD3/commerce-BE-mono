@@ -3,7 +3,7 @@ package com.fastcampus.commerce.order.interfaces.response
 import com.fastcampus.commerce.common.response.EnumResponse
 
 data class PrepareOrderApiResponse(
-    val cartItemIds: List<Long>,
+    val cartItemIds: Set<Long>,
     val itemsSubtotal: Int,
     val shippingFee: Int,
     val finalTotalPrice: Int,

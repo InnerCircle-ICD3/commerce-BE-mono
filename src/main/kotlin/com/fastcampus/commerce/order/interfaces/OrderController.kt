@@ -1,6 +1,5 @@
 package com.fastcampus.commerce.order.interfaces
 
-import com.fastcampus.commerce.common.response.EnumResponse
 import com.fastcampus.commerce.common.response.PagedData
 import com.fastcampus.commerce.order.application.order.OrderService
 import com.fastcampus.commerce.order.interfaces.request.OrderApiRequest
@@ -10,8 +9,6 @@ import com.fastcampus.commerce.order.interfaces.response.GetOrderItemApiResponse
 import com.fastcampus.commerce.order.interfaces.response.GetOrderShippingInfoApiResponse
 import com.fastcampus.commerce.order.interfaces.response.OrderApiResponse
 import com.fastcampus.commerce.order.interfaces.response.PrepareOrderApiResponse
-import com.fastcampus.commerce.order.interfaces.response.PrepareOrderItemApiResponse
-import com.fastcampus.commerce.order.interfaces.response.PrepareOrderShippingInfoApiResponse
 import com.fastcampus.commerce.order.interfaces.response.SearchOrderApiResponse
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
@@ -32,7 +29,7 @@ import java.time.LocalDateTime
 class OrderController(
     private val orderService: OrderService
 ) {
-    @GetMapping("/prepare")
+    /*@GetMapping("/prepare")
     fun prepareOrders(
         @RequestParam cartItemIds: String,
     ): PrepareOrderApiResponse {
@@ -63,6 +60,16 @@ class OrderController(
                 EnumResponse("MOCK", "테스트"),
             ),
         )
+    }*/
+    @GetMapping("/prepare")
+    fun prepareOrders(
+        @RequestParam cartItemIds: String,
+    ): PrepareOrderApiResponse {
+        // cartItemIds: "1,2,3" 형태라고 가정
+        val cartItemIdList: Set<Long> = cartItemIds.split(",")
+            .map { it.trim().toLong() }
+            .toSet()
+        return orderService.prepareOrder(cartItemIdList)
     }
 
     @PostMapping
