@@ -1,5 +1,6 @@
 package com.fastcampus.commerce.chat.domain.entity
 
+import com.fastcampus.commerce.common.entity.BaseEntity
 import java.time.LocalDateTime
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -20,7 +21,7 @@ class ChatMessage(
     val senderType: SenderType,
     @Column(nullable = false)
     val content: String,
-) {
+) : BaseEntity(){
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
