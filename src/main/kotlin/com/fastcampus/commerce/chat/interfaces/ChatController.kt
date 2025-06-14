@@ -1,7 +1,6 @@
 package com.fastcampus.commerce.chat.interfaces
 
 import com.fastcampus.commerce.chat.application.ChatService
-import com.fastcampus.commerce.chat.dto.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
