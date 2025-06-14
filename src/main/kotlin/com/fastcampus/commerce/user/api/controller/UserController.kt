@@ -1,55 +1,42 @@
 package com.fastcampus.commerce.user.api.controller
 
 import com.fastcampus.commerce.auth.api.dto.LoginRequest
-import com.fastcampus.commerce.auth.api.dto.RegisterRequest
-import com.fastcampus.commerce.auth.interfaces.web.security.oauth.NaverUserResponse
 import com.fastcampus.commerce.user.api.dto.UserDto
 import com.fastcampus.commerce.user.api.service.UserService
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/user")
 class UserController(
     private val userService: UserService,
 ) {
-    fun registerUser(request: RegisterRequest): UserDto {
-        return UserDto(
-            id = "",
-            externalId = "",
-            name = "",
-            email = request.email,
-            nickname = "User",
-            profileImage = "",
-            roles = emptyList(),
-        )
+
+    /**
+     * Logs in a user.
+     *
+     * @param loginRequest the login request containing credentials
+     * @return the logged-in user data
+     */
+    @PostMapping("/login")
+    @ResponseBody
+    fun loginUser(@RequestBody loginRequest: LoginRequest): UserDto {
+        return userService.loginUser(loginRequest)
     }
 
-    fun loginUser(request: LoginRequest): UserDto {
-        return UserDto(
-            id = "",
-            externalId = "",
-            name = "",
-            email = request.email,
-            nickname = "User",
-            profileImage = "",
-            roles = emptyList(),
-        )
+    /**
+     * Deletes a user by user ID.
+     *
+     * @param userId the ID of the user to delete
+     */
+    @DeleteMapping("/delete")
+    fun deleteUser(@RequestBody userId: Long) {
+        userService.deleteUser(userId)
     }
 
-    fun deleteUser(userId: Long) {
-        // TODO: delete 처리
-    }
-
-    fun saveOrUpdateUser(naverUser: NaverUserResponse): UserDto {
-        return UserDto(
-            id = "",
-            externalId = "",
-            name = "",
-            email = naverUser.email,
-            nickname = "User",
-            profileImage = "",
-            roles = emptyList(),
-        )
-    }
 }

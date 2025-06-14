@@ -41,4 +41,11 @@ class GlobalExceptionHandler(
         log.error("Exception: {}", e.message, e)
         return ApiResponse.error(ErrorMessage(CommonErrorCode.SERVER_ERROR))
     }
+
+    @ExceptionHandler(AccessDeniedException::class)
+    fun handleAccessDeniedException(e: AccessDeniedException): ApiResponse<Nothing?> {
+        log.warn("AccessDeniedException: {}", e.message, e)
+        return ApiResponse.error(ErrorMessage(AuthErrorCode.ACCESS_DENIED))
+    }
+
 }

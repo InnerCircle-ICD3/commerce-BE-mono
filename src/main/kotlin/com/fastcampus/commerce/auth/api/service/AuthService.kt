@@ -3,7 +3,6 @@ package com.fastcampus.commerce.auth.api.service
 import com.fastcampus.commerce.auth.TokenProvider
 import com.fastcampus.commerce.auth.api.dto.AuthResponse
 import com.fastcampus.commerce.auth.api.dto.LoginRequest
-import com.fastcampus.commerce.auth.api.dto.RegisterRequest
 import com.fastcampus.commerce.auth.api.dto.ReissueResponse
 import com.fastcampus.commerce.common.error.AuthErrorCode
 import com.fastcampus.commerce.common.error.CoreException
@@ -32,31 +31,7 @@ class AuthService(
     }
 
     /**
-     * 사용자 등록을 처리합니다.
-     *
-     * @param registerRequest 사용자 등록 요청 정보
-     * @return 인증 응답 (토큰 및 사용자 정보)
-     */
-    fun register(registerRequest: RegisterRequest): AuthResponse {
-        // 사용자 등록 API 호출
-        val userDto = userController.registerUser(registerRequest)
-
-        // 토큰 생성
-        val accessToken = tokenProvider.createAccessToken(userDto.id, userDto.externalId)
-        val refreshToken = tokenProvider.createRefreshToken(userDto.id, userDto.externalId)
-
-        // 인증 응답 반환
-        return AuthResponse(
-            accessToken = accessToken,
-            refreshToken = refreshToken,
-            userId = userDto.id,
-            email = userDto.email,
-            nickname = userDto.nickname,
-        )
-    }
-
-    /**
-     * 사용자 로그인을 처리합니다.
+     * 사용자 로그인을 처리합니다.(및 회원 가입)
      *
      * @param loginRequest 로그인 요청 정보
      * @return 인증 응답 (토큰 및 사용자 정보)
@@ -73,14 +48,14 @@ class AuthService(
         return AuthResponse(
             accessToken = accessToken,
             refreshToken = refreshToken,
-            userId = userDto.id,
+            userId = userDto.externalId,
             email = userDto.email,
             nickname = userDto.nickname,
         )
     }
 
     /**
-     * 사용자 계정을 삭제합니다.
+     * 사용자 계정을 삭제합니다. (회원 탈퇴(정지))
      *
      * @param userId 삭제할 사용자 ID
      */

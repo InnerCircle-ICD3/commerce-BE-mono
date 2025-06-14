@@ -25,6 +25,8 @@ class User(
     var email: String,
     @Column(nullable = false)
     var nickname: String,
+    @Column(nullable = false)
+    var profileImage: String,
 ) : BaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
