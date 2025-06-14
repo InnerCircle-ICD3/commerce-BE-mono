@@ -28,6 +28,78 @@ tags:
   description: 관리자 리뷰 API
 paths:
   /admin/products:
+    get:
+      tags:
+      - Admin-Product
+      summary: 상품 목록을 조회할 수 있다.
+      operationId: 관리자_상품_목록_조회_성공
+      parameters:
+      - name: name
+        in: query
+        description: 상품명
+        required: false
+        schema:
+          type: string
+      - name: intensityId
+        in: query
+        description: 원두 강도 카테고리 ID
+        required: false
+        schema:
+          type: string
+      - name: cupSizeId
+        in: query
+        description: 컵 사이즈 카테고리 ID
+        required: false
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: "판매상태(ON_SALE, UNAVAILABLE, HIDDEN)"
+        required: false
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: "페이지 번호 (1부터 시작, 기본값: 1)"
+        required: false
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/admin-products-1101392596"
+              examples:
+                관리자_상품_목록_조회_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "content" : [ {
+                          "id" : 1,
+                          "name" : "콜드브루",
+                          "price" : 3500,
+                          "quantity" : 100,
+                          "thumbnail" : "https://test.com/thumbnail.png",
+                          "intensity" : "Strong",
+                          "cupSize" : "Large",
+                          "status" : "ON_SALE"
+                        } ],
+                        "page" : 0,
+                        "size" : 10,
+                        "totalPages" : 1,
+                        "totalElements" : 1
+                      },
+                      "error" : null
+                    }
     post:
       tags:
       - Admin-Product
@@ -205,6 +277,45 @@ paths:
                       "error" : null
                     }
   /admin/products/{productId}:
+    get:
+      tags:
+      - Admin-Product
+      summary: 상품 상세 정보를 조회할 수 있다.
+      description: |2-
+                        PRO-001: 상품을 찾을 수 없습니다.
+                        PRO-002: 상품 재고를 찾을 수 없습니다.
+      operationId: 관리자_상품_상세_조회_성공
+      parameters:
+      - name: productId
+        in: path
+        description: 상품 ID
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/admin-products-productId-412506376"
+              examples:
+                관리자_상품_상세_조회_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "id" : 1,
+                        "name" : "콜드브루",
+                        "price" : 3500,
+                        "quantity" : 100,
+                        "thumbnail" : "https://test.com/thumbnail.png",
+                        "detailImage" : "https://test.com/detail.png",
+                        "intensity" : "Strong",
+                        "cupSize" : "Large",
+                        "status" : "ON_SALE"
+                      },
+                      "error" : null
+                    }
     put:
       tags:
       - Admin-Product
@@ -1148,13 +1259,13 @@ paths:
           type: string
       - name: page
         in: query
-        description: "페이지 번호 (0부터 시작, 기본값: 0)"
+        description: "페이지 번호 (1부터 시작, 기본값: 1)"
         required: false
         schema:
           type: string
       - name: size
         in: query
-        description: "페이지 크기 (기본값: 20, 최대: 50)"
+        description: "페이지 크기 (기본값: 10, 최대: 50)"
         required: false
         schema:
           type: string
@@ -2044,6 +2155,49 @@ components:
                   type: number
                   description: 배송지 ID
               description: 기본 배송지
+    admin-products-productId-412506376:
+      type: object
+      properties:
+        data:
+          required:
+          - cupSize
+          - detailImage
+          - id
+          - intensity
+          - name
+          - price
+          - quantity
+          - status
+          - thumbnail
+          type: object
+          properties:
+            intensity:
+              type: string
+              description: 원두 강도
+            thumbnail:
+              type: string
+              description: 썸네일 이미지 URL
+            quantity:
+              type: number
+              description: 재고 수량
+            price:
+              type: number
+              description: 가격
+            name:
+              type: string
+              description: 상품명
+            id:
+              type: number
+              description: 상품 ID
+            cupSize:
+              type: string
+              description: 컵 사이즈
+            status:
+              type: string
+              description: 판매상태
+            detailImage:
+              type: string
+              description: 상세 이미지 URL
     reviews-reviewId1686665306:
       type: object
       properties:
@@ -2821,6 +2975,67 @@ components:
             addressId:
               type: number
               description: 배송지 ID
+    admin-products-1101392596:
+      type: object
+      properties:
+        data:
+          required:
+          - page
+          - size
+          - totalElements
+          - totalPages
+          type: object
+          properties:
+            size:
+              type: number
+              description: 페이지 크기
+            totalPages:
+              type: number
+              description: 전체 페이지 수
+            page:
+              type: number
+              description: 현재 페이지 번호
+            content:
+              type: array
+              items:
+                required:
+                - cupSize
+                - id
+                - intensity
+                - name
+                - price
+                - quantity
+                - status
+                - thumbnail
+                type: object
+                properties:
+                  intensity:
+                    type: string
+                    description: 원두 강도
+                  thumbnail:
+                    type: string
+                    description: 썸네일 이미지 URL
+                  quantity:
+                    type: number
+                    description: 재고
+                  price:
+                    type: number
+                    description: 가격
+                  name:
+                    type: string
+                    description: 상품명
+                  id:
+                    type: number
+                    description: 상품 ID
+                  cupSize:
+                    type: string
+                    description: 컵 사이즈
+                  status:
+                    type: string
+                    description: 판매상태
+            totalElements:
+              type: number
+              description: 총 상품 수
     admin-products-247955186:
       required:
       - cupSizeId
