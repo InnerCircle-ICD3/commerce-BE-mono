@@ -9,11 +9,11 @@ spring:
       - classpath:config/logging.yml
       - classpath:config/web.yml
       - classpath:config/auth.yml
+
   web:
     resources:
       static-locations:
         - classpath:/static/
-        - file:./docs/
 
 springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
