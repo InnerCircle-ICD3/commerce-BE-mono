@@ -12,12 +12,6 @@ data class ChatMessageRequest(
     val senderId: String? = null,  // guestId or userId or adminId
 )
 
-data class ChatMessageListResponse(
-    val messages: List<ChatMessageResponse>,
-    val hasMore: Boolean,  // 더 로드할 메시지가 있는지
-    val oldestMessageId: Long?  // 다음 요청 시 사용할 커서
-)
-
 // 서버 → 클라이언트 메시지 응답
 data class ChatMessageResponse(
     val id: Long,
