@@ -25,6 +25,7 @@ data class PrepareOrderShippingInfoApiResponse(
     val recipientName: String,
     val recipientPhone: String,
     val zipCode: String,
+    val addressId: Long,
     val address1: String,
     val address2: String? = null,
 )

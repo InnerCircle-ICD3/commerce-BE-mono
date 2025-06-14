@@ -55,6 +55,7 @@ class OrderController(
                 recipientName = "홍길동",
                 recipientPhone = "010-1234-1234",
                 zipCode = "12345",
+                addressId = 1L,
                 address1 = "서울특별시 관악구",
                 address2 = "서울대입구역 6번출구",
             ),
