@@ -43,7 +43,7 @@ class CartItemControllerRestDocTest : DescribeSpec() {
             RestAssuredMockMvc.mockMvc(mockMvc)
         }
 
-        describe("POST /carts/items - 장바구니에 상품 등록") {
+        describe("POST /cart-items - 장바구니에 상품 등록") {
             val summary = "사용자의 장바구니에 상품을 추가할 수 있다."
             it("사용자의 장바구니에 상품을 추가할 수 있다.") {
                 val userId = 1L
@@ -66,7 +66,7 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                     summary = summary,
                     privateResource = privateResource,
                 ) {
-                    requestLine(HttpMethod.POST, "/cart/items")
+                    requestLine(HttpMethod.POST, "/cart-items")
 
                     requestHeaders {
                         header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
@@ -87,17 +87,15 @@ class CartItemControllerRestDocTest : DescribeSpec() {
             }
         }
 
-        describe("PATCH /cart/items - 장바구니 내의 상품 수량 변경") {
+        describe("PATCH /cart-items/{cartItemId} - 장바구니 내의 상품 수량 변경") {
             val summary = "장바구니 내 상품의 수량을 변경할 수 있다."
             it("장바구니 내 상품의 수량을 변경할 수 있다.") {
                 val userId = 1L
                 val productId = 1L
                 var finalQuantity = 1
-                val cartId = 1L
+                val cartItemId = 1L
                 val request = CartUpdateRequest(
-                    productId = productId,
                     quantity = 100,
-                    cartId = cartId,
                 )
 
                 val inventory = Inventory(
@@ -121,7 +119,7 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                     requiresQuantityAdjustment = true,
                 )
 
-                every { cartItemService.updateCartItem(userId, request) } returns response
+                every { cartItemService.updateCartItem(userId, cartItemId,request) } returns response
 
                 documentation(
                     identifier = "장바구니_상품_수정_성공",
@@ -129,15 +127,16 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                     summary = summary,
                     privateResource = privateResource,
                 ) {
-                    requestLine(HttpMethod.PATCH, "/cart/items")
+                    requestLine(HttpMethod.PATCH, "/cart-items/{cartItemId}"){
+                        pathVariable("cartItemId", "장바구니 상품 아이디", cartItemId)
+                    }
 
                     requestHeaders {
                         header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
                     }
 
                     requestBody {
-                        field("cartId", "카트 아이디", request.cartId)
-                        field("productId", "상품 아이디", request.productId)
+                        field("cartItemId", "카트 아이디", cartItemId)
                         field("quantity", "수량", request.quantity)
                     }
 
@@ -153,7 +152,7 @@ class CartItemControllerRestDocTest : DescribeSpec() {
             }
         }
 
-        describe("GET /carts - 장바구니 상품 목록 조회") {
+        describe("GET /cart-items - 장바구니 상품 목록 조회") {
             val summary = "장바구니에 담긴 상품 목록을 조회할 수 있다."
             it("장바구니에 담긴 상품 목록을 조회할 수 있다.") {
                 val cartItems = listOf(
@@ -193,7 +192,7 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                     summary = summary,
                     privateResource = privateResource,
                 ) {
-                    requestLine(HttpMethod.GET, "/carts")
+                    requestLine(HttpMethod.GET, "/cart-items")
 
                     requestHeaders {
                         header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
@@ -245,12 +244,11 @@ class CartItemControllerRestDocTest : DescribeSpec() {
             }
         }
 
-        describe("POST /carts/delete - 장바구니 상품 삭제") {
+        describe("DELETE /cart-items - 장바구니 상품 삭제") {
             val summary = "장바구니에 추가된 상품을 삭제할 수 있다."
 
             it("장바구니에 추가된 상품을 삭제할 수 있다.") {
-                val cartItemIds = listOf(2L, 4L, 6L)
-                val request = CartDeleteRequest(cartItemIds = cartItemIds)
+                val cartItemIds = listOf(2L, 4L, 6)
                 val deletedCount = cartItemIds.size
                 val response = CartDeleteResponse("Successfully deleted $deletedCount cart items")
 
@@ -262,14 +260,14 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                     summary = summary,
                     privateResource = privateResource,
                 ) {
-                    requestLine(HttpMethod.POST, "/carts/delete")
+                    requestLine(HttpMethod.DELETE, "/cart-items")
+
+                    queryParameters {
+                        field("cartItemIds", "삭제할 장바구니 아이템 ID 목록", "2,4,6")
+                    }
 
                     requestHeaders {
                         header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
-                    }
-
-                    requestBody {
-                        field("cartItemIds", "카트 아이디", request.cartItemIds)
                     }
 
                     responseBody {
