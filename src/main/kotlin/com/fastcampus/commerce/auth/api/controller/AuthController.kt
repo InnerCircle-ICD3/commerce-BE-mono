@@ -2,7 +2,6 @@ package com.fastcampus.commerce.auth.api.controller
 
 import com.fastcampus.commerce.auth.api.dto.AuthResponse
 import com.fastcampus.commerce.auth.api.dto.LoginRequest
-import com.fastcampus.commerce.auth.api.dto.RegisterRequest
 import com.fastcampus.commerce.auth.api.dto.ReissueResponse
 import com.fastcampus.commerce.auth.api.service.AuthService
 import com.fastcampus.commerce.common.response.ApiResponse
@@ -31,16 +30,6 @@ class AuthController(
     }
 
     /**
-     * 회원 가입
-     */
-    @PostMapping("/register")
-    fun register(
-        @RequestBody request: RegisterRequest,
-    ): ApiResponse<AuthResponse> {
-        return ApiResponse.success(authService.register(request))
-    }
-
-    /**
      * 로그인
      */
     @PostMapping("/login")
@@ -48,15 +37,6 @@ class AuthController(
         @RequestBody request: LoginRequest,
     ): ApiResponse<AuthResponse> {
         return ApiResponse.success(authService.login(request))
-    }
-
-    /**
-     * 로그아웃 - 클라이언트에서 토큰을 삭제하는 방식으로 구현
-     * 서버에서는 별도의 처리가 필요 없음
-     */
-    @PostMapping("/logout")
-    fun logout(): ApiResponse<Unit> {
-        return ApiResponse.success(Unit)
     }
 
     /**

@@ -34,7 +34,7 @@ class TokenProvider(
      *
      * @return 생성된 액세스 토큰
      */
-    fun createAccessToken(userId: String, externalId: String): String {
+    fun createAccessToken(userId: Long, externalId: String): String {
         return createToken(
             { jwt ->
                 jwt.subject(externalId)
@@ -52,7 +52,7 @@ class TokenProvider(
      *
      * @return 생성된 리프레시 토큰
      */
-    fun createRefreshToken(userId: String, externalId: String): String {
+    fun createRefreshToken(userId: Long, externalId: String): String {
         return createToken(
             { jwt ->
                 jwt.subject(externalId)
@@ -83,9 +83,9 @@ class TokenProvider(
      *
      * @return 회원 ID
      */
-    fun extractUserIdFromToken(token: String): String {
+    fun extractUserIdFromToken(token: String): Long {
         val claims = parseClaims(token)
-        return claims[USER_ID] as String
+        return claims[USER_ID] as Long
     }
 
     /**

@@ -12,4 +12,5 @@ enum class AuthErrorCode(
     USER_NOT_FOUND("AUTH-005", "사용자를 찾을 수 없습니다.", LogLevel.WARN),
     EMAIL_ALREADY_EXISTS("AUTH-007", "이미 등록된 이메일입니다.", LogLevel.WARN),
     ROLE_NOT_FOUND("AUTH-008", "요청하신 권한을 찾을 수 없습니다.", LogLevel.WARN),
+    INVALID_USER_PROFILE("AUTH-008", "사용자 프로필 정보가 올바르지 않습니다.", LogLevel.WARN),
 }

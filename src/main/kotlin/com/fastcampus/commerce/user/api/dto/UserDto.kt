@@ -6,7 +6,7 @@ import com.fastcampus.commerce.user.domain.enums.UserRole
  * User data transfer object
  */
 data class UserDto(
-    val id: String,
+    val id: Long,
     val externalId: String,
     val name: String,
     val email: String,
