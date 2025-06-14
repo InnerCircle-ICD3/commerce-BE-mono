@@ -12,7 +12,8 @@ class WebConfig(
 ) : WebMvcConfigurer {
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
         registry.addResourceHandler("/api/**")
-            .addResourceLocations("file:./docs/api/")
+            //.addResourceLocations("file:./docs/api/")
+            .addResourceLocations("classpath:/static/swagger-ui/")
             .setCachePeriod(0)
     }
 

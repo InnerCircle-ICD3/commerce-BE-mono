@@ -180,5 +180,36 @@ class AdminReviewControllerRestDocTest : DescribeSpec() {
                 }
             }
         }
+
+        describe("DELETE /admin/reviews/reply/{replyId} - 리뷰 답글삭제") {
+            val summary = "관리자의 리뷰 답글 삭제"
+            val description = """
+                RVW-103: 리뷰 답글을 조회할 수 없습니다.
+            """.trimMargin()
+            it("리뷰 답글을 삭제할 수 있다.") {
+                every { adminReviewService.deleteReply(any(), any()) } just Runs
+
+                documentation(
+                    identifier = "관리자_리뷰답글_삭제_성공",
+                    tag = tag,
+                    summary = summary,
+                    description = description,
+                    privateResource = privateResource,
+                ) {
+                    requestLine(HttpMethod.DELETE, "/admin/reviews/reply/{replyId}") {
+                        pathVariable("replyId", "리뷰 답글 아이디", 1)
+                    }
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                    }
+
+                    responseBody {
+                        field("data.message", "응답 메시지", "OK")
+                        ignoredField("error")
+                    }
+                }
+            }
+        }
     }
 }
