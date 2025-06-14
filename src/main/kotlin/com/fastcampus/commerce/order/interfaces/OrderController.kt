@@ -80,7 +80,7 @@ class OrderController(
         return orderService.createOrder(request.userId, request)
     }
 
-    @GetMapping
+    /*@GetMapping
     fun getOrders(
         @ModelAttribute request: SearchOrderApiRequest,
         @PageableDefault(page = 1, size = 10) pageable: Pageable,
@@ -97,6 +97,14 @@ class OrderController(
         )
         val page = PageImpl(listOf(searchOrderApiResponse), PageRequest.of(1, 10), 1L)
         return PagedData.of(page)
+    }*/
+
+    @GetMapping
+    fun getOrders(
+        @ModelAttribute request: SearchOrderApiRequest,
+        @PageableDefault(page = 1, size = 10) pageable: Pageable,
+    ): PagedData<SearchOrderApiResponse> {
+        return orderService.getOrders(request, pageable)
     }
 
     @GetMapping("/{orderNumber}")

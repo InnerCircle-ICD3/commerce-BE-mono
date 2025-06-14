@@ -2,6 +2,7 @@ package com.fastcampus.commerce.order.application.order
 
 import com.fastcampus.commerce.cart.application.query.CartItemReader
 import com.fastcampus.commerce.common.response.EnumResponse
+import com.fastcampus.commerce.common.response.PagedData
 import com.fastcampus.commerce.order.application.query.ProductSnapshotReader
 import com.fastcampus.commerce.order.domain.entity.Order
 import com.fastcampus.commerce.order.domain.entity.OrderItem
@@ -10,13 +11,17 @@ import com.fastcampus.commerce.order.domain.repository.OrderItemRepository
 import com.fastcampus.commerce.order.domain.repository.OrderRepository
 import com.fastcampus.commerce.order.domain.service.OrderNumberGenerator
 import com.fastcampus.commerce.order.interfaces.request.OrderApiRequest
+import com.fastcampus.commerce.order.interfaces.request.SearchOrderApiRequest
 import com.fastcampus.commerce.order.interfaces.response.OrderApiResponse
 import com.fastcampus.commerce.order.interfaces.response.PrepareOrderApiResponse
 import com.fastcampus.commerce.order.interfaces.response.PrepareOrderItemApiResponse
 import com.fastcampus.commerce.order.interfaces.response.PrepareOrderShippingInfoApiResponse
+import com.fastcampus.commerce.order.interfaces.response.SearchOrderApiResponse
 import com.fastcampus.commerce.payment.domain.entity.PaymentMethod
 import com.fastcampus.commerce.payment.domain.service.PaymentReader
 import com.fastcampus.commerce.user.api.service.UserAddressService
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -129,6 +134,40 @@ class OrderService(
 
         // 6. 응답 반환
         return OrderApiResponse(orderNumber)
+    }
+
+    @Transactional(readOnly = true)
+    fun getOrders(
+        request: SearchOrderApiRequest,
+        pageable: Pageable
+    ): PagedData<SearchOrderApiResponse> {
+        // 1. 조건에 맞는 주문 페이지 조회 (ex: 유저ID 기준)
+        val page = orderRepository.findAllByUserId(
+            userId = request.customerId!!.toLong(),
+            pageable = pageable
+        )
+
+        // 2. 주문별 대표 상품, 가격, 썸네일 등 요약 정보 가공
+        val responses = page.content.map { order ->
+            val orderItems = orderItemRepository.findByOrderId(order.id!!)
+            val productSnapshot = productSnapshotReader.getById(orderItems.first().productSnapshotId)
+            val orderName = let { "${productSnapshot.name} 외 ${orderItems.size - 1}건" } ?: "주문상품 없음"
+            val mainProductThumbnail = productSnapshot.thumbnail
+            val cancellable = order.status.isCancellable()
+
+            SearchOrderApiResponse(
+                orderNumber = order.orderNumber,
+                orderName = orderName,
+                mainProductThumbnail = mainProductThumbnail,
+                orderStatus = order.status, // enum → 한글 등 매핑 필요
+                finalTotalPrice = order.totalAmount,
+                orderedAt = order.createdAt,
+                cancellable = cancellable,
+                refundable = cancellable,
+            )
+        }
+
+        return PagedData.of(PageImpl(responses, pageable, page.totalElements))
     }
 
 }
