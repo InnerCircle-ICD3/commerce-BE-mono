@@ -11,13 +11,9 @@ class WebConfig(
     private val customPageableArgumentResolver: CustomPageableArgumentResolver,
 ) : WebMvcConfigurer {
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
-        registry.addResourceHandler("/swagger-ui/**")
+        registry.addResourceHandler("/api/**")
+            //.addResourceLocations("file:./docs/api/")
             .addResourceLocations("classpath:/static/swagger-ui/")
-            .setCachePeriod(0)
-        
-        // Spring Boot의 기본 static 리소스 핸들러도 추가
-        registry.addResourceHandler("/**")
-            .addResourceLocations("classpath:/static/")
             .setCachePeriod(0)
     }
 
