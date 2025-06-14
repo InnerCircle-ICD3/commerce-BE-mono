@@ -12,10 +12,20 @@ tags:
   description: 사용자 리뷰 API
 - name: Address
   description: 배송지 API
+- name: Order
+  description: 주문 API
+- name: Payment
+  description: 결제 API
+- name: Product
+  description: 상품 API
 - name: Admin-File
   description: 관리자 파일 업로드 API
 - name: Admin-Product
   description: 관리자 상품 API
+- name: Admin-Payment
+  description: 관리자 결제 API
+- name: Admin-Review
+  description: 관리자 리뷰 API
 paths:
   /admin/products:
     post:
@@ -287,6 +297,96 @@ paths:
                 $ref: "#/components/schemas/reviews-reviewId1686665306"
               examples:
                 상품_삭제_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "message" : "OK"
+                      },
+                      "error" : null
+                    }
+  /admin/payments/refund/approve:
+    post:
+      tags:
+      - Admin-Payment
+      summary: 관리자 환불승인
+      description: |2-
+                        PAY-002: 결제 정보를 찾을 수 없습니다.
+                        ORD-001: 주문 내역을 찾을 수 없습니다.
+                        ORD-104: 환불요청한 주문만 환불가능합니다.
+      operationId: 관리자_환불승인_성공
+      parameters:
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/admin-payments-refund-reject-1038851161"
+            examples:
+              관리자_환불승인_성공:
+                value: |-
+                  {
+                    "paymentNumber" : "PAY00001"
+                  }
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/reviews-reviewId1686665306"
+              examples:
+                관리자_환불승인_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "message" : "OK"
+                      },
+                      "error" : null
+                    }
+  /admin/payments/refund/reject:
+    post:
+      tags:
+      - Admin-Payment
+      summary: 관리자 환불거절
+      description: |2-
+                        PAY-002: 결제 정보를 찾을 수 없습니다.
+                        ORD-001: 주문 내역을 찾을 수 없습니다.
+                        ORD-105: 환불요청한 주문만 환불거절 가능합니다.
+      operationId: 관리자_환불거절_성공
+      parameters:
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/admin-payments-refund-reject-1038851161"
+            examples:
+              관리자_환불거절_성공:
+                value: |-
+                  {
+                    "paymentNumber" : "PAY00001"
+                  }
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/reviews-reviewId1686665306"
+              examples:
+                관리자_환불거절_성공:
                   value: |-
                     {
                       "data" : {
@@ -876,6 +976,148 @@ paths:
                         "refundedAt" : null,
                         "reviewable" : true,
                         "reviewWritten" : false
+                      },
+                      "error" : null
+                    }
+  /payments:
+    post:
+      tags:
+      - Payment
+      summary: 결제 처리 한다.
+      description: |2-
+                        ORD-001: 주문 내역을 찾을 수 없습니다.
+                        PAY-001: PG사 결제정보를 찾을 수 업습니다.
+                        PAY-002: 결제 정보를 찾을 수 없습니다.
+                        PAY-003: 이미 결제처리한 주문입니다.
+                        PAY-004: 이미 결제되었습니다.
+                        PAY-005: 결제금액이 일치하지 않습니다.
+      operationId: 결제처리_성공
+      parameters:
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/payments808279509"
+            examples:
+              결제처리_성공:
+                value: |-
+                  {
+                    "orderNumber" : "ORD123123123",
+                    "transactionId" : "12312312-123"
+                  }
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/payments-2018243494"
+              examples:
+                결제처리_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "paymentNumber" : "PAY00001"
+                      },
+                      "error" : null
+                    }
+  /payments/cancel:
+    post:
+      tags:
+      - Payment
+      summary: 결제 취소 한다.
+      description: |2-
+                        ORD-001: 주문 내역을 찾을 수 없습니다.
+                        PAY-001: PG사 결제정보를 찾을 수 업습니다.
+                        PAY-002: 결제 정보를 찾을 수 없습니다.
+                        PAY-006: 결제 대기중, 결제 완료 상태인 주문만 취소할 수 있습니다.
+                        PAY-007: 다른 사람의 결제를 취소할 수 없습니다.
+                        PAY-008: PG사 결제 아이디가 누락되었습니다.
+      operationId: 결제취소_성공
+      parameters:
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/payments-refund-919447853"
+            examples:
+              결제취소_성공:
+                value: |-
+                  {
+                    "orderNumber" : "ORD123123123"
+                  }
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/reviews-reviewId1686665306"
+              examples:
+                결제취소_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "message" : "OK"
+                      },
+                      "error" : null
+                    }
+  /payments/refund:
+    post:
+      tags:
+      - Payment
+      summary: 결제 환불요청 한다.
+      description: |2-
+                        ORD-001: 주문 내역을 찾을 수 없습니다.
+                        PAY-009: 배송중, 배송 완료 상태인 주문만 환불할 수 있습니다.
+                        PAY-0010: 다른 사람의 결제를 환불할 수 없습니다.
+      operationId: 결제환불요청_성공
+      parameters:
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/payments-refund-919447853"
+            examples:
+              결제환불요청_성공:
+                value: |-
+                  {
+                    "orderNumber" : "ORD123123123"
+                  }
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/reviews-reviewId1686665306"
+              examples:
+                결제환불요청_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "message" : "OK"
                       },
                       "error" : null
                     }
@@ -1974,6 +2216,14 @@ components:
         detailImage:
           type: string
           description: 상세 이미지
+    payments-refund-919447853:
+      required:
+      - orderNumber
+      type: object
+      properties:
+        orderNumber:
+          type: string
+          description: 주분번호
     admin-reviews1949273614:
       type: object
       properties:
@@ -2421,6 +2671,17 @@ components:
             orderNumber:
               type: string
               description: 주문 번호
+    payments-2018243494:
+      type: object
+      properties:
+        data:
+          required:
+          - paymentNumber
+          type: object
+          properties:
+            paymentNumber:
+              type: string
+              description: 결제번호
     reviews-reviewId-215377401:
       type: object
       properties:
@@ -2474,6 +2735,14 @@ components:
         paymentMethod:
           type: string
           description: 결제 수단
+    admin-payments-refund-reject-1038851161:
+      required:
+      - paymentNumber
+      type: object
+      properties:
+        paymentNumber:
+          type: string
+          description: 결제 번호
     reviews-rating:byProduct-66572293:
       type: object
       properties:
@@ -2620,6 +2889,18 @@ components:
               label:
                 type: string
                 description: 판매상태
+    payments808279509:
+      required:
+      - orderNumber
+      - transactionId
+      type: object
+      properties:
+        orderNumber:
+          type: string
+          description: 주분번호
+        transactionId:
+          type: string
+          description: PG사 결제 아이디
     users-addresses1010895288:
       type: object
       properties:
