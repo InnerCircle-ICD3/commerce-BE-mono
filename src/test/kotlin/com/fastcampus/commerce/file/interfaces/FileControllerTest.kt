@@ -1,7 +1,7 @@
 package com.fastcampus.commerce.file.interfaces
 
 import com.fastcampus.commerce.common.error.CommonErrorCode
-import com.fastcampus.commerce.config.TestSecurityConfig
+import com.fastcampus.commerce.config.TestConfig
 import com.fastcampus.commerce.file.application.FileCommandService
 import com.fastcampus.commerce.file.application.response.GeneratePresignedUrlResponse
 import com.fastcampus.commerce.file.interfaces.request.GeneratePresignedUrlApiRequest
@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.post
 import java.util.UUID
 
 @WebMvcTest(FileController::class)
-@Import(TestSecurityConfig::class)
+@Import(TestConfig::class)
 class FileControllerTest(
     @Autowired private val mockMvc: MockMvc,
     @Autowired private val objectMapper: ObjectMapper,

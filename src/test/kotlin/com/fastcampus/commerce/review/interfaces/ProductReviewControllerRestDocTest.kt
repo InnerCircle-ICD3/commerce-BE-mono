@@ -1,6 +1,6 @@
 package com.fastcampus.commerce.review.interfaces
 
-import com.fastcampus.commerce.config.TestSecurityConfig
+import com.fastcampus.commerce.config.TestConfig
 import com.fastcampus.commerce.restdoc.documentation
 import com.fastcampus.commerce.review.application.ProductReviewService
 import com.fastcampus.commerce.review.application.response.AdminReplyResponse
@@ -28,7 +28,7 @@ import java.time.LocalDateTime
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
 @WebMvcTest(ProductReviewController::class)
-@Import(TestSecurityConfig::class)
+@Import(TestConfig::class)
 class ProductReviewControllerRestDocTest : DescribeSpec() {
     override fun extensions() = listOf(SpringExtension)
 

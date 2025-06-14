@@ -12,10 +12,3 @@ data class ProductReview
         val createdAt: LocalDateTime,
         val adminReply: AdminReply? = null,
     )
-
-data class AdminReply
-    @QueryProjection
-    constructor(
-        val content: String,
-        val createdAt: LocalDateTime,
-    )
