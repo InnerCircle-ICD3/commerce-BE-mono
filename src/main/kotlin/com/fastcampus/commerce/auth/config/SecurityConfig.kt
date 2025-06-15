@@ -54,7 +54,7 @@ class SecurityConfig(
                 it
                     .requestMatchers(
                         "/auth/login",
-                        "/auth/register",
+                        "/auth/account",
                         "/auth/reissue",
                         // 필요하다면 다른 public 엔드포인트
                     ).permitAll()
