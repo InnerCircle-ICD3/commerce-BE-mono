@@ -5,6 +5,7 @@ import com.fastcampus.commerce.product.domain.entity.Inventory
 import com.fastcampus.commerce.product.domain.entity.Product
 import com.fastcampus.commerce.product.domain.error.ProductErrorCode
 import com.fastcampus.commerce.product.domain.model.ProductInfo
+import com.fastcampus.commerce.product.domain.model.SearchAdminProductCondition
 import com.fastcampus.commerce.product.domain.model.SearchProductCondition
 import com.fastcampus.commerce.product.domain.repository.InventoryRepository
 import com.fastcampus.commerce.product.domain.repository.ProductRepository
@@ -40,5 +41,9 @@ class ProductReader(
         val product = getProductById(productId)
         val inventory = getInventoryByProductId(productId)
         return ProductInfo.of(product, inventory)
+    }
+
+    fun searchProductsForAdmin(condition: SearchAdminProductCondition, pageable: Pageable): Page<ProductInfo> {
+        return productRepository.searchProductsForAdmin(condition, pageable)
     }
 }

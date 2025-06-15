@@ -50,4 +50,25 @@ class Payment(
 
     @Column
     var deletedAt: LocalDateTime? = null
+
+    fun paid(now: LocalDateTime) {
+        if (this.status == PaymentStatus.WAITING) {
+            status = PaymentStatus.COMPLETED
+            updatedAt = now
+        }
+    }
+
+    fun cancel(cancelledAt: LocalDateTime) {
+        if (this.status == PaymentStatus.COMPLETED || this.status == PaymentStatus.WAITING) {
+            status = PaymentStatus.CANCELLED
+            updatedAt = cancelledAt
+        }
+    }
+
+    fun refundApprove(refundAt: LocalDateTime) {
+        if (this.status == PaymentStatus.COMPLETED || this.status == PaymentStatus.WAITING) {
+            status = PaymentStatus.REFUNDED
+            updatedAt = refundAt
+        }
+    }
 }
