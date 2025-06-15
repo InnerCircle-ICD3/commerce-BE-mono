@@ -1,5 +1,10 @@
 package com.fastcampus.commerce.auth
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.Authentication
+
 import com.fastcampus.commerce.common.error.AuthErrorCode
 import com.fastcampus.commerce.common.error.CoreException
 import io.jsonwebtoken.Claims
@@ -34,11 +39,12 @@ class TokenProvider(
      *
      * @return 생성된 액세스 토큰
      */
-    fun createAccessToken(userId: String, externalId: String): String {
+    fun createAccessToken(userId: Long, externalId: String): String {
         return createToken(
             { jwt ->
                 jwt.subject(externalId)
                 jwt.claim(USER_ID, userId)
+                jwt.claim(EXTERNAL_ID, externalId)
             },
             jwtProperties.accessTokenExpireMinutes,
             ChronoUnit.MINUTES,
@@ -52,11 +58,12 @@ class TokenProvider(
      *
      * @return 생성된 리프레시 토큰
      */
-    fun createRefreshToken(userId: String, externalId: String): String {
+    fun createRefreshToken(userId: Long, externalId: String): String {
         return createToken(
             { jwt ->
                 jwt.subject(externalId)
                 jwt.claim(USER_ID, userId)
+                jwt.claim(EXTERNAL_ID, externalId)
             },
             jwtProperties.refreshTokenExpireDays,
             ChronoUnit.DAYS,
@@ -83,9 +90,15 @@ class TokenProvider(
      *
      * @return 회원 ID
      */
-    fun extractUserIdFromToken(token: String): String {
+    fun extractUserIdFromToken(token: String): Long {
         val claims = parseClaims(token)
-        return claims[USER_ID] as String
+        val userIdRaw = claims[USER_ID]
+        return when (userIdRaw) {
+            is Int -> userIdRaw.toLong()
+            is Long -> userIdRaw
+            is String -> userIdRaw.toLongOrNull() ?: throw IllegalArgumentException("Invalid userId")
+            else -> throw IllegalArgumentException("Invalid userId type: ${userIdRaw?.javaClass}")
+        }
     }
 
     /**
@@ -97,7 +110,9 @@ class TokenProvider(
      */
     fun extractExternalIdFromToken(token: String): String {
         val claims = parseClaims(token)
-        return claims[EXTERNAL_ID] as String
+        val externalId = claims[EXTERNAL_ID] as? String
+            ?: throw IllegalArgumentException("JWT에 external_id가 없음. claims: $claims")
+        return externalId
     }
 
     /**
@@ -148,4 +163,26 @@ class TokenProvider(
             throw CoreException(AuthErrorCode.INVALID_TOKEN)
         }
     }
+
+    fun getAuthentication(token: String): Authentication {
+        val userId = extractUserIdFromToken(token)
+        val externalId = extractExternalIdFromToken(token)
+        val principal = org.springframework.security.core.userdetails.User(
+            userId.toString(),
+            "",
+            listOf(SimpleGrantedAuthority("ROLE_USER"))
+        )
+        return UsernamePasswordAuthenticationToken(principal, token, principal.authorities)
+    }
+
+    fun validateToken(token: String): Boolean {
+        return try {
+            parseClaims(token)
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
 }
+
+

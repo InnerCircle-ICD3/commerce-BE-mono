@@ -2,20 +2,12 @@ package com.fastcampus.commerce.auth.config
 
 import com.fastcampus.commerce.auth.TokenProvider
 import com.fastcampus.commerce.auth.filter.JwtAuthenticationFilter
-import com.fastcampus.commerce.auth.infrastructure.security.oauth.config.NaverOAuth2Properties
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService
-import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.authentication.AuthenticationFailureHandler
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
@@ -30,23 +22,18 @@ class CorsProperties {
 
 @Configuration
 @EnableWebSecurity
-@EnableConfigurationProperties(NaverOAuth2Properties::class)
 class SecurityConfig(
     private val corsProperties: CorsProperties,
-    private val customOAuth2UserService: OAuth2UserService<OAuth2UserRequest, OAuth2User>,
-    private val customSuccessHandler: AuthenticationSuccessHandler,
-    private val customFailureHandler: AuthenticationFailureHandler,
     private val tokenProvider: TokenProvider,
 ) {
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
-        // cors 모두 허용
         val config = CorsConfiguration().apply {
             allowedOrigins = corsProperties.allowedOrigins
             allowedMethods = corsProperties.allowedMethods
             allowedHeaders = corsProperties.allowedHeaders
             allowCredentials = true
-            exposedHeaders = listOf("Access-Token", "User-Id") // response.headers.get("Access-Token"); 허용 처리
+            exposedHeaders = listOf("Access-Token", "User-Id")
         }
         return UrlBasedCorsConfigurationSource().apply {
             registerCorsConfiguration("/**", config)
@@ -65,30 +52,13 @@ class SecurityConfig(
             .csrf { it.disable() }
             .authorizeHttpRequests {
                 it
-                    .requestMatchers(HttpMethod.GET, "/admin/products/selling-status").permitAll()
                     .requestMatchers(
-                        "/oauth2/**",
-                        "/auth/reissue",
-                        "/auth/register",
                         "/auth/login",
-                        "/auth/logout",
+                        //"/auth/account",
+                        "/auth/reissue",
+                        // 필요하다면 다른 public 엔드포인트
                     ).permitAll()
-                    .anyRequest().permitAll()
-            }
-            .oauth2Login { oauth2 ->
-                oauth2
-                    .loginPage("/auth/login") // 커스텀 로그인 페이지가 있다면 설정
-                    .authorizationEndpoint { auth ->
-                        auth.baseUri("/oauth2/authorization") // ex) /oauth2/authorization/naver
-                    }
-                    .redirectionEndpoint { redir ->
-                        redir.baseUri("/login/oauth2/code/*") // redirect-uri 와 일치
-                    }
-                    .userInfoEndpoint { userInfo ->
-                        userInfo.userService(customOAuth2UserService) // OAuth2UserService 구현체 주입 필요
-                    }
-                    .successHandler(customSuccessHandler) // 선택
-                    .failureHandler(customFailureHandler) // 선택
+                    .anyRequest().authenticated()
             }
             .addFilterBefore(
                 jwtAuthenticationFilter(),
