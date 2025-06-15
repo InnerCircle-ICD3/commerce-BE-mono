@@ -53,7 +53,7 @@ class UserService(
                 name = existingUser.name,
                 email = existingUser.email,
                 nickname = existingUser.nickname,
-                profileImage = existingUser.profileImage,
+                profileImage = existingUser.profileImage!!,
                 roles = userRoles,
             )
         }
@@ -69,11 +69,15 @@ class UserService(
         val savedUser = userRepository.save(newUser)
 
         // 3. UserRoleConnection 저장
-        val defaultRole = userRoleRepository.findByCode(UserRole.USER.name)
+        /*val defaultRole = userRoleRepository.findByCode(UserRole.USER.name)
             ?: throw CoreException(AuthErrorCode.INVALID_USER_PROFILE, "기본 권한이 없습니다.")
         val userRoleConnection = UserRoleConnection(
             userId = savedUser.id!!,
             roleId = defaultRole.id!!
+        )*/
+        val userRoleConnection = UserRoleConnection(
+            userId = savedUser.id!!,
+            roleId = UserRole.USER.ordinal.toLong() // 또는 상수값 직접 입력
         )
         userRoleConnectionRepository.save(userRoleConnection)
 
@@ -101,7 +105,7 @@ class UserService(
             name = savedUser.name,
             email = savedUser.email,
             nickname = savedUser.nickname,
-            profileImage = savedUser.profileImage,
+            profileImage = savedUser.profileImage!!,
             roles = listOf(UserRole.USER)
         )
     }

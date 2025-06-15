@@ -6,6 +6,7 @@ import com.fastcampus.commerce.auth.api.dto.ReissueResponse
 import com.fastcampus.commerce.auth.api.service.AuthService
 import com.fastcampus.commerce.common.response.ApiResponse
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.User
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -44,9 +45,9 @@ class AuthController(
      */
     @DeleteMapping("/account")
     fun deleteAccount(
-        @AuthenticationPrincipal principal: OAuth2User,
+        @AuthenticationPrincipal principal: User,
     ): ApiResponse<Unit> {
-        val userId = principal.name.toLong()
+        val userId = principal.username.toLong()
         authService.deleteAccount(userId)
         return ApiResponse.success(Unit)
     }

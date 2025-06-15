@@ -44,6 +44,7 @@ class TokenProvider(
             { jwt ->
                 jwt.subject(externalId)
                 jwt.claim(USER_ID, userId)
+                jwt.claim(EXTERNAL_ID, externalId)
             },
             jwtProperties.accessTokenExpireMinutes,
             ChronoUnit.MINUTES,
@@ -62,6 +63,7 @@ class TokenProvider(
             { jwt ->
                 jwt.subject(externalId)
                 jwt.claim(USER_ID, userId)
+                jwt.claim(EXTERNAL_ID, externalId)
             },
             jwtProperties.refreshTokenExpireDays,
             ChronoUnit.DAYS,
@@ -90,7 +92,13 @@ class TokenProvider(
      */
     fun extractUserIdFromToken(token: String): Long {
         val claims = parseClaims(token)
-        return claims[USER_ID] as Long
+        val userIdRaw = claims[USER_ID]
+        return when (userIdRaw) {
+            is Int -> userIdRaw.toLong()
+            is Long -> userIdRaw
+            is String -> userIdRaw.toLongOrNull() ?: throw IllegalArgumentException("Invalid userId")
+            else -> throw IllegalArgumentException("Invalid userId type: ${userIdRaw?.javaClass}")
+        }
     }
 
     /**
@@ -102,7 +110,9 @@ class TokenProvider(
      */
     fun extractExternalIdFromToken(token: String): String {
         val claims = parseClaims(token)
-        return claims[EXTERNAL_ID] as String
+        val externalId = claims[EXTERNAL_ID] as? String
+            ?: throw IllegalArgumentException("JWT에 external_id가 없음. claims: $claims")
+        return externalId
     }
 
     /**
@@ -158,7 +168,7 @@ class TokenProvider(
         val userId = extractUserIdFromToken(token)
         val externalId = extractExternalIdFromToken(token)
         val principal = org.springframework.security.core.userdetails.User(
-            externalId,
+            userId.toString(),
             "",
             listOf(SimpleGrantedAuthority("ROLE_USER"))
         )
