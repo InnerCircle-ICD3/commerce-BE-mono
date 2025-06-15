@@ -4,8 +4,8 @@ import com.fastcampus.commerce.chat.domain.entity.ChatRoom
 import com.fastcampus.commerce.chat.domain.entity.ChatRoomStatus
 import com.fastcampus.commerce.chat.infrastructure.repository.ChatMessageRepository
 import com.fastcampus.commerce.chat.infrastructure.repository.ChatRoomRepository
+import com.fastcampus.commerce.chat.domain.error.ChatErrorCode
 import com.fastcampus.commerce.chat.interfaces.*
-import com.fastcampus.commerce.common.error.CommonErrorCode
 import com.fastcampus.commerce.common.error.CoreException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -52,7 +52,7 @@ class ChatService(
         val chatRooms = when {
             userId != null -> chatRoomRepository.findByUserIdOrderByCreatedAtDesc(userId)
             guestId != null -> chatRoomRepository.findByGuestIdOrderByCreatedAtDesc(guestId)
-            else -> throw CoreException(CommonErrorCode.BAD_REQUEST, "userId 또는 guestId가 필요합니다.")
+            else -> throw CoreException(ChatErrorCode.BAD_REQUEST, "userId 또는 guestId가 필요합니다.")
         }
 
         // 각 채팅방의 마지막 메시지 조회
@@ -72,7 +72,7 @@ class ChatService(
 
     fun getChatRoomDetail(roomId: Long): ChatRoomResponse {
         val chatRoom = chatRoomRepository.findById(roomId)
-            .orElseThrow { CoreException(CommonErrorCode.NOT_FOUND, "채팅방을 찾을 수 없습니다.") }
+            .orElseThrow { CoreException(ChatErrorCode.NOT_FOUND, "채팅방을 찾을 수 없습니다.") }
 
         val lastMessage = chatMessageRepository.findTopByChatRoomIdOrderByCreatedAtDesc(roomId)
         return toChatRoomResponse(chatRoom, lastMessage)
@@ -81,7 +81,7 @@ class ChatService(
     fun getChatMessages(roomId: Long, pageable: Pageable): Page<ChatMessageResponse> {
         // 채팅방 존재 확인
         if (!chatRoomRepository.existsById(roomId)) {
-            throw CoreException(CommonErrorCode.NOT_FOUND, "채팅방을 찾을 수 없습니다.")
+            throw CoreException(ChatErrorCode.NOT_FOUND, "채팅방을 찾을 수 없습니다.")
         }
 
         return chatMessageRepository.findByChatRoomIdOrderByCreatedAtDesc(roomId, pageable)
@@ -102,17 +102,17 @@ class ChatService(
     @Transactional
     fun updateChatRoomStatus(roomId: Long, status: String): ChatRoomResponse {
         val chatRoom = chatRoomRepository.findById(roomId)
-            .orElseThrow { CoreException(CommonErrorCode.NOT_FOUND, "채팅방을 찾을 수 없습니다.") }
+            .orElseThrow { CoreException(ChatErrorCode.NOT_FOUND, "채팅방을 찾을 수 없습니다.") }
 
         val newStatus = try {
             ChatRoomStatus.valueOf(status.uppercase())
         } catch (e: IllegalArgumentException) {
-            throw CoreException(CommonErrorCode.BAD_REQUEST, "유효하지 않은 상태값입니다.")
+            throw CoreException(ChatErrorCode.BAD_REQUEST, "유효하지 않은 상태값입니다.")
         }
 
         // 상태 변경 가능 여부 확인
         if (!isValidStatusTransition(chatRoom.status, newStatus)) {
-            throw CoreException(CommonErrorCode.BAD_REQUEST,
+            throw CoreException(ChatErrorCode.BAD_REQUEST,
                 "현재 상태(${chatRoom.status})에서 ${newStatus}로 변경할 수 없습니다.")
         }
 
@@ -128,10 +128,10 @@ class ChatService(
     @Transactional
     fun assignAdminToChatRoom(roomId: Long, adminId: Long): ChatRoomResponse {
         val chatRoom = chatRoomRepository.findById(roomId)
-            .orElseThrow { CoreException(CommonErrorCode.NOT_FOUND, "채팅방을 찾을 수 없습니다.") }
+            .orElseThrow { CoreException(ChatErrorCode.NOT_FOUND, "채팅방을 찾을 수 없습니다.") }
 
         if (chatRoom.adminId != null) {
-            throw CoreException(CommonErrorCode.BAD_REQUEST, "이미 관리자가 배정된 채팅방입니다.")
+            throw CoreException(ChatErrorCode.BAD_REQUEST, "이미 관리자가 배정된 채팅방입니다.")
         }
 
         chatRoom.adminId = adminId

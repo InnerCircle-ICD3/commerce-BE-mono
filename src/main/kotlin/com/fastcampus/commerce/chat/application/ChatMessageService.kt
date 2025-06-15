@@ -3,10 +3,10 @@ package com.fastcampus.commerce.chat.application
 import com.fastcampus.commerce.chat.domain.entity.ChatMessage
 import com.fastcampus.commerce.chat.domain.entity.ChatRoomStatus
 import com.fastcampus.commerce.chat.domain.entity.NotificationType
+import com.fastcampus.commerce.chat.domain.error.ChatErrorCode
 import com.fastcampus.commerce.chat.infrastructure.repository.ChatMessageRepository
 import com.fastcampus.commerce.chat.infrastructure.repository.ChatRoomRepository
 import com.fastcampus.commerce.chat.interfaces.*
-import com.fastcampus.commerce.common.error.CommonErrorCode
 import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.product.domain.service.ProductReader
 import org.springframework.messaging.simp.SimpMessagingTemplate
@@ -26,11 +26,11 @@ class ChatMessageService(
     fun saveAndSendMessage(request: ChatMessageRequest): ChatMessageResponse {
         // 채팅방 확인
         val chatRoom = chatRoomRepository.findById(request.chatRoomId)
-            .orElseThrow { CoreException(CommonErrorCode.NOT_FOUND, "채팅방을 찾을 수 없습니다.") }
+            .orElseThrow { CoreException(ChatErrorCode.NOT_FOUND, "채팅방을 찾을 수 없습니다.") }
 
         // 채팅방 상태 확인
         if (chatRoom.status == ChatRoomStatus.END) {
-            throw CoreException(CommonErrorCode.BAD_REQUEST, "종료된 채팅방입니다.")
+            throw CoreException(ChatErrorCode.BAD_REQUEST, "종료된 채팅방입니다.")
         }
 
         // 메시지 저장
@@ -85,7 +85,7 @@ class ChatMessageService(
 
     fun deleteMessage(messageId: Long, requesterId: String) {
         val message = chatMessageRepository.findById(messageId)
-            .orElseThrow { CoreException(CommonErrorCode.NOT_FOUND, "메시지를 찾을 수 없습니다.") }
+            .orElseThrow { CoreException(ChatErrorCode.NOT_FOUND, "메시지를 찾을 수 없습니다.") }
 
         // TODO: 권한 확인 로직 추가
         // 메시지 작성자 또는 관리자만 삭제 가능하도록
@@ -97,7 +97,7 @@ class ChatMessageService(
     // 관리자가 채팅방에 입장할 때
     fun handleAdminJoin(roomId: Long, adminId: Long) {
         val chatRoom = chatRoomRepository.findById(roomId)
-            .orElseThrow { CoreException(CommonErrorCode.NOT_FOUND, "채팅방을 찾을 수 없습니다.") }
+            .orElseThrow { CoreException(ChatErrorCode.NOT_FOUND, "채팅방을 찾을 수 없습니다.") }
 
         // 관리자 배정
         if (chatRoom.adminId == null) {
@@ -113,7 +113,7 @@ class ChatMessageService(
     // 사용자가 채팅방을 나갈 때
     fun handleUserLeave(roomId: Long, userId: String) {
         val chatRoom = chatRoomRepository.findById(roomId)
-            .orElseThrow { CoreException(CommonErrorCode.NOT_FOUND, "채팅방을 찾을 수 없습니다.") }
+            .orElseThrow { CoreException(ChatErrorCode.NOT_FOUND, "채팅방을 찾을 수 없습니다.") }
 
         // 상태를 AWAITING으로 변경
         if (chatRoom.status == ChatRoomStatus.ON_CHAT) {
@@ -127,7 +127,7 @@ class ChatMessageService(
     // 채팅 종료
     fun endChat(roomId: Long) {
         val chatRoom = chatRoomRepository.findById(roomId)
-            .orElseThrow { CoreException(CommonErrorCode.NOT_FOUND, "채팅방을 찾을 수 없습니다.") }
+            .orElseThrow { CoreException(ChatErrorCode.NOT_FOUND, "채팅방을 찾을 수 없습니다.") }
 
         updateChatRoomStatus(chatRoom, ChatRoomStatus.END)
 
