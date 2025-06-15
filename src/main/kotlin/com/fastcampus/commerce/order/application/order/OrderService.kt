@@ -26,6 +26,7 @@ import com.fastcampus.commerce.payment.domain.entity.PaymentMethod
 import com.fastcampus.commerce.payment.domain.service.PaymentReader
 import com.fastcampus.commerce.review.domain.repository.ReviewRepository
 import com.fastcampus.commerce.user.api.service.UserAddressService
+import com.fastcampus.commerce.user.domain.entity.User
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -47,10 +48,10 @@ class OrderService(
     private fun calculateShippingFee(itemsSubtotal: Int): Int = if (itemsSubtotal >= 20000) 0 else 3000
 
     @Transactional
-    fun prepareOrder(cartItemIds: Set<Long>): PrepareOrderApiResponse {
+    fun prepareOrder(user: User, cartItemIds: Set<Long>): PrepareOrderApiResponse {
         // 1. 장바구니 아이템 정보 조회 (CartItemReader를 통해)
         //TODO: 인증된 사용자 ID 값 넘길 수 있도록 수정 필요 (userId <- 이 부분 제거후 수정 필요)
-        val userId = 1L
+        val userId = user.id!!
         val cartItems = cartItemReader.readCartItems(userId, cartItemIds)
 
         // 2. 상품 스냅샷 조회 및 가공
@@ -100,7 +101,9 @@ class OrderService(
     }
 
     @Transactional
-    fun createOrder(userId: Long, request: OrderApiRequest): OrderApiResponse {
+    fun createOrder(user: User, request: OrderApiRequest): OrderApiResponse {
+        val userId = user.id!!
+
         // 1. 장바구니 아이템 정보 조회 (상품ID, 수량, 가격)
         val cartItems = cartItemReader.readCartItems(userId, request.cartItemIds)
 

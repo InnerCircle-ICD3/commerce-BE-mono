@@ -1,5 +1,6 @@
 package com.fastcampus.commerce.order.interfaces
 
+import com.fastcampus.commerce.auth.interfaces.web.security.annotation.WithRoles
 import com.fastcampus.commerce.common.response.PagedData
 import com.fastcampus.commerce.order.application.order.OrderService
 import com.fastcampus.commerce.order.interfaces.request.OrderApiRequest
@@ -10,6 +11,8 @@ import com.fastcampus.commerce.order.interfaces.response.GetOrderShippingInfoApi
 import com.fastcampus.commerce.order.interfaces.response.OrderApiResponse
 import com.fastcampus.commerce.order.interfaces.response.PrepareOrderApiResponse
 import com.fastcampus.commerce.order.interfaces.response.SearchOrderApiResponse
+import com.fastcampus.commerce.user.domain.entity.User
+import com.fastcampus.commerce.user.domain.enums.UserRole
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -63,21 +66,21 @@ class OrderController(
     }*/
     @GetMapping("/prepare")
     fun prepareOrders(
-        @RequestParam cartItemIds: String,
+        @WithRoles([UserRole.USER]) user: User, @RequestParam cartItemIds: String,
     ): PrepareOrderApiResponse {
         // cartItemIds: "1,2,3" 형태라고 가정
         val cartItemIdList: Set<Long> = cartItemIds.split(",")
             .map { it.trim().toLong() }
             .toSet()
-        return orderService.prepareOrder(cartItemIdList)
+        return orderService.prepareOrder(user, cartItemIdList)
     }
 
     @PostMapping
     fun orders(
-        @RequestBody request: OrderApiRequest,
+        @WithRoles([UserRole.USER]) user: User, @RequestBody request: OrderApiRequest,
     ): OrderApiResponse {
         //TODO: 인증된 사용자 ID 값 넘길 수 있도록 수정 필요 (request.userId <- 이 부분 제거후 수정 필요)
-        return orderService.createOrder(request.userId, request)
+        return orderService.createOrder(user, request)
     }
 
     /*@GetMapping
