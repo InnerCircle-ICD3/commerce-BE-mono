@@ -2,9 +2,8 @@ package com.fastcampus.commerce.common.id
 
 class SnowflakeIdGenerator(
     private val machineId: Long,
-    private val customEpoch: Long = 1672531200000L // 2023-01-01 기준
+    private val customEpoch: Long = 1672531200000L, // 2023-01-01 기준
 ) : IdGenerator {
-
     companion object {
         private const val EPOCH_BITS = 41
         private const val MACHINE_ID_BITS = 10

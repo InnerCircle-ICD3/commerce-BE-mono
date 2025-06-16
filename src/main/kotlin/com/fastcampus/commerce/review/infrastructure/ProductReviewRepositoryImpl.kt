@@ -2,12 +2,13 @@ package com.fastcampus.commerce.review.infrastructure
 
 import com.fastcampus.commerce.review.domain.entity.QReview.review
 import com.fastcampus.commerce.review.domain.entity.QReviewReply.reviewReply
-import com.fastcampus.commerce.review.domain.model.ProductReview
+import com.fastcampus.commerce.review.domain.model.ProductReviewFlat
 import com.fastcampus.commerce.review.domain.model.ProductReviewRating
-import com.fastcampus.commerce.review.domain.model.QAdminReply
-import com.fastcampus.commerce.review.domain.model.QProductReview
-import com.fastcampus.commerce.review.domain.model.QProductReviewRating
+import com.fastcampus.commerce.review.domain.model.QProductReviewFlat
 import com.fastcampus.commerce.review.domain.repository.ProductReviewRepository
+import com.querydsl.core.types.Projections
+import com.querydsl.core.types.dsl.Expressions
+import com.querydsl.core.types.dsl.Expressions.nullExpression
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -18,15 +19,16 @@ import org.springframework.stereotype.Repository
 class ProductReviewRepositoryImpl(
     private val queryFactory: JPAQueryFactory,
 ) : ProductReviewRepository {
-    override fun getProductReviews(productId: Long, pageable: Pageable): Page<ProductReview> {
+    override fun getProductReviews(productId: Long, pageable: Pageable): Page<ProductReviewFlat> {
         val reviews = queryFactory
             .select(
-                QProductReview(
+                QProductReviewFlat(
                     review.id,
                     review.rating,
                     review.content,
                     review.createdAt,
-                    QAdminReply(reviewReply.content, reviewReply.createdAt),
+                    reviewReply.content,
+                    reviewReply.createdAt,
                 ),
             )
             .from(review)
@@ -49,18 +51,20 @@ class ProductReviewRepositoryImpl(
     override fun getProductReviewRating(productId: Long): ProductReviewRating? {
         return queryFactory
             .select(
-                QProductReviewRating(
-                    review.rating.avg().coalesce(0.0),
+                Projections.constructor(
+                    ProductReviewRating::class.java,
+                    Expressions.template(Double::class.java, "round({0}, 2)", review.rating.avg().coalesce(0.0)),
                     review.count(),
-                    review.rating.`when`(1).then(1).otherwise(0).sumAggregate(),
-                    review.rating.`when`(2).then(1).otherwise(0).sumAggregate(),
-                    review.rating.`when`(3).then(1).otherwise(0).sumAggregate(),
-                    review.rating.`when`(4).then(1).otherwise(0).sumAggregate(),
-                    review.rating.`when`(5).then(1).otherwise(0).sumAggregate(),
+                    review.rating.`when`(1).then(1).otherwise(nullExpression()).count(),
+                    review.rating.`when`(2).then(1).otherwise(nullExpression()).count(),
+                    review.rating.`when`(3).then(1).otherwise(nullExpression()).count(),
+                    review.rating.`when`(4).then(1).otherwise(nullExpression()).count(),
+                    review.rating.`when`(5).then(1).otherwise(nullExpression()).count(),
                 ),
             )
             .from(review)
             .where(review.productId.eq(productId))
+            .groupBy(review.productId)
             .fetchOne()
     }
 }

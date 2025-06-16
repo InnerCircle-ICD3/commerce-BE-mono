@@ -40,7 +40,7 @@ data class UserProfile(
     val profileImage: String?,
     val gender: String?,
     val birthday: String?,
-    val age: String?
+    val age: String?,
 )
 
 /**

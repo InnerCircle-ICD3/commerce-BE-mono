@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class SnowflakeIdConfig {
-
     @Bean
     fun idGenerator(): IdGenerator {
         val machineId = 1L

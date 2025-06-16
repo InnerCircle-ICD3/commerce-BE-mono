@@ -7,18 +7,13 @@ import com.fastcampus.commerce.order.interfaces.request.OrderApiRequest
 import com.fastcampus.commerce.order.interfaces.request.SearchOrderApiRequest
 import com.fastcampus.commerce.order.interfaces.response.CancelOrderApiResponse
 import com.fastcampus.commerce.order.interfaces.response.GetOrderApiResponse
-import com.fastcampus.commerce.order.interfaces.response.GetOrderItemApiResponse
-import com.fastcampus.commerce.order.interfaces.response.GetOrderShippingInfoApiResponse
 import com.fastcampus.commerce.order.interfaces.response.OrderApiResponse
 import com.fastcampus.commerce.order.interfaces.response.PrepareOrderApiResponse
 import com.fastcampus.commerce.order.interfaces.response.SearchOrderApiResponse
 import com.fastcampus.commerce.user.domain.entity.User
 import com.fastcampus.commerce.user.domain.enums.UserRole
-import org.springframework.data.domain.PageImpl
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
-import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
@@ -27,12 +22,11 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import java.time.LocalDateTime
 
 @RequestMapping("/orders")
 @RestController
 class OrderController(
-    private val orderService: OrderService
+    private val orderService: OrderService,
 ) {
     /*@GetMapping("/prepare")
     fun prepareOrders(
@@ -68,7 +62,8 @@ class OrderController(
     }*/
     @GetMapping("/prepare")
     fun prepareOrders(
-        @WithRoles([UserRole.USER]) user: User, @RequestParam cartItemIds: String,
+        @WithRoles([UserRole.USER]) user: User,
+        @RequestParam cartItemIds: String,
     ): PrepareOrderApiResponse {
         // cartItemIds: "1,2,3" 형태라고 가정
         val cartItemIdList: Set<Long> = cartItemIds.split(",")
@@ -79,9 +74,10 @@ class OrderController(
 
     @PostMapping
     fun orders(
-        @WithRoles([UserRole.USER]) user: User, @RequestBody request: OrderApiRequest,
+        @WithRoles([UserRole.USER]) user: User,
+        @RequestBody request: OrderApiRequest,
     ): OrderApiResponse {
-        //TODO: 인증된 사용자 ID 값 넘길 수 있도록 수정 필요 (request.userId <- 이 부분 제거후 수정 필요)
+        // TODO: 인증된 사용자 ID 값 넘길 수 있도록 수정 필요 (request.userId <- 이 부분 제거후 수정 필요)
         return orderService.createOrder(user, request)
     }
 
@@ -172,6 +168,6 @@ class OrderController(
         @PathVariable orderNumber: String,
     ): CancelOrderApiResponse {
         orderService.cancelOrder(orderNumber)
-       return CancelOrderApiResponse()
+        return CancelOrderApiResponse()
     }
 }

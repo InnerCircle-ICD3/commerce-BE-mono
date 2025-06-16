@@ -10,11 +10,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 @Configuration
 class WebConfig(
     private val customPageableArgumentResolver: CustomPageableArgumentResolver,
-    private val roleBasedUserArgumentResolver: RoleBasedUserArgumentResolver
+    private val roleBasedUserArgumentResolver: RoleBasedUserArgumentResolver,
 ) : WebMvcConfigurer {
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
         registry.addResourceHandler("/api/**")
-            //.addResourceLocations("file:./docs/api/")
+            // .addResourceLocations("file:./docs/api/")
             .addResourceLocations("classpath:/static/swagger-ui/")
             .setCachePeriod(0)
     }

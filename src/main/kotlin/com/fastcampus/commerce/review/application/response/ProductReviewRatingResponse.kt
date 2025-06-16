@@ -13,11 +13,11 @@ data class ProductReviewRatingResponse(
                 averageRating = response.average,
                 totalCount = response.totalCount,
                 ratingDistribution = RatingDistributionResponse(
-                    oneStarCount = response.oneStarCount,
-                    twoStarsCount = response.twoStarsCount,
-                    threeStarsCount = response.threeStarsCount,
-                    fourStarsCount = response.fourStarsCount,
-                    fiveStarsCount = response.fiveStarsCount,
+                    oneStarCount = response.oneStarCount.toInt(),
+                    twoStarsCount = response.twoStarsCount.toInt(),
+                    threeStarsCount = response.threeStarsCount.toInt(),
+                    fourStarsCount = response.fourStarsCount.toInt(),
+                    fiveStarsCount = response.fiveStarsCount.toInt(),
                 ),
             )
     }

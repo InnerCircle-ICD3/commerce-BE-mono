@@ -45,7 +45,7 @@ class MainProductServiceTest : FunSpec(
                     thumbnail = "thumb2.jpg",
                     detailImage = "detail2.jpg",
                     status = SellingStatus.ON_SALE,
-                    )
+                )
                 val productInfos = listOf(product1, product2)
 
                 val categoryMap = mapOf(
@@ -56,7 +56,7 @@ class MainProductServiceTest : FunSpec(
                     2L to ProductCategoryInfo(
                         intensity = "Mild",
                         cupSize = "Small",
-                    )
+                    ),
                 )
 
                 every { productReader.findLatestProducts(limit) } returns productInfos
@@ -69,8 +69,8 @@ class MainProductServiceTest : FunSpec(
                 result[0].name shouldBe "신상품1"
                 result[0].price shouldBe 10000
                 result[0].quantity shouldBe 100
-                result[0].thumbnail shouldBe  "thumb1.jpg"
-                result[0].detailImage shouldBe  "detail1.jpg"
+                result[0].thumbnail shouldBe "thumb1.jpg"
+                result[0].detailImage shouldBe "detail1.jpg"
                 result[0].intensity shouldBe "Strong"
                 result[0].cupSize shouldBe "Large"
 
@@ -78,8 +78,8 @@ class MainProductServiceTest : FunSpec(
                 result[1].name shouldBe "신상품2"
                 result[1].price shouldBe 10000
                 result[1].quantity shouldBe 100
-                result[1].thumbnail shouldBe  "thumb2.jpg"
-                result[1].detailImage shouldBe  "detail2.jpg"
+                result[1].thumbnail shouldBe "thumb2.jpg"
+                result[1].detailImage shouldBe "detail2.jpg"
                 result[1].intensity shouldBe "Mild"
                 result[1].cupSize shouldBe "Small"
 
@@ -135,7 +135,7 @@ class MainProductServiceTest : FunSpec(
                     2L to ProductCategoryInfo(
                         intensity = "Mild",
                         cupSize = "Small",
-                    )
+                    ),
                 )
 
                 every { timeProvider.now() } returns now
@@ -149,8 +149,8 @@ class MainProductServiceTest : FunSpec(
                 result[0].name shouldBe "신상품1"
                 result[0].price shouldBe 10000
                 result[0].quantity shouldBe 100
-                result[0].thumbnail shouldBe  "thumb1.jpg"
-                result[0].detailImage shouldBe  "detail1.jpg"
+                result[0].thumbnail shouldBe "thumb1.jpg"
+                result[0].detailImage shouldBe "detail1.jpg"
                 result[0].intensity shouldBe "Strong"
                 result[0].cupSize shouldBe "Large"
 
@@ -158,8 +158,8 @@ class MainProductServiceTest : FunSpec(
                 result[1].name shouldBe "신상품2"
                 result[1].price shouldBe 10000
                 result[1].quantity shouldBe 100
-                result[1].thumbnail shouldBe  "thumb2.jpg"
-                result[1].detailImage shouldBe  "detail2.jpg"
+                result[1].thumbnail shouldBe "thumb2.jpg"
+                result[1].detailImage shouldBe "detail2.jpg"
                 result[1].intensity shouldBe "Mild"
                 result[1].cupSize shouldBe "Small"
 
@@ -186,5 +186,5 @@ class MainProductServiceTest : FunSpec(
                 verify(exactly = 1) { categoryReader.getProductCategoryMap(emptyList()) }
             }
         }
-    }
+    },
 )

@@ -6,7 +6,6 @@ import java.time.format.DateTimeFormatter
 
 @Component
 object OrderNumberGenerator {
-
     fun generate(orderId: Long): String {
         val date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
         val encoded = base62Encode(orderId)

@@ -7,9 +7,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class ProductSnapshotReaderImpl(
-    private val productSnapshotRepository: ProductSnapshotRepository
+    private val productSnapshotRepository: ProductSnapshotRepository,
 ) : ProductSnapshotReader {
-
     override fun getById(id: Long): ProductSnapshot {
         return productSnapshotRepository.findById(id)
             .orElseThrow { NoSuchElementException("ID '$id'에 해당하는 ProductSnapshot을 찾을 수 없습니다.") }

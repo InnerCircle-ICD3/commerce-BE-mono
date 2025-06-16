@@ -13,14 +13,11 @@ import com.fastcampus.commerce.order.interfaces.response.PrepareOrderApiResponse
 import com.fastcampus.commerce.order.interfaces.response.PrepareOrderItemApiResponse
 import com.fastcampus.commerce.order.interfaces.response.PrepareOrderShippingInfoApiResponse
 import com.fastcampus.commerce.order.interfaces.response.SearchOrderApiResponse
-import com.fastcampus.commerce.product.application.ProductQueryService
 import com.fastcampus.commerce.restdoc.documentation
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.mockk.every
-import io.mockk.just
-import io.mockk.runs
 import io.restassured.module.mockmvc.RestAssuredMockMvc
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
@@ -134,7 +131,7 @@ class OrderControllerRestDocTest : DescribeSpec() {
             val summary = "주문을 생성합니다"
 
             it("주문_생성_성공") {
-                every {orderService.createOrder(any(), any())} returns OrderApiResponse("ORD20250609123456789")
+                every { orderService.createOrder(any(), any()) } returns OrderApiResponse("ORD20250609123456789")
 
                 documentation(
                     identifier = "주문_생성_성공",
@@ -275,7 +272,7 @@ class OrderControllerRestDocTest : DescribeSpec() {
                     reviewable = true,
                     reviewWritten = false,
                 )
-                every { orderService.getOrderDetail(orderNumber) } returns  response
+                every { orderService.getOrderDetail(orderNumber) } returns response
 
                 documentation(
                     identifier = "주문_상세_조회_성공",
@@ -335,7 +332,7 @@ class OrderControllerRestDocTest : DescribeSpec() {
 
             it("주문_취소_성공") {
                 val orderNumber = "ORD20250609123456789"
-            every { orderService.cancelOrder(orderNumber) } returns Unit
+                every { orderService.cancelOrder(orderNumber) } returns Unit
 
                 documentation(
                     identifier = "주문_취소_성공",

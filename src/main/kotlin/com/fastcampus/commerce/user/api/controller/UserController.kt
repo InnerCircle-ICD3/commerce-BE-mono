@@ -4,7 +4,6 @@ import com.fastcampus.commerce.auth.api.dto.LoginRequest
 import com.fastcampus.commerce.user.api.dto.UserDto
 import com.fastcampus.commerce.user.api.service.UserService
 import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController
 class UserController(
     private val userService: UserService,
 ) {
-
     /**
      * Logs in a user.
      *
@@ -25,7 +23,9 @@ class UserController(
      */
     @PostMapping("/login")
     @ResponseBody
-    fun loginUser(@RequestBody loginRequest: LoginRequest): UserDto {
+    fun loginUser(
+        @RequestBody loginRequest: LoginRequest,
+    ): UserDto {
         return userService.loginUser(loginRequest)
     }
 
@@ -35,8 +35,9 @@ class UserController(
      * @param userId the ID of the user to delete
      */
     @DeleteMapping("/delete")
-    fun deleteUser(@RequestBody userId: Long) {
+    fun deleteUser(
+        @RequestBody userId: Long,
+    ) {
         userService.deleteUser(userId)
     }
-
 }
