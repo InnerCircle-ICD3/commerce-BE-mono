@@ -1,6 +1,7 @@
 package com.fastcampus.commerce.product.interfaces
 
 import com.fastcampus.commerce.common.response.PagedData
+import com.fastcampus.commerce.product.application.MainProductService
 import com.fastcampus.commerce.product.application.ProductQueryService
 import com.fastcampus.commerce.product.interfaces.request.SearchProductApiRequest
 import com.fastcampus.commerce.product.interfaces.response.CategoryApiResponse
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class ProductController(
     private val productQueryService: ProductQueryService,
+    private val mainProductService: MainProductService,
 ) {
     @GetMapping("/categories")
     fun getCategories(): CategoryApiResponse {
@@ -44,8 +46,8 @@ class ProductController(
 
     @GetMapping("/main")
     fun getMainProducts(): MainProductApiResponse {
-        val new = productQueryService.getNewProducts()
-        val best = productQueryService.getBestProducts()
+        val new = mainProductService.getNewProducts()
+        val best = mainProductService.getBestProducts()
         return MainProductApiResponse(
             new = new.map(SearchProductApiResponse::from),
             best = best.map(SearchProductApiResponse::from),

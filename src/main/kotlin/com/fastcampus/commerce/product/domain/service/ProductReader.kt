@@ -12,6 +12,7 @@ import com.fastcampus.commerce.product.domain.repository.ProductRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
 
 @Component
 class ProductReader(
@@ -45,5 +46,13 @@ class ProductReader(
 
     fun searchProductsForAdmin(condition: SearchAdminProductCondition, pageable: Pageable): Page<ProductInfo> {
         return productRepository.searchProductsForAdmin(condition, pageable)
+    }
+
+    fun findLatestProducts(limit: Int): List<ProductInfo> {
+        return productRepository.findLatestProducts(limit)
+    }
+
+    fun findBestProducts(baseDate: LocalDateTime, limit: Int): List<ProductInfo> {
+        return productRepository.findBestProducts(baseDate, limit)
     }
 }

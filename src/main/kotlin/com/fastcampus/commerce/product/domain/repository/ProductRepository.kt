@@ -6,6 +6,7 @@ import com.fastcampus.commerce.product.domain.model.SearchAdminProductCondition
 import com.fastcampus.commerce.product.domain.model.SearchProductCondition
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import java.time.LocalDateTime
 import java.util.Optional
 
 interface ProductRepository {
@@ -18,4 +19,8 @@ interface ProductRepository {
     fun searchProducts(condition: SearchProductCondition, pageable: Pageable): Page<ProductInfo>
 
     fun searchProductsForAdmin(condition: SearchAdminProductCondition, pageable: Pageable): Page<ProductInfo>
+
+    fun findLatestProducts(limit: Int): List<ProductInfo>
+
+    fun findBestProducts(baseDate: LocalDateTime, limit: Int): List<ProductInfo>
 }
