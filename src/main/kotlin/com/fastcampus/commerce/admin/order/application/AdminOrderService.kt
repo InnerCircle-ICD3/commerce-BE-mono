@@ -81,6 +81,7 @@ class AdminOrderService(
         )
     }
 
+    //주문 생성
     @Transactional
     fun createOrder(request: AdminOrderCreateRequest): AdminOrderCreateResponse {
         // 1. 주문상품 정보/가격 검증
@@ -124,8 +125,7 @@ class AdminOrderService(
         )
     }
 
-
-
+    //주문 취소
     @Transactional
     fun cancelOrder(orderId: Long) {
         val order = orderRepository.findById(orderId)
