@@ -17,7 +17,7 @@ import jakarta.persistence.Table
 @Entity
 class OrderItem(
     @Column(name = "order_id", nullable = false)
-    val orderId: Long,
+    var orderId: Long,
     @JoinColumn(name = "product_snapshot_id", nullable = false)
     val productSnapshotId: Long,
     @Column(nullable = false)

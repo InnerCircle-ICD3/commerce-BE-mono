@@ -18,9 +18,13 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class AdminOrderQueryImpl(
-    private val jpaQueryFactory: JPAQueryFactory,
+    private val jpaQueryFactory: JPAQueryFactory
 ) : AdminOrderQuery {
-    override fun searchOrders(search: AdminOrderSearchRequest, pageable: Pageable, sort: Sort): Page<AdminOrderListResponse> {
+    override fun searchOrders(
+        search: AdminOrderSearchRequest,
+        pageable: Pageable,
+        sort: Sort
+    ): Page<AdminOrderListResponse> {
         val qOrder = QOrder.order
         val qUser = QUser.user
         val qOrderItem = QOrderItem.orderItem
@@ -39,8 +43,8 @@ class AdminOrderQueryImpl(
                     qUser.name,
                     qOrder.totalAmount,
                     qOrder.paidAt,
-                    qOrder.status.stringValue(),
-                ),
+                    qOrder.status.stringValue()
+                )
             )
             .from(qOrder)
             .leftJoin(qUser).on(qOrder.userId.eq(qUser.id))
@@ -53,8 +57,8 @@ class AdminOrderQueryImpl(
             conditions.add(
                 qOrder.orderNumber.containsIgnoreCase(keyword)
                     .or(qUser.name.containsIgnoreCase(keyword))
-                    // .or(qOrderItem.name.containsIgnoreCase(keyword))
-                    .or(qProductSnapshot.name.containsIgnoreCase(keyword)),
+                    //.or(qOrderItem.name.containsIgnoreCase(keyword))
+                    .or(qProductSnapshot.name.containsIgnoreCase(keyword))
             )
         }
         search.status?.let { status ->
@@ -83,7 +87,7 @@ class AdminOrderQueryImpl(
                     else -> qOrder.createdAt
                 }
                 query.orderBy(
-                    if (it.isAscending) path.asc() else path.desc(),
+                    if (it.isAscending) path.asc() else path.desc()
                 )
             }
         } else {
