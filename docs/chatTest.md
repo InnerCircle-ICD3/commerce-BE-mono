@@ -29,30 +29,38 @@
       );
   }, 2000);
 
- // 2. 채팅방 생성
+ // 2. 채팅방 생성 및 첫 메시지 전송 (통합 API)
 
-  // 채팅방 생성 함수
-  function createChatRoom(productId, userId) {
+  // 채팅방 생성과 동시에 첫 메시지 전송하는 함수
+  function startChat(senderType, senderId, productId, initialMessage) {
       return fetch('/chat/rooms', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json'
           },
           body: JSON.stringify({
+              senderType: senderType || 'GUEST',
+              senderId: senderId || 'guest-' + Date.now(),
               productId: productId || 1,
-              userId: userId || 1
+              initialMessage: initialMessage || '안녕하세요, 상품 문의드립니다.'
           })
       })
       .then(res => res.json())
       .then(data => {
-          console.log('✅ 채팅방 생성 완료:', data);
-          window.currentRoomId = data.id || data.chatRoomId;
-          return window.currentRoomId;
+          console.log('✅ 채팅방 생성 및 첫 메시지 전송 완료:', data);
+          const roomId = data.id;
+          console.log('채팅방 ID:', roomId);
+          return {
+              roomId: roomId,
+              senderType: senderType || 'GUEST',
+              senderId: senderId || 'guest-' + Date.now()
+          };
       });
   }
 
-  // 실행
-  createChatRoom(1, 1);
+  // 실행 예시
+  // 게스트가 첫 메시지와 함께 채팅 시작
+  startChat('GUEST', 'guest-123', 1, '이 상품 재고가 있나요?');
 
   // 3. 채팅방 구독
 
@@ -72,53 +80,45 @@
       console.log(`📡 채팅방 ${roomId}번 구독 시작`);
   }
 
-  // 실행 (채팅방 생성 후)
-  subscribeToChatRoom(window.currentRoomId);
+  // 실행 (startChat 실행 후)
+  // startChat이 Promise를 반환하므로 then을 사용
+  startChat('GUEST', 'guest-123', 1, '이 상품 재고가 있나요?')
+      .then(info => subscribeToChatRoom(info.roomId));
 
-  // 4. 게스트 메시지 발신
+  // 4. 게스트 메시지 발신 (첫 메시지 이후)
 
-  // 게스트 메시지 전송 함수
-  function sendGuestMessage(content) {
-      if (!window.currentRoomId) {
-          console.error('❌ 채팅방을 먼저 생성하세요!');
-          return;
-      }
-
+  // 메시지 전송 함수
+  function sendMessage(roomId, senderType, senderId, content) {
       stompClient.send('/pub/chat/send', {}, JSON.stringify({
-          chatRoomId: window.currentRoomId,
-          senderType: 'GUEST',
+          chatRoomId: roomId,
+          senderType: senderType,
+          senderId: senderId,
           content: content
       }));
 
-      console.log(`📤 게스트 메시지 전송: ${content}`);
+      console.log(`📤 [${senderType}] 메시지 전송: ${content}`);
   }
 
-  // 실행
-  sendGuestMessage('안녕하세요, 상품 문의드립니다.');
-  sendGuestMessage('이 상품 재고가 있나요?');
+  // 실행 예시 (채팅방 생성 후)
+  startChat('GUEST', 'guest-123', 1, '이 상품 재고가 있나요?')
+      .then(info => {
+          // 구독 시작
+          subscribeToChatRoom(info.roomId);
+          
+          // 추가 메시지 전송
+          sendMessage(info.roomId, info.senderType, info.senderId, '배송은 얼마나 걸리나요?');
+          sendMessage(info.roomId, info.senderType, info.senderId, '다른 색상도 있나요?');
+      });
 
   // 5. 관리자 답변
 
-  // 관리자 메시지 전송 함수
-  function sendAdminMessage(content) {
-      if (!window.currentRoomId) {
-          console.error('❌ 채팅방을 먼저 생성하세요!');
-          return;
-      }
-
-      stompClient.send('/pub/chat/send', {}, JSON.stringify({
-          chatRoomId: window.currentRoomId,
-          senderType: 'ADMIN',
-          content: content,
-          senderId: 'admin123'  // 관리자 ID
-      }));
-
-      console.log(`📤 관리자 답변 전송: ${content}`);
-  }
-
-  // 실행
-  sendAdminMessage('안녕하세요, 무엇을 도와드릴까요?');
-  sendAdminMessage('네, 현재 재고가 10개 있습니다.');
+  // 관리자가 답변하는 예시
+  // roomId는 채팅방 목록 조회 또는 startChat 반환값에서 얻을 수 있음
+  const adminId = 'admin123';
+  const roomId = 1; // 예시 roomId
+  
+  sendMessage(roomId, 'ADMIN', adminId, '안녕하세요, 무엇을 도와드릴까요?');
+  sendMessage(roomId, 'ADMIN', adminId, '네, 현재 재고가 10개 있습니다.');
 
   // 6. 전체 테스트 시나리오 (한 번에 실행)
 
@@ -146,15 +146,21 @@
           stompClient.connect({}, async (frame) => {
               console.log('✅ WebSocket 연결 성공!\n');
 
-              // 3. 채팅방 생성
+              // 3. 채팅방 생성 및 첫 메시지 전송
+              const guestId = 'guest-' + Date.now();
               const roomData = await fetch('/chat/rooms', {
                   method: 'POST',
                   headers: {'Content-Type': 'application/json'},
-                  body: JSON.stringify({productId: 1, userId: 1})
+                  body: JSON.stringify({
+                      senderType: 'GUEST',
+                      senderId: guestId,
+                      productId: 1,
+                      initialMessage: '안녕하세요, 이 상품 문의드립니다.'
+                  })
               }).then(res => res.json());
 
-              const roomId = roomData.id || roomData.chatRoomId;
-              console.log(`✅ 채팅방 생성 완료! (ID: ${roomId})\n`);
+              const roomId = roomData.id;
+              console.log(`✅ 채팅방 생성 및 첫 메시지 전송 완료! (ID: ${roomId})\n`);
 
               // 4. 채팅방 구독
               stompClient.subscribe(`/sub/chat/room/${roomId}`, (message) => {
@@ -167,11 +173,12 @@
               setTimeout(() => {
                   console.log('--- 대화 시작 ---\n');
 
-                  // 게스트 메시지
+                  // 게스트 추가 메시지 (첫 메시지는 이미 전송됨)
                   stompClient.send('/pub/chat/send', {}, JSON.stringify({
                       chatRoomId: roomId,
                       senderType: 'GUEST',
-                      content: '안녕하세요, 이 상품 문의드립니다.'
+                      senderId: guestId,
+                      content: '사이즈는 어떻게 되나요?'
                   }));
 
                   // 관리자 응답 (2초 후)
@@ -188,6 +195,7 @@
                       stompClient.send('/pub/chat/send', {}, JSON.stringify({
                           chatRoomId: roomId,
                           senderType: 'GUEST',
+                          senderId: guestId,
                           content: '재고가 있나요?'
                       }));
                   }, 4000);
