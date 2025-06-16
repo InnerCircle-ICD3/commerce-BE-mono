@@ -5,7 +5,9 @@ import java.time.LocalDateTime
 data class AdminOrderListResponse (
     val orderId: Long,
     val orderNumber: String,
-    val productSummary: String,
+    val productName: String,
+    val productQuantity: String,
+    val productUnitPrice: String,
     val orderDate: LocalDateTime,
     val customerName: String,
     val totalAmount: Long,
