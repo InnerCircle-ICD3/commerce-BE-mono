@@ -15,5 +15,6 @@ data class ReviewInfoFlat
         val userNickname: String,
         val productId: Long,
         val productName: String,
+        val productThumbnail: String,
         val createdAt: LocalDateTime,
     )

@@ -9,10 +9,13 @@ import com.fastcampus.commerce.product.application.response.ProductDetailRespons
 import com.fastcampus.commerce.product.application.response.SearchProductResponse
 import com.fastcampus.commerce.product.domain.model.CategoryDetail
 import com.fastcampus.commerce.product.domain.model.ProductCategoryInfo
+import com.fastcampus.commerce.product.domain.model.SearchProductCondition
 import com.fastcampus.commerce.product.domain.service.CategoryReader
 import com.fastcampus.commerce.product.domain.service.ProductReader
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 
 @Service
@@ -55,13 +58,5 @@ class ProductQueryService(
         val productInfo = productReader.getProductInfo(productId)
         val productCategoryInfo = categoryReader.getProductCategory(productId)
         return AdminProductDetailResponse.of(productInfo, productCategoryInfo)
-    }
-
-    fun getNewProducts(): List<SearchProductResponse> {
-        TODO("Not yet implemented")
-    }
-
-    fun getBestProducts(): List<SearchProductResponse> {
-        TODO("Not yet implemented")
     }
 }

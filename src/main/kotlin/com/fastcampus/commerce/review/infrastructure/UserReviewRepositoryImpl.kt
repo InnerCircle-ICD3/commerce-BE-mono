@@ -41,6 +41,7 @@ class UserReviewRepositoryImpl(
                     user.nickname,
                     product.id,
                     product.name,
+                    product.thumbnail,
                     review.createdAt,
                 ),
             )

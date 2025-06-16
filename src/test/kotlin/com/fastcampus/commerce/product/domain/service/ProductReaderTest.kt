@@ -18,6 +18,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
+import java.time.LocalDateTime
 import java.util.Optional
 
 class ProductReaderTest : FunSpec(
@@ -202,6 +203,100 @@ class ProductReaderTest : FunSpec(
 
                 verify(exactly = 1) { productRepository.findById(productId) }
                 verify(exactly = 1) { inventoryRepository.findByProductId(productId) }
+            }
+        }
+
+        context("findLatestProducts") {
+            test("최신 상품 목록을 조회할 수 있다") {
+                val limit = 10
+                val expectedProductInfos = listOf(
+                    ProductInfo(
+                        id = 1L,
+                        name = "아메리카노",
+                        price = 3000,
+                        quantity = 50,
+                        thumbnail = "https://test.com/americano.png",
+                        detailImage = "https://test.com/americano-detail.png",
+                        status = SellingStatus.ON_SALE,
+                    ),
+                    ProductInfo(
+                        id = 2L,
+                        name = "카페라떼",
+                        price = 4000,
+                        quantity = 30,
+                        thumbnail = "https://test.com/latte.png",
+                        detailImage = "https://test.com/latte-detail.png",
+                        status = SellingStatus.ON_SALE,
+                    ),
+                )
+
+                every { productRepository.findLatestProducts(limit) } returns expectedProductInfos
+
+                val result = productReader.findLatestProducts(limit)
+
+                result shouldBe expectedProductInfos
+
+                verify(exactly = 1) { productRepository.findLatestProducts(limit) }
+            }
+
+            test("limit이 0인 경우 빈 리스트를 반환한다") {
+                val limit = 0
+
+                every { productRepository.findLatestProducts(limit) } returns emptyList()
+
+                val result = productReader.findLatestProducts(limit)
+
+                result shouldBe emptyList()
+
+                verify(exactly = 1) { productRepository.findLatestProducts(limit) }
+            }
+        }
+
+        context("findBestProducts") {
+            test("베스트 상품 목록을 조회할 수 있다") {
+                val baseDate = LocalDateTime.of(2024, 1, 1, 0, 0)
+                val limit = 5
+                val expectedProductInfos = listOf(
+                    ProductInfo(
+                        id = 3L,
+                        name = "아이스 아메리카노",
+                        price = 3500,
+                        quantity = 100,
+                        thumbnail = "https://test.com/ice-americano.png",
+                        detailImage = "https://test.com/ice-americano-detail.png",
+                        status = SellingStatus.ON_SALE,
+                    ),
+                    ProductInfo(
+                        id = 4L,
+                        name = "카푸치노",
+                        price = 4500,
+                        quantity = 20,
+                        thumbnail = "https://test.com/cappuccino.png",
+                        detailImage = "https://test.com/cappuccino-detail.png",
+                        status = SellingStatus.ON_SALE,
+                    ),
+                )
+
+                every { productRepository.findBestProducts(baseDate, limit) } returns expectedProductInfos
+
+                val result = productReader.findBestProducts(baseDate, limit)
+
+                result shouldBe expectedProductInfos
+
+                verify(exactly = 1) { productRepository.findBestProducts(baseDate, limit) }
+            }
+
+            test("베스트 상품이 없으면 빈 리스트를 반환한다") {
+                val baseDate = LocalDateTime.of(2024, 1, 1, 0, 0)
+                val limit = 10
+
+                every { productRepository.findBestProducts(baseDate, limit) } returns emptyList()
+
+                val result = productReader.findBestProducts(baseDate, limit)
+
+                result shouldBe emptyList()
+
+                verify(exactly = 1) { productRepository.findBestProducts(baseDate, limit) }
             }
         }
     },
