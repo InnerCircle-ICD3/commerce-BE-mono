@@ -23,7 +23,6 @@ spring:
     baseline-on-migrate: false
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://postgresql-801base-1.c96ycouowc7e.ap-northeast-2.rds.amazonaws.com:5432/commerce
+    url: jdbc:postgresql://postgresql-801base-1.c96ycouowc7e.ap-northeast-2.rds.amazonaws.com:5432/commerceAdd commentMore actions
     username: db801base
     password: 801baseWkdWkd
-
