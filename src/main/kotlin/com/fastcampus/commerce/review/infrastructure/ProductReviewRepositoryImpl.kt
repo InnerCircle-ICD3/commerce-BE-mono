@@ -2,10 +2,9 @@ package com.fastcampus.commerce.review.infrastructure
 
 import com.fastcampus.commerce.review.domain.entity.QReview.review
 import com.fastcampus.commerce.review.domain.entity.QReviewReply.reviewReply
-import com.fastcampus.commerce.review.domain.model.ProductReview
+import com.fastcampus.commerce.review.domain.model.ProductReviewFlat
 import com.fastcampus.commerce.review.domain.model.ProductReviewRating
-import com.fastcampus.commerce.review.domain.model.QAdminReply
-import com.fastcampus.commerce.review.domain.model.QProductReview
+import com.fastcampus.commerce.review.domain.model.QProductReviewFlat
 import com.fastcampus.commerce.review.domain.model.QProductReviewRating
 import com.fastcampus.commerce.review.domain.repository.ProductReviewRepository
 import com.querydsl.jpa.impl.JPAQueryFactory
@@ -18,15 +17,16 @@ import org.springframework.stereotype.Repository
 class ProductReviewRepositoryImpl(
     private val queryFactory: JPAQueryFactory,
 ) : ProductReviewRepository {
-    override fun getProductReviews(productId: Long, pageable: Pageable): Page<ProductReview> {
+    override fun getProductReviews(productId: Long, pageable: Pageable): Page<ProductReviewFlat> {
         val reviews = queryFactory
             .select(
-                QProductReview(
+                QProductReviewFlat(
                     review.id,
                     review.rating,
                     review.content,
                     review.createdAt,
-                    QAdminReply(reviewReply.content, reviewReply.createdAt),
+                    reviewReply.content,
+                    reviewReply.createdAt,
                 ),
             )
             .from(review)

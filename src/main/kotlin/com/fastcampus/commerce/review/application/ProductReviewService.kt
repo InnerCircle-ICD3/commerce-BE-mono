@@ -2,6 +2,7 @@ package com.fastcampus.commerce.review.application
 
 import com.fastcampus.commerce.review.application.response.ProductReviewRatingResponse
 import com.fastcampus.commerce.review.application.response.ProductReviewResponse
+import com.fastcampus.commerce.review.domain.model.ProductReview
 import com.fastcampus.commerce.review.domain.model.ProductReviewRating
 import com.fastcampus.commerce.review.domain.repository.ProductReviewRepository
 import org.springframework.data.domain.Page

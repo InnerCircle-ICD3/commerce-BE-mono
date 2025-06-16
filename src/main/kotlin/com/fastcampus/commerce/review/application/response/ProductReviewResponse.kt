@@ -2,6 +2,7 @@ package com.fastcampus.commerce.review.application.response
 
 import com.fastcampus.commerce.review.domain.model.AdminReply
 import com.fastcampus.commerce.review.domain.model.ProductReview
+import com.fastcampus.commerce.review.domain.model.ProductReviewFlat
 import java.time.LocalDateTime
 
 data class ProductReviewResponse(
@@ -12,13 +13,20 @@ data class ProductReviewResponse(
     val adminReply: AdminReplyResponse? = null,
 ) {
     companion object {
-        fun from(productReview: ProductReview): ProductReviewResponse =
+        fun from(productReview: ProductReviewFlat): ProductReviewResponse =
             ProductReviewResponse(
                 reviewId = productReview.reviewId,
                 rating = productReview.rating,
                 content = productReview.content,
                 createdAt = productReview.createdAt,
-                adminReply = productReview.adminReply?.let { AdminReplyResponse.from(it) },
+                adminReply = if(productReview.replyContent == null || productReview.replyCreatedAt == null) {
+                    null
+                } else {
+                    AdminReplyResponse(
+                        productReview.replyContent,
+                        productReview.replyCreatedAt,
+                    )
+                }
             )
     }
 }
