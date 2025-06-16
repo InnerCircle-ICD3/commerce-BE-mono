@@ -25,7 +25,7 @@ class AdminOrderQueryImpl(
         pageable: Pageable,
         sort: Sort
     ): Page<AdminOrderListResponse> {
-        /*val qOrder = QOrder.order
+        val qOrder = QOrder.order
         val qUser = QUser.user
         val qOrderItem = QOrderItem.orderItem
         val qProductSnapshot = QProductSnapshot.productSnapshot
@@ -36,10 +36,12 @@ class AdminOrderQueryImpl(
                     AdminOrderListResponse::class.java,
                     qOrder.id,
                     qOrder.orderNumber,
-                    qOrderItem.name, // 요약 or 상품명/수량 등
+                    qProductSnapshot.name,
+                    qOrderItem.quantity,
+                    qOrderItem.unitPrice,
                     qOrder.createdAt,
                     qUser.name,
-                    qOrder.finalTotalPrice,
+                    qOrder.totalAmount,
                     qOrder.paidAt,
                     qOrder.status.stringValue()
                 )
@@ -47,7 +49,7 @@ class AdminOrderQueryImpl(
             .from(qOrder)
             .leftJoin(qUser).on(qOrder.userId.eq(qUser.id))
             .leftJoin(qOrderItem).on(qOrder.id.eq(qOrderItem.orderId))
-        // 필요에 따라 ProductSnapshot 등 추가 조인
+            .leftJoin(qProductSnapshot).on(qOrderItem.productSnapshotId.eq(qProductSnapshot.id))
 
         // --- 동적 where ---
         val conditions = mutableListOf<BooleanExpression>()
@@ -55,7 +57,8 @@ class AdminOrderQueryImpl(
             conditions.add(
                 qOrder.orderNumber.containsIgnoreCase(keyword)
                     .or(qUser.name.containsIgnoreCase(keyword))
-                    .or(qOrderItem.name.containsIgnoreCase(keyword))
+                    //.or(qOrderItem.name.containsIgnoreCase(keyword))
+                    .or(qProductSnapshot.name.containsIgnoreCase(keyword))
             )
         }
         search.status?.let { status ->
@@ -79,9 +82,9 @@ class AdminOrderQueryImpl(
                     "orderNumber" -> qOrder.orderNumber
                     "orderDate" -> qOrder.createdAt
                     "customerName" -> qUser.name
-                    "totalAmount" -> qOrder.finalTotalPrice
+                    "totalAmount" -> qOrder.totalAmount
                     "status" -> qOrder.status
-                    else -> qOrder.id
+                    else -> qOrder.createdAt
                 }
                 query.orderBy(
                     if (it.isAscending) path.asc() else path.desc()
@@ -92,13 +95,19 @@ class AdminOrderQueryImpl(
         }
 
         // --- 페이징 ---
-        query.offset(pageable.offset)
+        val results = query
+            .offset(pageable.offset)
             .limit(pageable.pageSize.toLong())
+            .fetch()
 
-        val results = query.fetch()
-        val count = query.fetchCount()
+        val count = jpaQueryFactory
+            .select(qOrder.count())
+            .from(qOrder)
+            .leftJoin(qUser).on(qOrder.userId.eq(qUser.id))
+            .leftJoin(qOrderItem).on(qOrder.id.eq(qOrderItem.orderId))
+            .where(*conditions.toTypedArray())
+            .fetchOne() ?: 0L
 
-        return PageImpl(results, pageable, count)*/
-        return PageImpl(emptyList())
+        return PageImpl(results, pageable, count)
     }
 }
