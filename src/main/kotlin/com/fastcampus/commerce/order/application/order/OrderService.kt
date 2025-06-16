@@ -76,8 +76,7 @@ class OrderService(
         val finalTotalPrice = itemsSubtotal + shippingFee
 
         // 4. 배송지/결제수단 정보
-        val defaultAddress = userAddressService.findDefaultUserAddress(userId)
-            ?: throw IllegalStateException("기본 배송지가 없습니다.") // 도메인에 맞는 에러 처리로 변경 가능
+        val defaultAddress = userAddressService.findDefaultUserAddress(userId)!!
 
         val shippingInfo = PrepareOrderShippingInfoApiResponse(
             recipientName = defaultAddress.recipientName,
