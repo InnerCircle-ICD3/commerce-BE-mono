@@ -256,7 +256,7 @@ class OrderService(
         )
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     fun cancelOrder(orderNumber: String) {
         val order = orderRepository.findByOrderNumber(orderNumber)
             ?: throw CoreException(OrderErrorCode.ORDER_NOT_FOUND)
