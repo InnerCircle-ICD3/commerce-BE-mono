@@ -47,5 +47,4 @@ class GlobalExceptionHandler(
         log.warn("AccessDeniedException: {}", e.message, e)
         return ApiResponse.error(ErrorMessage(AuthErrorCode.ACCESS_DENIED))
     }
-
 }

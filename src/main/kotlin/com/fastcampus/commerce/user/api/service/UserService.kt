@@ -27,7 +27,6 @@ class UserService(
     private val userOauth2ConnectionRepository: UserOauth2ConnectionRepository,
     private val idGenerator: IdGenerator,
 ) {
-
     @Transactional(rollbackFor = [Exception::class])
     fun loginUser(request: LoginRequest): UserDto {
         // 1. 입력값 필수 체크 (email, name 등)
@@ -40,7 +39,7 @@ class UserService(
 
         // [NOTE] 현재는 providerId 없이 이메일로만 유저를 식별합니다.
         val existingUser = userRepository.findByEmail(email)
-        //기존 유저 return
+        // 기존 유저 return
         if (existingUser != null) {
             // roles 가져오기
             val roleConnections = userRoleConnectionRepository.findAllByUserId(existingUser.id!!)
@@ -77,7 +76,7 @@ class UserService(
         )*/
         val userRoleConnection = UserRoleConnection(
             userId = savedUser.id!!,
-            roleId = UserRole.USER.ordinal.toLong() // 또는 상수값 직접 입력
+            roleId = UserRole.USER.ordinal.toLong(), // 또는 상수값 직접 입력
         )
         userRoleConnectionRepository.save(userRoleConnection)
 
@@ -86,15 +85,15 @@ class UserService(
             ?: oauth2ProviderRepository.save(
                 Oauth2Provider(
                     name = provider,
-                    isActive = true
-                )
+                    isActive = true,
+                ),
             )
 
         // 5. UserOauth2Connection 저장 (여기서는 email을 oauth2Id로 사용, 향후 네이버 id로 확장 가능)
         val userOauth2Connection = UserOauth2Connection(
             userId = savedUser.id!!,
             providerId = oauth2Provider.id!!,
-            oauth2Id = email // 지금은 email, 추후 네이버/카카오 id로 확장 가능
+            oauth2Id = email, // 지금은 email, 추후 네이버/카카오 id로 확장 가능
         )
         userOauth2ConnectionRepository.save(userOauth2Connection)
 
@@ -106,7 +105,7 @@ class UserService(
             email = savedUser.email,
             nickname = savedUser.nickname,
             profileImage = savedUser.profileImage!!,
-            roles = listOf(UserRole.USER)
+            roles = listOf(UserRole.USER),
         )
     }
 

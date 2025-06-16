@@ -3,7 +3,6 @@ package com.fastcampus.commerce.order.application.order
 import com.fastcampus.commerce.cart.application.query.CartItemReader
 import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.common.response.EnumResponse
-import com.fastcampus.commerce.common.response.PagedData
 import com.fastcampus.commerce.common.util.TimeProvider
 import com.fastcampus.commerce.order.application.query.ProductSnapshotReader
 import com.fastcampus.commerce.order.domain.entity.Order
@@ -46,14 +45,13 @@ class OrderService(
     private val reviewRepository: ReviewRepository,
     private val timeProvider: TimeProvider,
 ) {
-
     // 배송비 정책 (정책에 따라 변경 예정)
     private fun calculateShippingFee(itemsSubtotal: Int): Int = if (itemsSubtotal >= 20000) 0 else 3000
 
     @Transactional
     fun prepareOrder(user: User, cartItemIds: Set<Long>): PrepareOrderApiResponse {
         // 1. 장바구니 아이템 정보 조회 (CartItemReader를 통해)
-        //TODO: 인증된 사용자 ID 값 넘길 수 있도록 수정 필요 (userId <- 이 부분 제거후 수정 필요)
+        // TODO: 인증된 사용자 ID 값 넘길 수 있도록 수정 필요 (userId <- 이 부분 제거후 수정 필요)
         val userId = user.id!!
         val cartItems = cartItemReader.readCartItems(userId, cartItemIds)
 
@@ -66,7 +64,7 @@ class OrderService(
                 thumbnail = snapshot.thumbnail,
                 unitPrice = snapshot.price,
                 quantity = cartItem.quantity,
-                itemSubtotal = snapshot.price * cartItem.quantity
+                itemSubtotal = snapshot.price * cartItem.quantity,
             )
         }
 
@@ -84,10 +82,10 @@ class OrderService(
             zipCode = defaultAddress.zipCode,
             addressId = defaultAddress.addressId,
             address1 = defaultAddress.address1,
-            address2 = defaultAddress.address2
+            address2 = defaultAddress.address2,
         )
 
-        //TODO: 추후 수정 필요 (현재는 주문전 받을 수 있는 값이 없음)
+        // TODO: 추후 수정 필요 (현재는 주문전 받을 수 있는 값이 없음)
         val paymentMethods = listOf(EnumResponse(PaymentMethod.TOSS_PAY.toString(), PaymentMethod.TOSS_PAY.label))
 
         // 5. 응답 조립
@@ -98,7 +96,7 @@ class OrderService(
             finalTotalPrice = finalTotalPrice,
             items = items,
             shippingInfo = shippingInfo,
-            paymentMethod = paymentMethods
+            paymentMethod = paymentMethods,
         )
     }
 
@@ -129,7 +127,7 @@ class OrderService(
             address1 = request.shippingInfo.address1,
             address2 = request.shippingInfo.address2,
             deliveryMessage = request.shippingInfo.deliveryMessage,
-            status = OrderStatus.WAITING_FOR_PAYMENT // 상태 초기화
+            status = OrderStatus.WAITING_FOR_PAYMENT, // 상태 초기화
         )
         orderRepository.save(order)
 
@@ -139,7 +137,7 @@ class OrderService(
                 orderId = order.id!!,
                 productSnapshotId = cartItem.productSnapshotId!!,
                 quantity = cartItem.quantity,
-                unitPrice = cartItem.unitPrice!!
+                unitPrice = cartItem.unitPrice!!,
             )
         }
         orderItemRepository.saveAll(orderItems)
@@ -149,14 +147,11 @@ class OrderService(
     }
 
     @Transactional(readOnly = true)
-    fun getOrders(
-        request: SearchOrderApiRequest,
-        pageable: Pageable
-    ): Page<SearchOrderApiResponse> {
+    fun getOrders(request: SearchOrderApiRequest, pageable: Pageable): Page<SearchOrderApiResponse> {
         // 1. 조건에 맞는 주문 페이지 조회 (ex: 유저ID 기준)
         val page = orderRepository.findAllByUserId(
             userId = request.customerId!!.toLong(),
-            pageable = pageable
+            pageable = pageable,
         )
 
         // 2. 주문별 대표 상품, 가격, 썸네일 등 요약 정보 가공
@@ -199,7 +194,7 @@ class OrderService(
                 thumbnail = productSnapshot.thumbnail,
                 unitPrice = it.unitPrice,
                 quantity = it.quantity,
-                itemSubTotal = it.unitPrice * it.quantity
+                itemSubTotal = it.unitPrice * it.quantity,
             )
         }
 
@@ -213,7 +208,7 @@ class OrderService(
             zipCode = order.zipCode,
             address1 = order.address1,
             address2 = order.address2,
-            deliveryMessage = order.deliveryMessage
+            deliveryMessage = order.deliveryMessage,
         )
 
         // 4. 결제 정보 조회 (Payment와 1:1 매핑된다고 가정)

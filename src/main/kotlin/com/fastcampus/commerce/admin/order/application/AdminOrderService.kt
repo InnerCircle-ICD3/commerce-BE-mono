@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class AdminOrderService(
-    private val adminOrderQuery: AdminOrderQuery
+    private val adminOrderQuery: AdminOrderQuery,
 ) {
     fun getOrders(request: AdminOrderSearchRequest, pageable: Pageable): Page<AdminOrderListResponse> {
         return adminOrderQuery.searchOrders(request, pageable, pageable.sort)

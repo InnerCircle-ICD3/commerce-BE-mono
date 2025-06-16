@@ -7,7 +7,6 @@ import com.fastcampus.commerce.product.domain.service.CategoryReader
 import com.fastcampus.commerce.product.domain.service.ProductReader
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDateTime
 
 @Service
 class MainProductService(

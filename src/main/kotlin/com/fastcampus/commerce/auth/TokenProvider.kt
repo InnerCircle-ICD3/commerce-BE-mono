@@ -1,10 +1,5 @@
 package com.fastcampus.commerce.auth
 
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.Authentication
-
 import com.fastcampus.commerce.common.error.AuthErrorCode
 import com.fastcampus.commerce.common.error.CoreException
 import io.jsonwebtoken.Claims
@@ -13,6 +8,9 @@ import io.jsonwebtoken.JwtBuilder
 import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.io.Decoders
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.stereotype.Component
 import java.sql.Date
 import java.time.Instant
@@ -170,7 +168,7 @@ class TokenProvider(
         val principal = org.springframework.security.core.userdetails.User(
             userId.toString(),
             "",
-            listOf(SimpleGrantedAuthority("ROLE_USER"))
+            listOf(SimpleGrantedAuthority("ROLE_USER")),
         )
         return UsernamePasswordAuthenticationToken(principal, token, principal.authorities)
     }
@@ -184,5 +182,3 @@ class TokenProvider(
         }
     }
 }
-
-

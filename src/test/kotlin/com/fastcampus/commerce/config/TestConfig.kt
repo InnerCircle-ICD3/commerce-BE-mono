@@ -60,7 +60,7 @@ class TestConfig {
                 parameter: MethodParameter,
                 mavContainer: ModelAndViewContainer?,
                 webRequest: NativeWebRequest,
-                binderFactory: WebDataBinderFactory?
+                binderFactory: WebDataBinderFactory?,
             ): Any? {
                 return mockk<User> {
                     every { id } returns 1L

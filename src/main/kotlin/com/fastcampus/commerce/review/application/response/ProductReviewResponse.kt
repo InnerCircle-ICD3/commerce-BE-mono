@@ -1,7 +1,6 @@
 package com.fastcampus.commerce.review.application.response
 
 import com.fastcampus.commerce.review.domain.model.AdminReply
-import com.fastcampus.commerce.review.domain.model.ProductReview
 import com.fastcampus.commerce.review.domain.model.ProductReviewFlat
 import java.time.LocalDateTime
 
@@ -19,14 +18,14 @@ data class ProductReviewResponse(
                 rating = productReview.rating,
                 content = productReview.content,
                 createdAt = productReview.createdAt,
-                adminReply = if(productReview.replyContent == null || productReview.replyCreatedAt == null) {
+                adminReply = if (productReview.replyContent == null || productReview.replyCreatedAt == null) {
                     null
                 } else {
                     AdminReplyResponse(
                         productReview.replyContent,
                         productReview.replyCreatedAt,
                     )
-                }
+                },
             )
     }
 }

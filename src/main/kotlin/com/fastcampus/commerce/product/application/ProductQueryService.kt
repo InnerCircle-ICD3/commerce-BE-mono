@@ -9,13 +9,10 @@ import com.fastcampus.commerce.product.application.response.ProductDetailRespons
 import com.fastcampus.commerce.product.application.response.SearchProductResponse
 import com.fastcampus.commerce.product.domain.model.CategoryDetail
 import com.fastcampus.commerce.product.domain.model.ProductCategoryInfo
-import com.fastcampus.commerce.product.domain.model.SearchProductCondition
 import com.fastcampus.commerce.product.domain.service.CategoryReader
 import com.fastcampus.commerce.product.domain.service.ProductReader
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 
 @Service

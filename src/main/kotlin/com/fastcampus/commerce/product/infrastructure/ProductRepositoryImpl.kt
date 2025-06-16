@@ -22,7 +22,6 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.support.PageableExecutionUtils
 import org.springframework.stereotype.Repository
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.Optional
 
@@ -109,12 +108,16 @@ class ProductRepositoryImpl(
                 product.status.eq(SellingStatus.ON_SALE),
                 order.isDeleted.eq(false),
                 product.isDeleted.eq(false),
-                order.createdAt.goe(baseDate)
+                order.createdAt.goe(baseDate),
             )
             .groupBy(
-                product.id, product.name, product.price,
-                product.thumbnail, product.detailImage,
-                product.status, inventory.quantity
+                product.id,
+                product.name,
+                product.price,
+                product.thumbnail,
+                product.detailImage,
+                product.status,
+                inventory.quantity,
             )
             .orderBy(orderItem.quantity.sumLong().desc())
             .limit(limit.toLong())

@@ -28,7 +28,7 @@ class User(
     /*@Column(nullable = false)
     var profileImage: String,*/
     @Column(nullable = true)
-    var profileImage: String? = null
+    var profileImage: String? = null,
 ) : BaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

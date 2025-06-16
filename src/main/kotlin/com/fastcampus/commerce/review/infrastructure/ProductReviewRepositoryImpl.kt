@@ -5,8 +5,8 @@ import com.fastcampus.commerce.review.domain.entity.QReviewReply.reviewReply
 import com.fastcampus.commerce.review.domain.model.ProductReviewFlat
 import com.fastcampus.commerce.review.domain.model.ProductReviewRating
 import com.fastcampus.commerce.review.domain.model.QProductReviewFlat
-import com.fastcampus.commerce.review.domain.model.QProductReviewRating
 import com.fastcampus.commerce.review.domain.repository.ProductReviewRepository
+import com.querydsl.core.types.Projections
 import com.querydsl.core.types.dsl.Expressions
 import com.querydsl.core.types.dsl.Expressions.nullExpression
 import com.querydsl.jpa.impl.JPAQueryFactory
@@ -14,7 +14,6 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.support.PageableExecutionUtils
 import org.springframework.stereotype.Repository
-import java.math.BigDecimal
 
 @Repository
 class ProductReviewRepositoryImpl(
@@ -52,8 +51,9 @@ class ProductReviewRepositoryImpl(
     override fun getProductReviewRating(productId: Long): ProductReviewRating? {
         return queryFactory
             .select(
-                QProductReviewRating(
-                    Expressions.template(Double::class.java, "round({0}, 1)", review.rating.avg().coalesce(0.0)),
+                Projections.constructor(
+                    ProductReviewRating::class.java,
+                    Expressions.template(Double::class.java, "round({0}, 2)", review.rating.avg().coalesce(0.0)),
                     review.count(),
                     review.rating.`when`(1).then(1).otherwise(nullExpression()).count(),
                     review.rating.`when`(2).then(1).otherwise(nullExpression()).count(),

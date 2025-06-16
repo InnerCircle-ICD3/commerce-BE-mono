@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/admin/orders")
 class AdminOrderController(
-    private val adminOrderService: AdminOrderService
+    private val adminOrderService: AdminOrderService,
 ) {
     @GetMapping
     fun getOrders(
         @ModelAttribute search: AdminOrderSearchRequest,
-        @PageableDefault(size = 20, sort = ["orderDate"], direction = Sort.Direction.DESC) pageable: Pageable
+        @PageableDefault(size = 20, sort = ["orderDate"], direction = Sort.Direction.DESC) pageable: Pageable,
     ): Page<AdminOrderListResponse> {
         return adminOrderService.getOrders(search, pageable)
     }

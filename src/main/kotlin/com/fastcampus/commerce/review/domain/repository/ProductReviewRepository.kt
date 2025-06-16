@@ -1,6 +1,5 @@
 package com.fastcampus.commerce.review.domain.repository
 
-import com.fastcampus.commerce.review.domain.model.ProductReview
 import com.fastcampus.commerce.review.domain.model.ProductReviewFlat
 import com.fastcampus.commerce.review.domain.model.ProductReviewRating
 import org.springframework.data.domain.Page
