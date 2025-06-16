@@ -58,7 +58,7 @@ class SecurityConfig(
                         "/auth/reissue",
                         // 필요하다면 다른 public 엔드포인트
                     ).permitAll()
-                    .anyRequest().authenticated()
+                    .anyRequest().permitAll()
             }
             .addFilterBefore(
                 jwtAuthenticationFilter(),
