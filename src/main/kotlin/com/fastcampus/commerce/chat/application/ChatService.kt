@@ -2,6 +2,7 @@ package com.fastcampus.commerce.chat.application
 
 import com.fastcampus.commerce.chat.domain.entity.ChatRoom
 import com.fastcampus.commerce.chat.domain.entity.ChatRoomStatus
+import com.fastcampus.commerce.chat.domain.entity.SenderType
 import com.fastcampus.commerce.chat.infrastructure.repository.ChatMessageRepository
 import com.fastcampus.commerce.chat.infrastructure.repository.ChatRoomRepository
 import com.fastcampus.commerce.chat.domain.error.ChatErrorCode
@@ -18,6 +19,7 @@ import java.util.*
 class ChatService(
     private val chatRoomRepository: ChatRoomRepository,
     private val chatMessageRepository: ChatMessageRepository,
+    private val chatMessageService: ChatMessageService,
 ) {
 
     @Transactional
@@ -33,6 +35,10 @@ class ChatService(
 
         // 기존 채팅방이 있으면 반환
         if (existingRoom != null) {
+            // 초기 메시지가 있으면 전송
+            if (!request.initialMessage.isNullOrBlank()) {
+                sendInitialMessage(existingRoom.id!!, request)
+            }
             return toChatRoomResponse(existingRoom)
         }
 
@@ -45,6 +51,12 @@ class ChatService(
         )
 
         val savedRoom = chatRoomRepository.save(chatRoom)
+
+        // 초기 메시지가 있으면 전송
+        if (!request.initialMessage.isNullOrBlank()) {
+            sendInitialMessage(savedRoom.id!!, request)
+        }
+
         return toChatRoomResponse(savedRoom)
     }
 
@@ -178,5 +190,24 @@ class ChatService(
             ChatRoomStatus.AWAITING -> next in listOf(ChatRoomStatus.ON_CHAT, ChatRoomStatus.END)
             ChatRoomStatus.END -> false // 종료된 채팅방은 상태 변경 불가
         }
+    }
+
+    private fun sendInitialMessage(roomId: Long, request: CreateChatRoomRequest) {
+        val senderType = when {
+            request.userId != null -> SenderType.USER
+            request.guestId != null -> SenderType.GUEST
+            else -> SenderType.GUEST
+        }
+
+        val senderId = request.userId?.toString() ?: request.guestId
+
+        val messageRequest = ChatMessageRequest(
+            chatRoomId = roomId,
+            content = request.initialMessage!!,
+            senderType = senderType,
+            senderId = senderId
+        )
+
+        chatMessageService.saveAndSendMessage(messageRequest)
     }
 }

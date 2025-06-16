@@ -44,6 +44,7 @@ data class CreateChatRoomRequest(
     val guestId: String? = null,
     val userId: Long? = null,
     val productId: Long? = null,
+    val initialMessage: String? = null,  // 첫 메시지 (옵션)
 )
 
 // 채팅방 정보 응답 DTO
