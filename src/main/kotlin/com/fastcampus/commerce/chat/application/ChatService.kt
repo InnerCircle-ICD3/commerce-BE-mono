@@ -24,12 +24,16 @@ class ChatService(
 
     @Transactional
     fun createChatRoom(request: CreateChatRoomRequest): ChatRoomResponse {
+        // senderType에 따라 userId/guestId 설정
+        val userId = if (request.senderType == SenderType.USER) request.senderId.toLongOrNull() else null
+        val guestId = if (request.senderType == SenderType.GUEST) request.senderId else null
+        
         // 기존 활성 채팅방 확인
         val existingRoom = when {
-            request.userId != null && request.productId != null ->
-                chatRoomRepository.findActiveByUserIdAndProductId(request.userId, request.productId)
-            request.guestId != null && request.productId != null ->
-                chatRoomRepository.findActiveByGuestIdAndProductId(request.guestId, request.productId)
+            userId != null && request.productId != null ->
+                chatRoomRepository.findActiveByUserIdAndProductId(userId, request.productId)
+            guestId != null && request.productId != null ->
+                chatRoomRepository.findActiveByGuestIdAndProductId(guestId, request.productId)
             else -> null
         }
 
@@ -44,8 +48,8 @@ class ChatService(
 
         // 새 채팅방 생성
         val chatRoom = ChatRoom(
-            guestId = request.guestId,
-            userId = request.userId,
+            guestId = guestId,
+            userId = userId,
             productId = request.productId,
             status = ChatRoomStatus.REQUESTED
         )
@@ -193,19 +197,11 @@ class ChatService(
     }
 
     private fun sendInitialMessage(roomId: Long, request: CreateChatRoomRequest) {
-        val senderType = when {
-            request.userId != null -> SenderType.USER
-            request.guestId != null -> SenderType.GUEST
-            else -> SenderType.GUEST
-        }
-
-        val senderId = request.userId?.toString() ?: request.guestId
-
         val messageRequest = ChatMessageRequest(
             chatRoomId = roomId,
             content = request.initialMessage!!,
-            senderType = senderType,
-            senderId = senderId
+            senderType = request.senderType,
+            senderId = request.senderId
         )
 
         chatMessageService.saveAndSendMessage(messageRequest)

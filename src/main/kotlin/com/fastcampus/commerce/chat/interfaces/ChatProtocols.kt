@@ -41,8 +41,8 @@ data class ChatNotification(
 
 // 채팅방 생성 요청 DTO
 data class CreateChatRoomRequest(
-    val guestId: String? = null,
-    val userId: Long? = null,
+    val senderType: SenderType,
+    val senderId: String,  // guestId (for GUEST) or userId (for USER)
     val productId: Long? = null,
     val initialMessage: String? = null,  // 첫 메시지 (옵션)
 )
