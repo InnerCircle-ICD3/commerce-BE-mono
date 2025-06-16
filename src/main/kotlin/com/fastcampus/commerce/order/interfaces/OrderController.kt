@@ -5,6 +5,7 @@ import com.fastcampus.commerce.common.response.PagedData
 import com.fastcampus.commerce.order.application.order.OrderService
 import com.fastcampus.commerce.order.interfaces.request.OrderApiRequest
 import com.fastcampus.commerce.order.interfaces.request.SearchOrderApiRequest
+import com.fastcampus.commerce.order.interfaces.response.CancelOrderApiResponse
 import com.fastcampus.commerce.order.interfaces.response.GetOrderApiResponse
 import com.fastcampus.commerce.order.interfaces.response.GetOrderItemApiResponse
 import com.fastcampus.commerce.order.interfaces.response.GetOrderShippingInfoApiResponse
@@ -17,6 +18,7 @@ import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
@@ -107,7 +109,7 @@ class OrderController(
         @ModelAttribute request: SearchOrderApiRequest,
         @PageableDefault(page = 1, size = 10) pageable: Pageable,
     ): PagedData<SearchOrderApiResponse> {
-        return orderService.getOrders(request, pageable)
+        return PagedData.of(orderService.getOrders(request, pageable))
     }
 
     /*@GetMapping("/{orderNumber}")
@@ -163,5 +165,13 @@ class OrderController(
         @PathVariable orderNumber: String,
     ): GetOrderApiResponse {
         return orderService.getOrderDetail(orderNumber)
+    }
+
+    @PostMapping("/{orderNumber}/cancel")
+    fun cancelOrder(
+        @PathVariable orderNumber: String,
+    ): CancelOrderApiResponse {
+        orderService.cancelOrder(orderNumber)
+       return CancelOrderApiResponse()
     }
 }

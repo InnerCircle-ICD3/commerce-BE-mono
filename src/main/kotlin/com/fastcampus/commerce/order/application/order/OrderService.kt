@@ -4,6 +4,7 @@ import com.fastcampus.commerce.cart.application.query.CartItemReader
 import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.common.response.EnumResponse
 import com.fastcampus.commerce.common.response.PagedData
+import com.fastcampus.commerce.common.util.TimeProvider
 import com.fastcampus.commerce.order.application.query.ProductSnapshotReader
 import com.fastcampus.commerce.order.domain.entity.Order
 import com.fastcampus.commerce.order.domain.entity.OrderItem
@@ -27,6 +28,7 @@ import com.fastcampus.commerce.payment.domain.service.PaymentReader
 import com.fastcampus.commerce.review.domain.repository.ReviewRepository
 import com.fastcampus.commerce.user.api.service.UserAddressService
 import com.fastcampus.commerce.user.domain.entity.User
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -42,6 +44,7 @@ class OrderService(
     private val userAddressService: UserAddressService,
     private val paymentReader: PaymentReader,
     private val reviewRepository: ReviewRepository,
+    private val timeProvider: TimeProvider,
 ) {
 
     // 배송비 정책 (정책에 따라 변경 예정)
@@ -150,7 +153,7 @@ class OrderService(
     fun getOrders(
         request: SearchOrderApiRequest,
         pageable: Pageable
-    ): PagedData<SearchOrderApiResponse> {
+    ): Page<SearchOrderApiResponse> {
         // 1. 조건에 맞는 주문 페이지 조회 (ex: 유저ID 기준)
         val page = orderRepository.findAllByUserId(
             userId = request.customerId!!.toLong(),
@@ -177,7 +180,7 @@ class OrderService(
             )
         }
 
-        return PagedData.of(PageImpl(responses, pageable, page.totalElements))
+        return PageImpl(responses, pageable, page.totalElements)
     }
 
     @Transactional(readOnly = true)
@@ -253,4 +256,11 @@ class OrderService(
         )
     }
 
+    @Transactional
+    fun cancelOrder(orderNumber: String) {
+        val order = orderRepository.findByOrderNumber(orderNumber)
+            ?: throw CoreException(OrderErrorCode.ORDER_NOT_FOUND)
+        val cancelledAt = timeProvider.now()
+        order.cancel(cancelledAt)
+    }
 }
