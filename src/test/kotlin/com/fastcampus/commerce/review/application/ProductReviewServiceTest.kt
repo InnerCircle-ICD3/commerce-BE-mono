@@ -1,8 +1,7 @@
 package com.fastcampus.commerce.review.application
 
 import com.fastcampus.commerce.review.application.response.ProductReviewResponse
-import com.fastcampus.commerce.review.domain.model.AdminReply
-import com.fastcampus.commerce.review.domain.model.ProductReview
+import com.fastcampus.commerce.review.domain.model.ProductReviewFlat
 import com.fastcampus.commerce.review.domain.model.ProductReviewRating
 import com.fastcampus.commerce.review.domain.repository.ProductReviewRepository
 import io.kotest.core.spec.style.DescribeSpec
@@ -31,17 +30,15 @@ class ProductReviewServiceTest : DescribeSpec({
 
             val now = LocalDateTime.of(2025, 6, 1, 12, 0)
             val productReviews = listOf(
-                ProductReview(
+                ProductReviewFlat(
                     reviewId = 1L,
                     rating = 5,
                     content = "아주 만족해요",
                     createdAt = now,
-                    adminReply = AdminReply(
-                        content = "감사합니다",
-                        createdAt = now,
-                    ),
+                    replyContent = "감사합니다",
+                    replyCreatedAt = now,
                 ),
-                ProductReview(
+                ProductReviewFlat(
                     reviewId = 2L,
                     rating = 3,
                     content = "좋습니다.",
