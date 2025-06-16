@@ -1,5 +1,9 @@
 package com.fastcampus.commerce.product.infrastructure
 
+import com.fastcampus.commerce.order.domain.entity.OrderStatus
+import com.fastcampus.commerce.order.domain.entity.QOrder.*
+import com.fastcampus.commerce.order.domain.entity.QOrderItem.orderItem
+import com.fastcampus.commerce.order.domain.entity.QProductSnapshot.productSnapshot
 import com.fastcampus.commerce.product.domain.entity.Product
 import com.fastcampus.commerce.product.domain.entity.QInventory.inventory
 import com.fastcampus.commerce.product.domain.entity.QProduct.product
@@ -14,9 +18,12 @@ import com.querydsl.core.BooleanBuilder
 import com.querydsl.jpa.JPAExpressions
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.support.PageableExecutionUtils
 import org.springframework.stereotype.Repository
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.Optional
 
 @Repository
@@ -66,6 +73,52 @@ class ProductRepositoryImpl(
                 .where(whereCondition)
                 .fetchOne() ?: 0L
         }
+    }
+
+    override fun findLatestProducts(limit: Int): List<ProductInfo> {
+        val whereCondition = BooleanBuilder()
+            .and(productStatusEq(SellingStatus.ON_SALE))
+
+        return fetchProductDetails(whereCondition, PageRequest.of(0, limit))
+    }
+
+    override fun findBestProducts(baseDate: LocalDateTime, limit: Int): List<ProductInfo> {
+        return queryFactory
+            .select(
+                QProductInfo(
+                    product.id,
+                    product.name,
+                    product.price,
+                    inventory.quantity,
+                    product.thumbnail,
+                    product.detailImage,
+                    product.status,
+                ),
+            )
+            .from(orderItem)
+            .join(order).on(orderItem.orderId.eq(order.id))
+            .join(productSnapshot).on(orderItem.productSnapshotId.eq(productSnapshot.id))
+            .join(product).on(productSnapshot.productId.eq(product.id))
+            .join(inventory).on(product.id.eq(inventory.productId))
+            .where(
+                order.status.`in`(
+                    OrderStatus.PAID,
+                    OrderStatus.SHIPPED,
+                    OrderStatus.DELIVERED,
+                ),
+                product.status.eq(SellingStatus.ON_SALE),
+                order.isDeleted.eq(false),
+                product.isDeleted.eq(false),
+                order.createdAt.goe(baseDate)
+            )
+            .groupBy(
+                product.id, product.name, product.price,
+                product.thumbnail, product.detailImage,
+                product.status, inventory.quantity
+            )
+            .orderBy(orderItem.quantity.sumLong().desc())
+            .limit(limit.toLong())
+            .fetch()
     }
 
     private fun productNameContainsIgnore(productName: String?) =

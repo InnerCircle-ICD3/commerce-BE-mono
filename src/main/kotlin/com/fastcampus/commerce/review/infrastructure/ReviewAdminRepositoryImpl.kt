@@ -48,6 +48,7 @@ class ReviewAdminRepositoryImpl(
                     user.nickname,
                     product.id,
                     product.name,
+                    product.thumbnail,
                     review.createdAt,
                 ),
             )
@@ -87,6 +88,7 @@ class ReviewAdminRepositoryImpl(
                     user.nickname,
                     product.id,
                     product.name,
+                    product.thumbnail,
                     review.createdAt,
                 ),
             )

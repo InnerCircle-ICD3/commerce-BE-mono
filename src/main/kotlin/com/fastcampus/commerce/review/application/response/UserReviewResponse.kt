@@ -26,6 +26,7 @@ data class UserReviewResponse(
                 product = UserReviewProductResponse(
                     info.productId,
                     info.productName,
+                    info.productThumbnail,
                 ),
                 createdAt = info.createdAt,
             )
@@ -41,4 +42,5 @@ data class UserReviewAdminReplyResponse(
 data class UserReviewProductResponse(
     val productId: Long,
     val productName: String,
+    val productThumbnail: String,
 )

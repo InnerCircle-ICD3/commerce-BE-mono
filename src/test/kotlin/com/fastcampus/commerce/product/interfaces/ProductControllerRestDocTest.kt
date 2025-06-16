@@ -1,6 +1,7 @@
 package com.fastcampus.commerce.product.interfaces
 
 import com.fastcampus.commerce.config.TestConfig
+import com.fastcampus.commerce.product.application.MainProductService
 import com.fastcampus.commerce.product.application.ProductQueryService
 import com.fastcampus.commerce.product.application.response.CategoryResponse
 import com.fastcampus.commerce.product.application.response.ProductDetailResponse
@@ -33,6 +34,9 @@ class ProductControllerRestDocTest : DescribeSpec() {
 
     @MockkBean
     lateinit var productQueryService: ProductQueryService
+
+    @MockkBean
+    lateinit var mainProductService: MainProductService
 
     val tag = "Product"
 
@@ -250,8 +254,8 @@ class ProductControllerRestDocTest : DescribeSpec() {
                     cupSize = "Large",
                 )
 
-                every { productQueryService.getNewProducts() } returns listOf(element)
-                every { productQueryService.getBestProducts() } returns listOf(element)
+                every { mainProductService.getNewProducts() } returns listOf(element)
+                every { mainProductService.getBestProducts() } returns listOf(element)
 
                 documentation(
                     identifier = "메인_상품목록_조회",
