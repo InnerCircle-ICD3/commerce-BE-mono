@@ -1,10 +1,12 @@
 package com.fastcampus.commerce.auth.interfaces.web.security.resolver
 
+import com.fastcampus.commerce.config.TestConfig
 import com.fastcampus.commerce.user.api.service.UserService
 import com.fastcampus.commerce.user.domain.entity.User
 import com.fastcampus.commerce.user.domain.enums.UserRole
 import io.mockk.every
 import io.mockk.mockk
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -19,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(controllers = [SampleController::class])
-@Import(RoleBasedUserArgumentResolver::class, RoleBasedUserArgumentResolverTest.MockConfig::class)
+@Import(RoleBasedUserArgumentResolver::class, TestConfig::class)
 class RoleBasedUserArgumentResolverTest {
 
     @Autowired
@@ -27,13 +29,6 @@ class RoleBasedUserArgumentResolverTest {
 
     @Autowired
     lateinit var userService: UserService
-
-    @TestConfiguration
-    class MockConfig {
-        @Bean
-        @Primary
-        fun userService(): UserService = mockk(relaxed = true)
-    }
 
     @Test
     fun `권한이 맞을 때는 User가 주입된다`() {

@@ -1,16 +1,34 @@
 package com.fastcampus.commerce.order.interfaces
 
+import com.fastcampus.commerce.common.response.EnumResponse
 import com.fastcampus.commerce.config.TestConfig
+import com.fastcampus.commerce.order.application.order.OrderService
+import com.fastcampus.commerce.order.domain.entity.OrderStatus
 import com.fastcampus.commerce.order.interfaces.request.OrderShippingInfoApiRequest
+import com.fastcampus.commerce.order.interfaces.response.GetOrderApiResponse
+import com.fastcampus.commerce.order.interfaces.response.GetOrderItemApiResponse
+import com.fastcampus.commerce.order.interfaces.response.GetOrderShippingInfoApiResponse
+import com.fastcampus.commerce.order.interfaces.response.OrderApiResponse
+import com.fastcampus.commerce.order.interfaces.response.PrepareOrderApiResponse
+import com.fastcampus.commerce.order.interfaces.response.PrepareOrderItemApiResponse
+import com.fastcampus.commerce.order.interfaces.response.PrepareOrderShippingInfoApiResponse
+import com.fastcampus.commerce.order.interfaces.response.SearchOrderApiResponse
+import com.fastcampus.commerce.product.application.ProductQueryService
 import com.fastcampus.commerce.restdoc.documentation
+import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
+import io.mockk.every
+import io.mockk.just
+import io.mockk.runs
 import io.restassured.module.mockmvc.RestAssuredMockMvc
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.context.annotation.Import
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.test.web.servlet.MockMvc
@@ -26,6 +44,9 @@ class OrderControllerRestDocTest : DescribeSpec() {
     @Autowired
     lateinit var mockMvc: MockMvc
 
+    @MockkBean
+    lateinit var orderService: OrderService
+
     val tag = "Order"
 
     init {
@@ -33,9 +54,38 @@ class OrderControllerRestDocTest : DescribeSpec() {
             RestAssuredMockMvc.mockMvc(mockMvc)
         }
 
-        describe("POST /orders/prepare - 주문서") {
+        describe("GET /orders/prepare - 주문서") {
             val summary = "주문서 생성"
             it("주문서를 생성할 수 있다.") {
+                val response = PrepareOrderApiResponse(
+                    cartItemIds = setOf(1L),
+                    itemsSubtotal = 10000,
+                    shippingFee = 3000,
+                    finalTotalPrice = 13000,
+                    items = listOf(
+                        PrepareOrderItemApiResponse(
+                            productId = 1L,
+                            name = "상품A",
+                            thumbnail = "http://localhost:8080/api/v1/product/1/thumbnail",
+                            unitPrice = 1000,
+                            quantity = 10,
+                            itemSubtotal = 10000,
+                        ),
+                    ),
+                    shippingInfo = PrepareOrderShippingInfoApiResponse(
+                        recipientName = "홍길동",
+                        recipientPhone = "010-1234-1234",
+                        zipCode = "12345",
+                        addressId = 1L,
+                        address1 = "서울특별시 관악구",
+                        address2 = "서울대입구역 6번출구",
+                    ),
+                    paymentMethod = listOf(
+                        EnumResponse("MOCK", "테스트"),
+                    ),
+                )
+                every { orderService.prepareOrder(any(), any()) } returns response
+
                 documentation(
                     identifier = "주문서_생성_성공",
                     tag = tag,
@@ -48,7 +98,7 @@ class OrderControllerRestDocTest : DescribeSpec() {
                     }
 
                     queryParameters {
-                        field("cartItemIds", "장바구니 아이템 아이디", "1,2,3")
+                        field("cartItemIds", "장바구니 아이템 아이디", "1")
                     }
 
                     responseBody {
@@ -66,6 +116,7 @@ class OrderControllerRestDocTest : DescribeSpec() {
                         field("data.items[0].unitPrice", "상품 단가", 1000)
                         field("data.items[0].quantity", "수량", 10)
                         field("data.items[0].itemSubtotal", "상품 소계", 10000)
+                        field("data.shippingInfo.addressId", "배송지 아이디", 1)
                         field("data.shippingInfo.recipientName", "수령인 이름", "홍길동")
                         field("data.shippingInfo.recipientPhone", "수령인 전화번호", "010-1234-1234")
                         field("data.shippingInfo.zipCode", "우편번호", "12345")
@@ -83,6 +134,8 @@ class OrderControllerRestDocTest : DescribeSpec() {
             val summary = "주문을 생성합니다"
 
             it("주문_생성_성공") {
+                every {orderService.createOrder(any(), any())} returns OrderApiResponse("ORD20250609123456789")
+
                 documentation(
                     identifier = "주문_생성_성공",
                     tag = tag,
@@ -129,6 +182,18 @@ class OrderControllerRestDocTest : DescribeSpec() {
             val summary = "주문 목록을 조회합니다"
 
             it("주문_목록_조회_성공") {
+                val searchOrderApiResponse = SearchOrderApiResponse(
+                    orderNumber = "ORD20250609123456789",
+                    orderName = "스페셜 리버즈 외 3건",
+                    mainProductThumbnail = "https://example.com/thumbnail.jpg",
+                    orderStatus = OrderStatus.DELIVERED,
+                    finalTotalPrice = 13000,
+                    orderedAt = LocalDateTime.of(2025, 6, 8, 12, 34),
+                    cancellable = true,
+                    refundable = false,
+                )
+                val response = PageImpl(listOf(searchOrderApiResponse), PageRequest.of(1, 10), 1L)
+                every { orderService.getOrders(any(), any()) } returns response
                 documentation(
                     identifier = "주문_목록_조회_성공",
                     tag = tag,
@@ -148,7 +213,7 @@ class OrderControllerRestDocTest : DescribeSpec() {
                         field("data.content[0].orderNumber", "주문 번호", "ORD20250609123456789")
                         field("data.content[0].orderName", "주문명", "스페셜 리버즈 외 3건")
                         field("data.content[0].mainProductThumbnail", "대표 상품 썸네일", "https://example.com/thumbnail.jpg")
-                        field("data.content[0].orderStatus", "주문 상태", "배송 준비중")
+                        field("data.content[0].orderStatus", "주문 상태", OrderStatus.DELIVERED.name)
                         field("data.content[0].finalTotalPrice", "최종 결제 금액", 13000)
                         field("data.content[0].orderedAt", "주문 날짜", LocalDateTime.of(2025, 6, 8, 12, 34).toString())
                         field("data.content[0].cancellable", "취소 가능 여부", true)
@@ -168,6 +233,49 @@ class OrderControllerRestDocTest : DescribeSpec() {
 
             it("주문_상세_조회_성공") {
                 val orderNumber = "ORD20250609123456789"
+                val orderedAt = LocalDateTime.of(2025, 6, 8, 12, 34)
+                val response = GetOrderApiResponse(
+                    orderNumber = orderNumber,
+                    orderName = "홍길동님의 주문",
+                    orderStatus = "배송 준비중",
+                    paymentNumber = "PAY1231414124",
+                    paymentMethod = "토스페이",
+                    itemsSubTotal = 10000,
+                    shippingFee = 3000,
+                    finalTotalPrice = 13000,
+                    items = listOf(
+                        GetOrderItemApiResponse(
+                            orderItemId = 1L,
+                            productSnapshotId = 1L,
+                            name = "상품명",
+                            thumbnail = "https://example.com/thumbnail.jpg",
+                            unitPrice = 1000,
+                            quantity = 10,
+                            itemSubTotal = 10000,
+                        ),
+                    ),
+                    shippingInfo = GetOrderShippingInfoApiResponse(
+                        recipientName = "홍길동",
+                        recipientPhone = "010-1234-1234",
+                        zipCode = "08123",
+                        address1 = "서울특별시 관악구",
+                        address2 = "1000003동 123호",
+                        deliveryMessage = "문앞에 놔주세요.",
+                    ),
+                    orderedAt = orderedAt,
+                    paidAt = orderedAt,
+                    cancellable = true,
+                    cancelRequested = false,
+                    cancelledAt = null,
+                    refundable = false,
+                    refundRequested = false,
+                    refundRequestedAt = null,
+                    refunded = false,
+                    refundedAt = null,
+                    reviewable = true,
+                    reviewWritten = false,
+                )
+                every { orderService.getOrderDetail(orderNumber) } returns  response
 
                 documentation(
                     identifier = "주문_상세_조회_성공",
@@ -216,6 +324,34 @@ class OrderControllerRestDocTest : DescribeSpec() {
                         optionalField("data.refundedAt", "환불 완료 일시", null)
                         field("data.reviewable", "리뷰 작성 가능 여부", true)
                         field("data.reviewWritten", "리뷰 작성 여부", false)
+                        ignoredField("error")
+                    }
+                }
+            }
+        }
+
+        describe("POST /orders/{orderNumber}/cancel - 주문 취소") {
+            val summary = "주문을 취소합니다"
+
+            it("주문_취소_성공") {
+                val orderNumber = "ORD20250609123456789"
+            every { orderService.cancelOrder(orderNumber) } returns Unit
+
+                documentation(
+                    identifier = "주문_취소_성공",
+                    tag = tag,
+                    summary = summary,
+                ) {
+                    requestLine(HttpMethod.POST, "/orders/{orderNumber}/cancel") {
+                        pathVariable("orderNumber", "주문 번호", orderNumber)
+                    }
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "인증 토큰", "Bearer sample-token")
+                    }
+
+                    responseBody {
+                        field("data.message", "응답 메시지", "OK")
                         ignoredField("error")
                     }
                 }
