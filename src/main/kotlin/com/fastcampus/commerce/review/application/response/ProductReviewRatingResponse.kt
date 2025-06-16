@@ -10,14 +10,14 @@ data class ProductReviewRatingResponse(
     companion object {
         fun from(response: ProductReviewRating) =
             ProductReviewRatingResponse(
-                averageRating = response.average,
+                averageRating = response.average.toDouble(),
                 totalCount = response.totalCount,
                 ratingDistribution = RatingDistributionResponse(
-                    oneStarCount = response.oneStarCount,
-                    twoStarsCount = response.twoStarsCount,
-                    threeStarsCount = response.threeStarsCount,
-                    fourStarsCount = response.fourStarsCount,
-                    fiveStarsCount = response.fiveStarsCount,
+                    oneStarCount = response.oneStarCount.toInt(),
+                    twoStarsCount = response.twoStarsCount.toInt(),
+                    threeStarsCount = response.threeStarsCount.toInt(),
+                    fourStarsCount = response.fourStarsCount.toInt(),
+                    fiveStarsCount = response.fiveStarsCount.toInt(),
                 ),
             )
     }

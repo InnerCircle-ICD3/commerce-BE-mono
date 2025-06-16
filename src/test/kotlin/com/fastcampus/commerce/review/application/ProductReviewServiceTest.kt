@@ -12,6 +12,7 @@ import io.mockk.every
 import io.mockk.mockk
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 class ProductReviewServiceTest : DescribeSpec({
