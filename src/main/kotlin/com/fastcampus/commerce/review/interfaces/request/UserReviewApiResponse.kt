@@ -26,6 +26,7 @@ data class UserReviewApiResponse(
                 product = UserReviewProductApiResponse(
                     response.product.productId,
                     response.product.productName,
+                    response.product.productThumbnail,
                 ),
                 createdAt = response.createdAt,
             )
@@ -40,4 +41,5 @@ data class UserReviewAdminReplyApiResponse(
 data class UserReviewProductApiResponse(
     val productId: Long,
     val productName: String,
+    val productThumbnail: String,
 )

@@ -46,6 +46,7 @@ class UserReviewServiceTest : DescribeSpec({
                         userNickname = "user1",
                         productId = 100L,
                         productName = "상품A",
+                        productThumbnail = "http://localhost:8080/api/v1/product/100/thumbnail",
                         createdAt = now.minusDays(2),
                     ),
                     ReviewInfoFlat(
@@ -58,6 +59,7 @@ class UserReviewServiceTest : DescribeSpec({
                         userNickname = "user1",
                         productId = 200L,
                         productName = "상품B",
+                        productThumbnail = "http://localhost:8080/api/v1/product/100/thumbnail",
                         createdAt = now.minusDays(5),
                     ),
                 )
@@ -76,6 +78,7 @@ class UserReviewServiceTest : DescribeSpec({
                 result.content[0].adminReply?.createdAt shouldBe now.minusDays(1)
                 result.content[0].product.productId shouldBe 100L
                 result.content[0].product.productName shouldBe "상품A"
+                result.content[0].product.productThumbnail shouldBe "http://localhost:8080/api/v1/product/100/thumbnail"
                 result.content[0].createdAt shouldBe now.minusDays(2)
 
                 result.content[1].reviewId shouldBe 2L
@@ -84,6 +87,7 @@ class UserReviewServiceTest : DescribeSpec({
                 result.content[1].adminReply shouldBe null
                 result.content[1].product.productId shouldBe 200L
                 result.content[1].product.productName shouldBe "상품B"
+                result.content[1].product.productThumbnail shouldBe "http://localhost:8080/api/v1/product/100/thumbnail"
                 result.content[1].createdAt shouldBe now.minusDays(5)
 
                 verify(exactly = 1) { timeProvider.now() }
@@ -110,6 +114,7 @@ class UserReviewServiceTest : DescribeSpec({
                         userNickname = "user1",
                         productId = 300L,
                         productName = "상품C",
+                        productThumbnail = "http://localhost:8080/api/v1/product/100/thumbnail",
                         createdAt = now.minusMonths(1),
                     ),
                 )

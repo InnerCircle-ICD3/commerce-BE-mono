@@ -49,6 +49,7 @@ class ReviewAdminReaderTest : FunSpec({
                 userNickname = "사용자1",
                 productId = 1L,
                 productName = "테스트 상품",
+                productThumbnail = "http://localhost:8080/api/v1/product/100/thumbnail",
                 createdAt = reviewCreatedAt,
             )
 
@@ -85,6 +86,7 @@ class ReviewAdminReaderTest : FunSpec({
                 userNickname = "사용자2",
                 productId = 2L,
                 productName = "다른 상품",
+                productThumbnail = "http://localhost:8080/api/v1/product/100/thumbnail",
                 createdAt = reviewCreatedAt,
             )
 
@@ -122,6 +124,7 @@ class ReviewAdminReaderTest : FunSpec({
                 userNickname = "사용자4",
                 productId = 4L,
                 productName = "상품4",
+                productThumbnail = "http://localhost:8080/api/v1/product/100/thumbnail",
                 createdAt = reviewCreatedAt,
             )
 
@@ -151,6 +154,7 @@ class ReviewAdminReaderTest : FunSpec({
                 userNickname = "사용자1",
                 productId = 1L,
                 productName = "상품1",
+                productThumbnail = "http://localhost:8080/api/v1/product/100/thumbnail",
                 createdAt = reviewCreatedAt1,
             )
 
@@ -164,6 +168,7 @@ class ReviewAdminReaderTest : FunSpec({
                 userNickname = "사용자2",
                 productId = 2L,
                 productName = "상품2",
+                productThumbnail = "http://localhost:8080/api/v1/product/100/thumbnail",
                 createdAt = reviewCreatedAt2,
             )
 
@@ -217,6 +222,7 @@ class ReviewAdminReaderTest : FunSpec({
                 userNickname = "사용자1",
                 productId = 1L,
                 productName = "테스트 상품",
+                productThumbnail = "http://localhost:8080/api/v1/product/100/thumbnail",
                 createdAt = reviewCreatedAt,
             )
 
@@ -247,6 +253,7 @@ class ReviewAdminReaderTest : FunSpec({
                 userNickname = "사용자2",
                 productId = 2L,
                 productName = "다른 상품",
+                productThumbnail = "http://localhost:8080/api/v1/product/100/thumbnail",
                 createdAt = reviewCreatedAt,
             )
 
