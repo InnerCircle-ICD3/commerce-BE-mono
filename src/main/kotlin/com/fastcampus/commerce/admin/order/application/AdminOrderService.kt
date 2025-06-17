@@ -18,7 +18,6 @@ import com.fastcampus.commerce.order.domain.repository.OrderItemRepository
 import com.fastcampus.commerce.order.domain.repository.OrderRepository
 import com.fastcampus.commerce.order.domain.service.OrderNumberGenerator
 import com.fastcampus.commerce.order.infrastructure.repository.ProductSnapshotRepository
-import com.fastcampus.commerce.payment.domain.repository.PaymentRepository
 import com.fastcampus.commerce.payment.domain.service.PaymentReader
 import com.fastcampus.commerce.user.domain.repository.UserRepository
 import org.springframework.data.domain.Page
@@ -36,7 +35,7 @@ class AdminOrderService(
     private val orderItemRepository: OrderItemRepository,
     private val userRepository: UserRepository,
     private val productSnapshotRepository: ProductSnapshotRepository,
-    private val paymentReader: PaymentReader
+    private val paymentReader: PaymentReader,
 ) {
     // 주문 조회
     fun getOrders(request: AdminOrderSearchRequest, pageable: Pageable): Page<AdminOrderListResponse> {
@@ -81,7 +80,7 @@ class AdminOrderService(
         )
     }
 
-    //주문 생성
+    // 주문 생성
     @Transactional
     fun createOrder(request: AdminOrderCreateRequest): AdminOrderCreateResponse {
         // 1. 주문상품 정보/가격 검증
@@ -91,7 +90,7 @@ class AdminOrderService(
                 orderId = 0L, // 나중에 갱신
                 productSnapshotId = itemReq.productSnapshotId,
                 quantity = itemReq.quantity,
-                unitPrice = productSnapshot.price
+                unitPrice = productSnapshot.price,
             )
         }
         val totalAmount = orderItems.sumOf { it.unitPrice * it.quantity }
@@ -107,7 +106,7 @@ class AdminOrderService(
             address1 = request.address1,
             address2 = request.address2,
             deliveryMessage = request.deliveryMessage,
-            status = OrderStatus.WAITING_FOR_PAYMENT
+            status = OrderStatus.WAITING_FOR_PAYMENT,
         )
         orderRepository.save(order)
 
@@ -121,11 +120,11 @@ class AdminOrderService(
             orderNumber = order.orderNumber,
             totalAmount = order.totalAmount,
             orderStatus = order.status.name,
-            orderedAt = order.createdAt
+            orderedAt = order.createdAt,
         )
     }
 
-    //주문 취소
+    // 주문 취소
     @Transactional
     fun cancelOrder(orderId: Long) {
         val order = orderRepository.findById(orderId)
@@ -139,7 +138,7 @@ class AdminOrderService(
         order.cancel(cancelledAt = LocalDateTime.now())
     }
 
-    //주문 수정
+    // 주문 수정
     @Transactional
     fun updateOrder(orderId: Long, request: AdminOrderUpdateRequest) {
         val order = orderRepository.findById(orderId)

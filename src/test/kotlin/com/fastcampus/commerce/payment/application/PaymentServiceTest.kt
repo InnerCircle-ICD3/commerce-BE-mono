@@ -99,8 +99,8 @@ class PaymentServiceTest : FunSpec(
                 every { paymentReader.getByOrderId(1L) } returns payment
                 every { paymentValidator.validateProcessPayment(pgPaymentInfo, order, payment) } just Runs
                 every { timeProvider.now() } returns now
-                every { orderPaymentService.getOrderProducts(order.id!!)} returns listOf(
-                    OrderProduct(1L, 1L, 10)
+                every { orderPaymentService.getOrderProducts(order.id!!) } returns listOf(
+                    OrderProduct(1L, 1L, 10),
                 )
                 every { productStore.decreaseQuantityByProductId(1L, 10) } just Runs
 
@@ -116,11 +116,13 @@ class PaymentServiceTest : FunSpec(
                 verify(exactly = 1) { pgClient.getPaymentInfo(pgTransactionId) }
                 verify(exactly = 1) { orderPaymentService.getOrderByOrderNumber(orderNumber) }
                 verify(exactly = 1) { paymentReader.getByOrderId(1L) }
-                verify(exactly = 1) { paymentValidator.validateProcessPayment(
-                    pgPaymentInfo,
-                    order,
-                    payment
-                ) }
+                verify(exactly = 1) {
+                    paymentValidator.validateProcessPayment(
+                        pgPaymentInfo,
+                        order,
+                        payment,
+                    )
+                }
                 verify(exactly = 1) { timeProvider.now() }
             }
 
@@ -146,7 +148,7 @@ class PaymentServiceTest : FunSpec(
                 verify(exactly = 1) { pgClient.getPaymentInfo(transactionId) }
                 verify(exactly = 0) { orderPaymentService.getOrderByOrderNumber(any()) }
                 verify(exactly = 0) { paymentReader.getByOrderId(any()) }
-                verify(exactly = 0) { paymentValidator.validateProcessPayment(any(), any(),  any()) }
+                verify(exactly = 0) { paymentValidator.validateProcessPayment(any(), any(), any()) }
             }
 
             test("이미 결제된 주문인 경우 validation에서 예외가 발생한다") {
@@ -207,11 +209,13 @@ class PaymentServiceTest : FunSpec(
                 verify(exactly = 1) { pgClient.getPaymentInfo(pgTransactionId) }
                 verify(exactly = 1) { orderPaymentService.getOrderByOrderNumber(orderNumber) }
                 verify(exactly = 1) { paymentReader.getByOrderId(1L) }
-                verify(exactly = 1) { paymentValidator.validateProcessPayment(
-                    pgPaymentInfo,
-                    order,
-                    payment
-                ) }
+                verify(exactly = 1) {
+                    paymentValidator.validateProcessPayment(
+                        pgPaymentInfo,
+                        order,
+                        payment,
+                    )
+                }
                 verify(exactly = 0) { timeProvider.now() }
             }
 
@@ -259,7 +263,7 @@ class PaymentServiceTest : FunSpec(
                 every { orderPaymentService.getOrderByOrderNumber(orderNumber) } returns order
                 every { paymentReader.getByOrderId(1L) } returns payment
                 every {
-                    paymentValidator.validateProcessPayment(pgPaymentInfo, order,  payment)
+                    paymentValidator.validateProcessPayment(pgPaymentInfo, order, payment)
                 } throws CoreException(PaymentErrorCode.PG_RESULT_NOT_MATCH_PAYMENT)
 
                 // when & then
@@ -272,11 +276,13 @@ class PaymentServiceTest : FunSpec(
                 verify(exactly = 1) { pgClient.getPaymentInfo(pgTransactionId) }
                 verify(exactly = 1) { orderPaymentService.getOrderByOrderNumber(orderNumber) }
                 verify(exactly = 1) { paymentReader.getByOrderId(1L) }
-                verify(exactly = 1) { paymentValidator.validateProcessPayment(
-                    pgPaymentInfo,
-                    order,
-                    payment
-                ) }
+                verify(exactly = 1) {
+                    paymentValidator.validateProcessPayment(
+                        pgPaymentInfo,
+                        order,
+                        payment,
+                    )
+                }
                 verify(exactly = 0) { timeProvider.now() }
             }
         }

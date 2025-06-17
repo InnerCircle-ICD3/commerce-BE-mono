@@ -16,6 +16,7 @@ data class AdminOrderDetailResponse(
     val subtotal: Int,
     val total: Int,
 )
+
 data class AdminOrderDetailItemResponse(
     val productName: String,
     val quantity: Int,

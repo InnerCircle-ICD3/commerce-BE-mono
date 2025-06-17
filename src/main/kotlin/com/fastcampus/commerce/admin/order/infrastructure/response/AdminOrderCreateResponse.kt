@@ -7,5 +7,5 @@ data class AdminOrderCreateResponse(
     val orderNumber: String,
     val totalAmount: Int,
     val orderStatus: String,
-    val orderedAt: LocalDateTime
+    val orderedAt: LocalDateTime,
 )

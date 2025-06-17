@@ -21,17 +21,18 @@ class ProductReviewRepositoryImpl(
 ) : ProductReviewRepository {
     override fun getProductReviews(productId: Long, pageable: Pageable): Page<ProductReviewFlat> {
         val reviews = queryFactory
-            .select(Projections.constructor(
-                ProductReviewFlat::class.java,
-                review.id,
-                review.rating,
-                review.content,
-                review.createdAt,
-                reviewReply.content,
-                reviewReply.createdAt,
-                user.externalId,
-                user.nickname,
-                )
+            .select(
+                Projections.constructor(
+                    ProductReviewFlat::class.java,
+                    review.id,
+                    review.rating,
+                    review.content,
+                    review.createdAt,
+                    reviewReply.content,
+                    reviewReply.createdAt,
+                    user.externalId,
+                    user.nickname,
+                ),
             )
             .from(review)
             .leftJoin(reviewReply).on(review.id.eq(reviewReply.reviewId))

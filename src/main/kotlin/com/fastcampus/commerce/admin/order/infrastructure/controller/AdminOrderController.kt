@@ -24,40 +24,46 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/admin/orders")
 class AdminOrderController(
-    private val adminOrderService: AdminOrderService
+    private val adminOrderService: AdminOrderService,
 ) {
     // 주문 조회
     @GetMapping
     fun getOrders(
         @ModelAttribute search: AdminOrderSearchRequest,
-        @PageableDefault(size = 20, sort = ["orderDate"], direction = Sort.Direction.DESC) pageable: Pageable
+        @PageableDefault(size = 20, sort = ["orderDate"], direction = Sort.Direction.DESC) pageable: Pageable,
     ): Page<AdminOrderListResponse> {
         return adminOrderService.getOrders(search, pageable)
     }
 
-    //주문 상세 조회
+    // 주문 상세 조회
     @GetMapping("/{orderId}")
-    fun getOrderDetail(@PathVariable orderId: Long): AdminOrderDetailResponse {
+    fun getOrderDetail(
+        @PathVariable orderId: Long,
+    ): AdminOrderDetailResponse {
         return adminOrderService.getOrderDetail(orderId)
     }
 
     // 주문 생성
     @PostMapping
-    fun createOrder(@RequestBody request: AdminOrderCreateRequest): AdminOrderCreateResponse {
+    fun createOrder(
+        @RequestBody request: AdminOrderCreateRequest,
+    ): AdminOrderCreateResponse {
         return adminOrderService.createOrder(request)
     }
 
-    //주문 취소
+    // 주문 취소
     @DeleteMapping("/{orderId}/cancel")
-    fun cancelOrder(@PathVariable orderId: Long) {
+    fun cancelOrder(
+        @PathVariable orderId: Long,
+    ) {
         adminOrderService.cancelOrder(orderId)
     }
 
-    //주문 수정
+    // 주문 수정
     @PatchMapping("/{orderId}")
     fun updateOrder(
         @PathVariable orderId: Long,
-        @RequestBody request: AdminOrderUpdateRequest
+        @RequestBody request: AdminOrderUpdateRequest,
     ) {
         adminOrderService.updateOrder(orderId, request)
     }

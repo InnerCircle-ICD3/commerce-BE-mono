@@ -65,7 +65,7 @@ class ProductReviewControllerRestDocTest : DescribeSpec() {
                             content = "감사합니다",
                             createdAt = now,
                         ),
-                        user = ProductReviewUserResponse("USR123123", "user1")
+                        user = ProductReviewUserResponse("USR123123", "user1"),
                     ),
                 )
                 val response = PageImpl(productReviews, PageRequest.of(1, 10), productReviews.size.toLong())
