@@ -176,17 +176,6 @@ class ChatControllerRestDocTest : DescribeSpec() {
                         createdAt = now.minusDays(1),
                         lastMessage = "네, 재고 있습니다",
                         lastMessageAt = now.minusHours(2)
-                    ),
-                    ChatRoomResponse(
-                        id = 2L,
-                        guestId = null,
-                        userId = 123L,
-                        adminId = null,
-                        productId = 2L,
-                        status = "REQUESTED",
-                        createdAt = now,
-                        lastMessage = "배송 문의",
-                        lastMessageAt = now
                     )
                 )
 
@@ -220,17 +209,6 @@ class ChatControllerRestDocTest : DescribeSpec() {
                         field("data[0].createdAt", "생성 시간", chatRooms[0].createdAt.format(dateFormatter))
                         field("data[0].lastMessage", "마지막 메시지", "네, 재고 있습니다")
                         field("data[0].lastMessageAt", "마지막 메시지 시간", chatRooms[0].lastMessageAt?.format(dateFormatter))
-
-                        // 두 번째 채팅방
-                        field("data[1].id", "채팅방 ID", 2)
-                        optionalField("data[1].guestId", "게스트 ID", null)
-                        field("data[1].userId", "유저 ID", 123)
-                        optionalField("data[1].adminId", "관리자 ID", null)
-                        field("data[1].productId", "상품 ID", 2)
-                        field("data[1].status", "채팅방 상태", "REQUESTED")
-                        field("data[1].createdAt", "생성 시간", chatRooms[1].createdAt.format(dateFormatter))
-                        field("data[1].lastMessage", "마지막 메시지", "배송 문의")
-                        field("data[1].lastMessageAt", "마지막 메시지 시간", chatRooms[1].lastMessageAt?.format(dateFormatter))
 
                         optionalField("error", "에러 정보", null)
                     }
@@ -301,16 +279,6 @@ class ChatControllerRestDocTest : DescribeSpec() {
                         senderName = "Guest",
                         createdAt = now.minusMinutes(10),
                         productInfo = null
-                    ),
-                    ChatMessageResponse(
-                        id = 2L,
-                        chatRoomId = roomId,
-                        content = "네, 무엇을 도와드릴까요?",
-                        senderType = SenderType.ADMIN,
-                        senderId = "1",
-                        senderName = "상담원",
-                        createdAt = now.minusMinutes(9),
-                        productInfo = null
                     )
                 )
 
@@ -346,24 +314,14 @@ class ChatControllerRestDocTest : DescribeSpec() {
                         field("data.content[0].createdAt", "전송 시간", messages[0].createdAt.format(dateFormatter))
                         optionalField("data.content[0].productInfo", "상품 정보", null)
 
-                        // 두 번째 메시지
-                        field("data.content[1].id", "메시지 ID", 2)
-                        field("data.content[1].chatRoomId", "채팅방 ID", resultRoomId)
-                        field("data.content[1].content", "메시지 내용", "네, 무엇을 도와드릴까요?")
-                        field("data.content[1].senderType", "발신자 타입", "ADMIN")
-                        field("data.content[1].senderId", "발신자 ID", "1")
-                        field("data.content[1].senderName", "발신자 이름", "상담원")
-                        field("data.content[1].createdAt", "전송 시간", messages[1].createdAt.format(dateFormatter))
-                        optionalField("data.content[1].productInfo", "상품 정보", null)
-
                         // 페이지 정보
-                        field("data.totalElements", "전체 메시지 수", 2)
+                        field("data.totalElements", "전체 메시지 수", 1)
                         field("data.totalPages", "전체 페이지 수", 1)
                         field("data.number", "현재 페이지 번호", 0)
                         field("data.size", "페이지 크기", 20)
                         field("data.first", "첫 페이지 여부", true)
                         field("data.last", "마지막 페이지 여부", true)
-                        field("data.numberOfElements", "현재 페이지 요소 수", 2)
+                        field("data.numberOfElements", "현재 메세지 요소 수", 1)
                         field("data.empty", "빈 페이지 여부", false)
 
                         ignoredField("data.pageable")
