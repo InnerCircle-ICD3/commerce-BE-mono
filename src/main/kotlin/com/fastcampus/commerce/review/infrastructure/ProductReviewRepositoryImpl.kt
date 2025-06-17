@@ -4,8 +4,8 @@ import com.fastcampus.commerce.review.domain.entity.QReview.review
 import com.fastcampus.commerce.review.domain.entity.QReviewReply.reviewReply
 import com.fastcampus.commerce.review.domain.model.ProductReviewFlat
 import com.fastcampus.commerce.review.domain.model.ProductReviewRating
-import com.fastcampus.commerce.review.domain.model.QProductReviewFlat
 import com.fastcampus.commerce.review.domain.repository.ProductReviewRepository
+import com.fastcampus.commerce.user.domain.entity.QUser.user
 import com.querydsl.core.types.Projections
 import com.querydsl.core.types.dsl.Expressions
 import com.querydsl.core.types.dsl.Expressions.nullExpression
@@ -21,18 +21,21 @@ class ProductReviewRepositoryImpl(
 ) : ProductReviewRepository {
     override fun getProductReviews(productId: Long, pageable: Pageable): Page<ProductReviewFlat> {
         val reviews = queryFactory
-            .select(
-                QProductReviewFlat(
-                    review.id,
-                    review.rating,
-                    review.content,
-                    review.createdAt,
-                    reviewReply.content,
-                    reviewReply.createdAt,
-                ),
+            .select(Projections.constructor(
+                ProductReviewFlat::class.java,
+                review.id,
+                review.rating,
+                review.content,
+                review.createdAt,
+                reviewReply.content,
+                reviewReply.createdAt,
+                user.externalId,
+                user.nickname,
+                )
             )
             .from(review)
             .leftJoin(reviewReply).on(review.id.eq(reviewReply.reviewId))
+            .join(user).on(review.userId.eq(user.id))
             .where(review.productId.eq(productId))
             .orderBy(review.createdAt.desc())
             .offset(pageable.offset)

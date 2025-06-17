@@ -37,12 +37,16 @@ class ProductReviewServiceTest : DescribeSpec({
                     createdAt = now,
                     replyContent = "감사합니다",
                     replyCreatedAt = now,
+                    userId = "USR123121",
+                    userNickname = "user1",
                 ),
                 ProductReviewFlat(
                     reviewId = 2L,
                     rating = 3,
                     content = "좋습니다.",
                     createdAt = now,
+                    userId = "USR1231231",
+                    userNickname = "user2",
                 ),
             )
             val reviews = PageImpl(productReviews, pageable, productReviews.size.toLong())

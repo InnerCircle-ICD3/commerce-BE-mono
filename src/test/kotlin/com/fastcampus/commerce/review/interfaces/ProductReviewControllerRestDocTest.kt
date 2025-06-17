@@ -6,6 +6,7 @@ import com.fastcampus.commerce.review.application.ProductReviewService
 import com.fastcampus.commerce.review.application.response.AdminReplyResponse
 import com.fastcampus.commerce.review.application.response.ProductReviewRatingResponse
 import com.fastcampus.commerce.review.application.response.ProductReviewResponse
+import com.fastcampus.commerce.review.application.response.ProductReviewUserResponse
 import com.fastcampus.commerce.review.application.response.RatingDistributionResponse
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.DescribeSpec
@@ -64,6 +65,7 @@ class ProductReviewControllerRestDocTest : DescribeSpec() {
                             content = "감사합니다",
                             createdAt = now,
                         ),
+                        user = ProductReviewUserResponse("USR123123", "user1")
                     ),
                 )
                 val response = PageImpl(productReviews, PageRequest.of(1, 10), productReviews.size.toLong())
@@ -98,6 +100,8 @@ class ProductReviewControllerRestDocTest : DescribeSpec() {
                             "관리자 답글 작성일",
                             productReviews[0].adminReply?.createdAt.toString(),
                         )
+                        field("data.content[0].user.userId", "리뷰작성자 아이디", productReviews[0].user.userId)
+                        field("data.content[0].user.nickname", "리뷰작성자 닉네임", productReviews[0].user.nickname)
                         field("data.page", "현재 페이지 (기본값 1)", response.number)
                         field("data.size", "페이지 사이즈(기본값 10)", response.size)
                         field("data.totalPages", "전체 페이지 수", response.totalPages)

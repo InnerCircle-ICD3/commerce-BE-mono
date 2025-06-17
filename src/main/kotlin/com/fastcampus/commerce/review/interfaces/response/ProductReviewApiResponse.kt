@@ -10,6 +10,7 @@ data class ProductReviewApiResponse(
     val content: String,
     val createdAt: LocalDateTime,
     val adminReply: AdminReplyApiResponse? = null,
+    val user: ProductReviewUserApiResponse,
 ) {
     companion object {
         fun from(it: ProductReviewResponse): ProductReviewApiResponse =
@@ -19,6 +20,7 @@ data class ProductReviewApiResponse(
                 content = it.content,
                 createdAt = it.createdAt,
                 adminReply = it.adminReply?.let(AdminReplyApiResponse::from),
+                user = ProductReviewUserApiResponse(it.user.userId, it.user.nickname),
             )
     }
 }
@@ -35,3 +37,8 @@ data class AdminReplyApiResponse(
             )
     }
 }
+
+data class ProductReviewUserApiResponse(
+    val userId: String,
+    val nickname: String,
+)
