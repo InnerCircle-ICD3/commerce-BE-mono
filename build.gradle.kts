@@ -117,7 +117,7 @@ val querydslDir = "build/generated"
 sourceSets["main"].java.srcDirs(querydslDir)
 
 configure<com.epages.restdocs.apispec.gradle.OpenApi3Extension> {
-    setServer("http://3.39.233.3:8080")
+    setServer("http://13.124.152.6:8080")
     title = "801base API docs"
     description = "801base의 API 문서입니다."
     version = "0.0.1"
