@@ -1,6 +1,7 @@
 package com.fastcampus.commerce.chat.interfaces
 
 import com.fastcampus.commerce.chat.application.ChatService
+import com.fastcampus.commerce.chat.application.ChatMessageService
 import com.fastcampus.commerce.chat.domain.entity.SenderType
 import com.fastcampus.commerce.config.TestConfig
 import com.fastcampus.commerce.restdoc.documentation
@@ -8,6 +9,8 @@ import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.mockk.every
+import io.mockk.just
+import io.mockk.Runs
 import io.restassured.module.mockmvc.RestAssuredMockMvc
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
@@ -34,6 +37,9 @@ class ChatControllerRestDocTest : DescribeSpec() {
 
     @MockkBean
     lateinit var chatService: ChatService
+
+    @MockkBean
+    lateinit var chatMessageService: ChatMessageService
 
     val tag = "Chat"
     val privateResource = true
@@ -326,6 +332,99 @@ class ChatControllerRestDocTest : DescribeSpec() {
 
                         ignoredField("data.pageable")
                         ignoredField("data.sort")
+                        optionalField("error", "에러 정보", null)
+                    }
+                }
+            }
+        }
+
+        describe("PATCH /chat/rooms/{roomId}/status - 채팅방 상태 변경") {
+            val summary = "채팅방의 상태를 변경한다. (관리자 권한 필요)"
+
+            it("채팅방 상태를 변경할 수 있다") {
+                val roomId = 1L
+                val resultRoomId = 1
+                val newStatus = "END"
+                val now = LocalDateTime.now()
+
+                val response = ChatRoomResponse(
+                    id = roomId,
+                    guestId = "guest-123",
+                    userId = null,
+                    adminId = 1L,
+                    productId = 1L,
+                    status = newStatus,
+                    createdAt = now.minusDays(1),
+                    lastMessage = "상담이 종료되었습니다",
+                    lastMessageAt = now
+                )
+
+                every { chatService.updateChatRoomStatus(roomId, newStatus) } returns response
+                every { chatMessageService.endChat(roomId) } just Runs
+
+                documentation(
+                    identifier = "채팅방_상태_변경_성공",
+                    tag = tag,
+                    summary = summary,
+                    privateResource = privateResource,
+                ) {
+                    requestLine(HttpMethod.PATCH, "/chat/rooms/{roomId}/status") {
+                        pathVariable("roomId", "채팅방 ID", roomId)
+                    }
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer admin-token")
+                    }
+
+                    requestBody {
+                        field("status", "변경할 상태 (REQUESTED, ON_CHAT, AWAITING, END)", newStatus)
+                    }
+
+                    responseBody {
+                        field("data.id", "채팅방 ID", resultRoomId)
+                        field("data.guestId", "게스트 ID", "guest-123")
+                        optionalField("data.userId", "유저 ID", null)
+                        field("data.adminId", "관리자 ID", 1)
+                        field("data.productId", "상품 ID", 1)
+                        field("data.status", "채팅방 상태", newStatus)
+                        field("data.createdAt", "생성 시간", response.createdAt.format(dateFormatter))
+                        field("data.lastMessage", "마지막 메시지", "상담이 종료되었습니다")
+                        field("data.lastMessageAt", "마지막 메시지 시간", response.lastMessageAt?.format(dateFormatter))
+                        optionalField("error", "에러 정보", null)
+                    }
+                }
+            }
+        }
+
+        describe("POST /chat/rooms/{roomId}/admin-join - 관리자 채팅방 입장") {
+            val summary = "관리자가 채팅방에 입장한다."
+
+            it("관리자가 채팅방에 입장할 수 있다") {
+                val roomId = 1L
+                val adminId = 100L
+
+                every { chatMessageService.handleAdminJoin(roomId, adminId) } just Runs
+
+                documentation(
+                    identifier = "관리자_채팅방_입장_성공",
+                    tag = tag,
+                    summary = summary,
+                    privateResource = privateResource,
+                ) {
+                    requestLine(HttpMethod.POST, "/chat/rooms/{roomId}/admin-join") {
+                        pathVariable("roomId", "채팅방 ID", roomId)
+                    }
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer admin-token")
+                    }
+
+                    requestBody {
+                        field("adminId", "관리자 ID", adminId)
+                    }
+
+                    responseBody {
+                        field("data.message", "응답 메시지", "관리자가 채팅방에 입장했습니다.")
                         optionalField("error", "에러 정보", null)
                     }
                 }
