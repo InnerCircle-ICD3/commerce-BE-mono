@@ -7,4 +7,6 @@ interface PaymentRepository {
     fun findByOrderId(orderId: Long): Optional<Payment>
 
     fun findByPaymentNumber(paymentNumber: String): Optional<Payment>
+
+    fun save(payment: Payment): Payment
 }
