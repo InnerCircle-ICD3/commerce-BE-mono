@@ -54,10 +54,4 @@ interface ChatMessageRepository : JpaRepository<ChatMessage, Long> {
         pageable: Pageable
     ): Page<ChatMessage>
 
-    // 읽지 않은 메시지 개수 조회 (soft delete 제외)
-    @Query("SELECT COUNT(cm) FROM ChatMessage cm WHERE cm.chatRoomId = :chatRoomId AND cm.createdAt > :lastReadAt AND cm.deletedAt IS NULL")
-    fun countUnreadMessages(
-        @Param("chatRoomId") chatRoomId: Long,
-        @Param("lastReadAt") lastReadAt: LocalDateTime
-    ): Long
 }

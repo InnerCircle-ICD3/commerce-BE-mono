@@ -73,27 +73,6 @@ class ChatMessageService(
         messagingTemplate.convertAndSend("/sub/chat/room/$roomId", notification)
     }
 
-    fun markMessagesAsRead(roomId: Long, userId: Long, lastReadAt: LocalDateTime) {
-        // TODO: 읽음 처리 로직 구현
-        // 현재는 읽음 상태를 별도로 저장하지 않음
-        // 필요시 읽음 상태 테이블 추가 고려
-    }
-
-    fun getUnreadMessageCount(roomId: Long, lastReadAt: LocalDateTime): Long {
-        return chatMessageRepository.countUnreadMessages(roomId, lastReadAt)
-    }
-
-    fun deleteMessage(messageId: Long, requesterId: String) {
-        val message = chatMessageRepository.findById(messageId)
-            .orElseThrow { CoreException(ChatErrorCode.NOT_FOUND, "메시지를 찾을 수 없습니다.") }
-
-        // TODO: 권한 확인 로직 추가
-        // 메시지 작성자 또는 관리자만 삭제 가능하도록
-
-        message.deletedAt = LocalDateTime.now()
-        chatMessageRepository.save(message)
-    }
-
     // 관리자가 채팅방에 입장할 때
     fun handleAdminJoin(roomId: Long, adminId: Long) {
         val chatRoom = chatRoomRepository.findById(roomId)
@@ -108,20 +87,6 @@ class ChatMessageService(
 
         // 입장 알림 전송
         sendNotification(roomId, NotificationType.ADMIN_ASSIGNED, "상담사가 입장했습니다.")
-    }
-
-    // 사용자가 채팅방을 나갈 때
-    fun handleUserLeave(roomId: Long, userId: String) {
-        val chatRoom = chatRoomRepository.findById(roomId)
-            .orElseThrow { CoreException(ChatErrorCode.NOT_FOUND, "채팅방을 찾을 수 없습니다.") }
-
-        // 상태를 AWAITING으로 변경
-        if (chatRoom.status == ChatRoomStatus.ON_CHAT) {
-            updateChatRoomStatus(chatRoom, ChatRoomStatus.AWAITING)
-        }
-
-        // 퇴장 알림 전송
-        sendNotification(roomId, NotificationType.USER_LEFT, "고객이 대화를 나갔습니다.")
     }
 
     // 채팅 종료
