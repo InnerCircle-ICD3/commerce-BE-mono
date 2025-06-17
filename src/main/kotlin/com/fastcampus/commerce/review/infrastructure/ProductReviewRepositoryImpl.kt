@@ -1,7 +1,10 @@
 package com.fastcampus.commerce.review.infrastructure
 
+import com.fastcampus.commerce.common.error.CommonErrorCode
+import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.review.domain.entity.QReview.review
 import com.fastcampus.commerce.review.domain.entity.QReviewReply.reviewReply
+import com.fastcampus.commerce.review.domain.entity.Review
 import com.fastcampus.commerce.review.domain.model.ProductReviewFlat
 import com.fastcampus.commerce.review.domain.model.ProductReviewRating
 import com.fastcampus.commerce.review.domain.repository.ProductReviewRepository
@@ -12,15 +15,16 @@ import com.querydsl.core.types.dsl.Expressions.nullExpression
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.data.support.PageableExecutionUtils
 import org.springframework.stereotype.Repository
 
 @Repository
 class ProductReviewRepositoryImpl(
     private val queryFactory: JPAQueryFactory,
-) : ProductReviewRepository {
+) : ProductReviewRepository, QuerydslRepositorySupport(Review::class.java) {
     override fun getProductReviews(productId: Long, pageable: Pageable): Page<ProductReviewFlat> {
-        val reviews = queryFactory
+        val query = queryFactory
             .select(
                 Projections.constructor(
                     ProductReviewFlat::class.java,
@@ -38,12 +42,14 @@ class ProductReviewRepositoryImpl(
             .leftJoin(reviewReply).on(review.id.eq(reviewReply.reviewId))
             .join(user).on(review.userId.eq(user.id))
             .where(review.productId.eq(productId))
-            .orderBy(review.createdAt.desc())
-            .offset(pageable.offset)
-            .limit(pageable.pageSize.toLong())
-            .fetch()
 
-        return PageableExecutionUtils.getPage(reviews, pageable) {
+        val pagingQuery = querydsl?.applyPagination(pageable, query)
+            ?: throw CoreException(CommonErrorCode.SERVER_ERROR)
+
+        return PageableExecutionUtils.getPage(
+            pagingQuery.fetch(),
+            pageable
+        ) {
             queryFactory
                 .select(review.id.count())
                 .from(review)
