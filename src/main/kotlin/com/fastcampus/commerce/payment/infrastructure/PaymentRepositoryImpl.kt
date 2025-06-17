@@ -16,4 +16,8 @@ class PaymentRepositoryImpl(
     override fun findByPaymentNumber(paymentNumber: String): Optional<Payment> {
         return paymentJpaRepository.findByPaymentNumber(paymentNumber)
     }
+
+    override fun save(payment: Payment): Payment {
+        return paymentJpaRepository.save(payment)
+    }
 }

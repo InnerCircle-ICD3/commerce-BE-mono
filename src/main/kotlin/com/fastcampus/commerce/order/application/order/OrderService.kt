@@ -2,6 +2,7 @@ package com.fastcampus.commerce.order.application.order
 
 import com.fastcampus.commerce.cart.application.query.CartItemReader
 import com.fastcampus.commerce.common.error.CoreException
+import com.fastcampus.commerce.common.id.UniqueIdGenerator
 import com.fastcampus.commerce.common.response.EnumResponse
 import com.fastcampus.commerce.common.util.TimeProvider
 import com.fastcampus.commerce.order.application.query.ProductSnapshotReader
@@ -22,7 +23,10 @@ import com.fastcampus.commerce.order.interfaces.response.PrepareOrderApiResponse
 import com.fastcampus.commerce.order.interfaces.response.PrepareOrderItemApiResponse
 import com.fastcampus.commerce.order.interfaces.response.PrepareOrderShippingInfoApiResponse
 import com.fastcampus.commerce.order.interfaces.response.SearchOrderApiResponse
+import com.fastcampus.commerce.payment.domain.entity.Payment
 import com.fastcampus.commerce.payment.domain.entity.PaymentMethod
+import com.fastcampus.commerce.payment.domain.error.PaymentErrorCode
+import com.fastcampus.commerce.payment.domain.repository.PaymentRepository
 import com.fastcampus.commerce.payment.domain.service.PaymentReader
 import com.fastcampus.commerce.review.domain.repository.ReviewRepository
 import com.fastcampus.commerce.user.api.service.UserAddressService
@@ -44,6 +48,7 @@ class OrderService(
     private val paymentReader: PaymentReader,
     private val reviewRepository: ReviewRepository,
     private val timeProvider: TimeProvider,
+    private val paymentRepository: PaymentRepository,
 ) {
     // 배송비 정책 (정책에 따라 변경 예정)
     private fun calculateShippingFee(itemsSubtotal: Int): Int = if (itemsSubtotal >= 20000) 0 else 3000
@@ -141,6 +146,17 @@ class OrderService(
             )
         }
         orderItemRepository.saveAll(orderItems)
+
+        val paymentMethod = (PaymentMethod.fromCode(request.paymentMethod)
+            ?: throw CoreException(PaymentErrorCode.INVALID_PAYMENT_METHOD))
+
+        paymentRepository.save(Payment(
+            paymentNumber = UniqueIdGenerator.generatePaymentNumber(timeProvider.now().toLocalDate()),
+            orderId = order.id!!,
+            userId = userId,
+            amount = order.totalAmount,
+            paymentMethod = paymentMethod
+        ))
 
         // 6. 응답 반환
         return OrderApiResponse(orderNumber)
