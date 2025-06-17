@@ -83,6 +83,7 @@ class UserReviewControllerRestDocTest : DescribeSpec() {
                     }
 
                     queryParameters {
+                        optionalField("monthRange", "작성 월(3,6,9,12개월)", 3)
                         optionalField("page", "페이지(기본 값: 1)", 1)
                         optionalField("sort", "정렬(기본값: createdAt / e.g. sort=createdAt, sort=-createdAt)", "createdAt")
                     }

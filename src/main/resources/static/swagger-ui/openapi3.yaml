@@ -1668,6 +1668,12 @@ paths:
       summary: 사용자가 등록한 리뷰 목록 조회
       operationId: 사용자_리뷰목록_조회_성공
       parameters:
+      - name: monthRange
+        in: query
+        description: "작성 월(3,6,9,12개월)"
+        required: false
+        schema:
+          type: string
       - name: page
         in: query
         description: "페이지(기본 값: 1)"
