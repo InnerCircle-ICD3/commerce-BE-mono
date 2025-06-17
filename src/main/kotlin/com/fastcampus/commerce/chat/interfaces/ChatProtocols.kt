@@ -31,13 +31,6 @@ data class ProductInfo(
     val thumbnailUrl: String? = null,
 )
 
-// 채팅방 입장/퇴장 알림
-data class ChatNotification(
-    val chatRoomId: Long,
-    val type: NotificationType,
-    val message: String,
-    val timestamp: LocalDateTime = LocalDateTime.now(),
-)
 
 // 채팅방 생성 요청 DTO
 data class CreateChatRoomRequest(
@@ -58,4 +51,27 @@ data class ChatRoomResponse(
     val createdAt: LocalDateTime,
     val lastMessage: String? = null,
     val lastMessageAt: LocalDateTime? = null,
+)
+
+// 관리자 입장 요청
+data class AdminJoinRequest(
+    val adminId: Long
+)
+
+// 채팅 종료 요청
+data class EndChatRequest(
+    val roomId: Long
+)
+
+// 채팅방 상태 변경 요청
+data class UpdateChatRoomStatusRequest(
+    val status: String  // REQUESTED, ON_CHAT, AWAITING, END
+)
+
+// 채팅 알림
+data class ChatNotification(
+    val chatRoomId: Long,
+    val type: NotificationType,
+    val message: String,
+    val timestamp: LocalDateTime
 )
