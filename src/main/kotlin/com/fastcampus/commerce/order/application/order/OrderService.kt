@@ -115,11 +115,9 @@ class OrderService(
         // 2. 총 주문 금액 계산
         val totalAmount = cartItems.sumOf { it.unitPrice!! * it.quantity }
 
-        // 난수 생성
-        val orderId = 1L
-
         // 3. 주문 번호 생성
-        val orderNumber = orderNumberGenerator.generate(orderId)
+        val now = timeProvider.now().toLocalDate()
+        val orderNumber = UniqueIdGenerator.generateOrderNumber(now)
 
         // 4. Order Entity 생성 및 저장
         val order = Order(
@@ -151,7 +149,7 @@ class OrderService(
             ?: throw CoreException(PaymentErrorCode.INVALID_PAYMENT_METHOD))
 
         paymentRepository.save(Payment(
-            paymentNumber = UniqueIdGenerator.generatePaymentNumber(timeProvider.now().toLocalDate()),
+            paymentNumber = UniqueIdGenerator.generatePaymentNumber(now),
             orderId = order.id!!,
             userId = userId,
             amount = order.totalAmount,

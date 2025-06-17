@@ -15,4 +15,6 @@ object UniqueIdGenerator {
     }
 
     fun generatePaymentNumber(date: LocalDate) = generateUniqueId(PAYMENT_PREFIX, date)
+
+    fun generateOrderNumber(date: java.time.LocalDate)  = generateUniqueId(ORDER_PREFIX, date)
 }
