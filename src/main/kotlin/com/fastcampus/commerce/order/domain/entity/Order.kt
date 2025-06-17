@@ -110,4 +110,9 @@ class Order(
         this.refundRejectedAt = rejectedAt
         this.status = OrderStatus.REFUND_REJECTED
     }
+
+    fun fail(failedAt: LocalDateTime) {
+        this.cancelledAt = failedAt
+        this.status = OrderStatus.CANCELLED
+    }
 }
