@@ -45,7 +45,7 @@ class OrderPaymentRepositoryImpl(
                 )
             )
             .from(order)
-            .join(orderItem).on(order.id.eq(orderItem.id))
+            .join(orderItem).on(order.id.eq(orderItem.orderId))
             .join(productSnapshot).on(productSnapshot.id.eq(orderItem.productSnapshotId))
             .where(order.id.eq(orderId))
             .fetch()
