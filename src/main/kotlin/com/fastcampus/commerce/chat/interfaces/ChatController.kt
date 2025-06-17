@@ -45,12 +45,4 @@ class ChatController(
         return chatService.getChatMessages(roomId, pageable)
     }
 
-    // 채팅방 상태 변경 (선택적)
-    @PatchMapping("/rooms/{roomId}/status")
-    fun updateChatRoomStatus(
-        @PathVariable roomId: Long,
-        @RequestParam status: String
-    ): ChatRoomResponse {
-        return chatService.updateChatRoomStatus(roomId, status)
-    }
 }
