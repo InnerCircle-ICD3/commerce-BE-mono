@@ -8,7 +8,6 @@ import com.fastcampus.commerce.payment.application.response.PaymentProcessRespon
 import com.fastcampus.commerce.payment.domain.error.PaymentErrorCode
 import com.fastcampus.commerce.payment.domain.service.PaymentReader
 import com.fastcampus.commerce.payment.domain.service.PgClient
-import com.fastcampus.commerce.product.application.ProductQueryService
 import com.fastcampus.commerce.product.domain.service.ProductStore
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

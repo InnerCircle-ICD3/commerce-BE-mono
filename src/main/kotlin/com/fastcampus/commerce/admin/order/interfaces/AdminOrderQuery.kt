@@ -7,9 +7,5 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 
 interface AdminOrderQuery {
-    fun searchOrders(
-        search: AdminOrderSearchRequest,
-        pageable: Pageable,
-        sort: Sort
-    ): Page<AdminOrderListResponse>
+    fun searchOrders(search: AdminOrderSearchRequest, pageable: Pageable, sort: Sort): Page<AdminOrderListResponse>
 }

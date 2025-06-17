@@ -1752,7 +1752,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/reviews:byProduct-352554938"
+                $ref: "#/components/schemas/reviews:byProduct1810816546"
               examples:
                 상품_리뷰목록_조회_성공:
                   value: |-
@@ -1766,6 +1766,10 @@ paths:
                           "adminReply" : {
                             "content" : "감사합니다",
                             "createdAt" : "2025-06-01T12:00"
+                          },
+                          "user" : {
+                            "userId" : "USR123123",
+                            "nickname" : "user1"
                           }
                         } ],
                         "page" : 1,
@@ -2204,6 +2208,74 @@ components:
         contentType:
           type: string
           description: 파일 Content-Type
+    reviews:byProduct1810816546:
+      type: object
+      properties:
+        data:
+          required:
+          - page
+          - size
+          - totalElements
+          - totalPages
+          type: object
+          properties:
+            size:
+              type: number
+              description: 페이지 사이즈(기본값 10)
+            totalPages:
+              type: number
+              description: 전체 페이지 수
+            page:
+              type: number
+              description: 현재 페이지 (기본값 1)
+            content:
+              type: array
+              items:
+                required:
+                - content
+                - createdAt
+                - rating
+                - reviewId
+                type: object
+                properties:
+                  createdAt:
+                    type: string
+                    description: 리뷰 작성일
+                  rating:
+                    type: number
+                    description: 별점
+                  user:
+                    required:
+                    - nickname
+                    - userId
+                    type: object
+                    properties:
+                      nickname:
+                        type: string
+                        description: 리뷰작성자 닉네임
+                      userId:
+                        type: string
+                        description: 리뷰작성자 아이디
+                  reviewId:
+                    type: number
+                    description: 리뷰 아이디
+                  adminReply:
+                    type: object
+                    properties:
+                      createdAt:
+                        type: string
+                        description: 관리자 답글 작성일
+                        nullable: true
+                      content:
+                        type: string
+                        description: 관리자 답글 내용
+                        nullable: true
+                  content:
+                    type: string
+                    description: 리뷰 내용
+            totalElements:
+              type: number
+              description: 총 수
     users-addresses135049666:
       required:
       - address1
@@ -3449,62 +3521,6 @@ components:
               addressId:
                 type: number
                 description: 배송지 ID
-    reviews:byProduct-352554938:
-      type: object
-      properties:
-        data:
-          required:
-          - page
-          - size
-          - totalElements
-          - totalPages
-          type: object
-          properties:
-            size:
-              type: number
-              description: 페이지 사이즈(기본값 10)
-            totalPages:
-              type: number
-              description: 전체 페이지 수
-            page:
-              type: number
-              description: 현재 페이지 (기본값 1)
-            content:
-              type: array
-              items:
-                required:
-                - content
-                - createdAt
-                - rating
-                - reviewId
-                type: object
-                properties:
-                  createdAt:
-                    type: string
-                    description: 리뷰 작성일
-                  rating:
-                    type: number
-                    description: 별점
-                  reviewId:
-                    type: number
-                    description: 리뷰 아이디
-                  adminReply:
-                    type: object
-                    properties:
-                      createdAt:
-                        type: string
-                        description: 관리자 답글 작성일
-                        nullable: true
-                      content:
-                        type: string
-                        description: 관리자 답글 내용
-                        nullable: true
-                  content:
-                    type: string
-                    description: 리뷰 내용
-            totalElements:
-              type: number
-              description: 총 수
     cart-items1349440338:
       required:
       - productId

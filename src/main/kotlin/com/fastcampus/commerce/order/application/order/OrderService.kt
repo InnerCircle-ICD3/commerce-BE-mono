@@ -145,16 +145,20 @@ class OrderService(
         }
         orderItemRepository.saveAll(orderItems)
 
-        val paymentMethod = (PaymentMethod.fromCode(request.paymentMethod)
-            ?: throw CoreException(PaymentErrorCode.INVALID_PAYMENT_METHOD))
+        val paymentMethod = (
+            PaymentMethod.fromCode(request.paymentMethod)
+                ?: throw CoreException(PaymentErrorCode.INVALID_PAYMENT_METHOD)
+        )
 
-        paymentRepository.save(Payment(
-            paymentNumber = UniqueIdGenerator.generatePaymentNumber(now),
-            orderId = order.id!!,
-            userId = userId,
-            amount = order.totalAmount,
-            paymentMethod = paymentMethod
-        ))
+        paymentRepository.save(
+            Payment(
+                paymentNumber = UniqueIdGenerator.generatePaymentNumber(now),
+                orderId = order.id!!,
+                userId = userId,
+                amount = order.totalAmount,
+                paymentMethod = paymentMethod,
+            ),
+        )
 
         // 6. 응답 반환
         return OrderApiResponse(orderNumber)

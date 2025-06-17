@@ -7,5 +7,5 @@ data class AdminOrderUpdateRequest(
     val address1: String?,
     val address2: String?,
     val deliveryMessage: String?,
-    val adminMemo: String?
+    val adminMemo: String?,
 )

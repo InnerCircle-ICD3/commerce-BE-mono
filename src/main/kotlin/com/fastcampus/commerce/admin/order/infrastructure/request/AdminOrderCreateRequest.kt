@@ -11,8 +11,9 @@ data class AdminOrderCreateRequest(
     val address1: String,
     val address2: String?,
     val deliveryMessage: String?,
-    val paymentMethod: PaymentStatus
+    val paymentMethod: PaymentStatus,
 )
+
 data class OrderItemRequest(
     val productSnapshotId: Long,
     val quantity: Int,

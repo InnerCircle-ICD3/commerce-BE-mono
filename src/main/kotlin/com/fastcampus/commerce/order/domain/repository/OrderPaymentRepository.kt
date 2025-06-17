@@ -1,7 +1,6 @@
 package com.fastcampus.commerce.order.domain.repository
 
 import com.fastcampus.commerce.order.domain.entity.Order
-import com.fastcampus.commerce.order.domain.entity.OrderItem
 import com.fastcampus.commerce.order.domain.model.OrderProduct
 import java.util.Optional
 
