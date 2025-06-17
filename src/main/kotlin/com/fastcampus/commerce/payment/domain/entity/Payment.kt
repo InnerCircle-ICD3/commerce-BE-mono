@@ -71,4 +71,11 @@ class Payment(
             updatedAt = refundAt
         }
     }
+
+    fun fail(failedAt: LocalDateTime, failedReason: String) {
+        if (this.status == PaymentStatus.COMPLETED || this.status == PaymentStatus.WAITING) {
+            status = PaymentStatus.FAILED
+            updatedAt = failedAt
+        }
+    }
 }

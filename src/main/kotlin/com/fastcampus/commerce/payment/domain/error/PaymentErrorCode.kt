@@ -15,4 +15,5 @@ enum class PaymentErrorCode(
     PG_RESULT_NOT_MATCH_PAYMENT("PAY-005", "결제금액이 일치하지 않습니다.", LogLevel.WARN),
     TRANSACTION_ID_EMPTY("PAY-006", "PG사 결제 아이디가 누락되었습니다.", LogLevel.WARN),
     INVALID_PAYMENT_METHOD("PAY-007", "유효하지 않은 결제방식입니다.", LogLevel.WARN),
+    QUANTITY_NOT_ENOUGH("PAY-008", "재고가 부족해 결제에 실패했습니다.", LogLevel.WARN),
 }

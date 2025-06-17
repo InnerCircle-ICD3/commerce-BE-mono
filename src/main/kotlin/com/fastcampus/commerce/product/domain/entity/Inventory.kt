@@ -46,4 +46,9 @@ class Inventory(
         this.quantity = quantity
         validate()
     }
+
+    fun decreaseQuantity(quantity: Int) {
+        this.quantity -= quantity
+        validate()
+    }
 }

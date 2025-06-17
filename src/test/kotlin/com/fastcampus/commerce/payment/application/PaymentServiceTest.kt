@@ -6,6 +6,7 @@ import com.fastcampus.commerce.order.application.OrderPaymentService
 import com.fastcampus.commerce.order.domain.entity.Order
 import com.fastcampus.commerce.order.domain.entity.OrderStatus
 import com.fastcampus.commerce.order.domain.error.OrderErrorCode
+import com.fastcampus.commerce.order.domain.model.OrderProduct
 import com.fastcampus.commerce.payment.application.request.PaymentProcessRequest
 import com.fastcampus.commerce.payment.domain.entity.Payment
 import com.fastcampus.commerce.payment.domain.entity.PaymentMethod
@@ -14,15 +15,17 @@ import com.fastcampus.commerce.payment.domain.error.PaymentErrorCode
 import com.fastcampus.commerce.payment.domain.model.PgPaymentInfo
 import com.fastcampus.commerce.payment.domain.service.PaymentReader
 import com.fastcampus.commerce.payment.domain.service.PgClient
+import com.fastcampus.commerce.product.domain.service.ProductStore
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.Runs
-import io.mockk.clearMocks
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
+import org.mockito.ArgumentMatchers.any
 import java.time.LocalDateTime
 
 class PaymentServiceTest : FunSpec(
@@ -32,6 +35,7 @@ class PaymentServiceTest : FunSpec(
         val orderPaymentService = mockk<OrderPaymentService>()
         val paymentReader = mockk<PaymentReader>()
         val paymentValidator = mockk<PaymentValidator>()
+        val productStore = mockk<ProductStore>()
 
         val paymentService = PaymentService(
             timeProvider = timeProvider,
@@ -39,10 +43,11 @@ class PaymentServiceTest : FunSpec(
             orderPaymentService = orderPaymentService,
             paymentReader = paymentReader,
             paymentValidator = paymentValidator,
+            productStore = productStore,
         )
 
         beforeTest {
-            clearMocks(timeProvider, pgClient, orderPaymentService, paymentReader, paymentValidator)
+            clearAllMocks()
         }
 
         context("processPayment") {
@@ -94,6 +99,10 @@ class PaymentServiceTest : FunSpec(
                 every { paymentReader.getByOrderId(1L) } returns payment
                 every { paymentValidator.validateProcessPayment(pgPaymentInfo, order, payment) } just Runs
                 every { timeProvider.now() } returns now
+                every { orderPaymentService.getOrderProducts(order.id!!)} returns listOf(
+                    OrderProduct(1L, 1L, 10)
+                )
+                every { productStore.decreaseQuantityByProductId(1L, 10) } just Runs
 
                 // when
                 val result = paymentService.processPayment(request)
@@ -107,7 +116,11 @@ class PaymentServiceTest : FunSpec(
                 verify(exactly = 1) { pgClient.getPaymentInfo(pgTransactionId) }
                 verify(exactly = 1) { orderPaymentService.getOrderByOrderNumber(orderNumber) }
                 verify(exactly = 1) { paymentReader.getByOrderId(1L) }
-                verify(exactly = 1) { paymentValidator.validateProcessPayment(pgPaymentInfo, order, payment) }
+                verify(exactly = 1) { paymentValidator.validateProcessPayment(
+                    pgPaymentInfo,
+                    order,
+                    payment
+                ) }
                 verify(exactly = 1) { timeProvider.now() }
             }
 
@@ -133,7 +146,7 @@ class PaymentServiceTest : FunSpec(
                 verify(exactly = 1) { pgClient.getPaymentInfo(transactionId) }
                 verify(exactly = 0) { orderPaymentService.getOrderByOrderNumber(any()) }
                 verify(exactly = 0) { paymentReader.getByOrderId(any()) }
-                verify(exactly = 0) { paymentValidator.validateProcessPayment(any(), any(), any()) }
+                verify(exactly = 0) { paymentValidator.validateProcessPayment(any(), any(),  any()) }
             }
 
             test("이미 결제된 주문인 경우 validation에서 예외가 발생한다") {
@@ -194,7 +207,11 @@ class PaymentServiceTest : FunSpec(
                 verify(exactly = 1) { pgClient.getPaymentInfo(pgTransactionId) }
                 verify(exactly = 1) { orderPaymentService.getOrderByOrderNumber(orderNumber) }
                 verify(exactly = 1) { paymentReader.getByOrderId(1L) }
-                verify(exactly = 1) { paymentValidator.validateProcessPayment(pgPaymentInfo, order, payment) }
+                verify(exactly = 1) { paymentValidator.validateProcessPayment(
+                    pgPaymentInfo,
+                    order,
+                    payment
+                ) }
                 verify(exactly = 0) { timeProvider.now() }
             }
 
@@ -242,7 +259,7 @@ class PaymentServiceTest : FunSpec(
                 every { orderPaymentService.getOrderByOrderNumber(orderNumber) } returns order
                 every { paymentReader.getByOrderId(1L) } returns payment
                 every {
-                    paymentValidator.validateProcessPayment(pgPaymentInfo, order, payment)
+                    paymentValidator.validateProcessPayment(pgPaymentInfo, order,  payment)
                 } throws CoreException(PaymentErrorCode.PG_RESULT_NOT_MATCH_PAYMENT)
 
                 // when & then
@@ -255,7 +272,11 @@ class PaymentServiceTest : FunSpec(
                 verify(exactly = 1) { pgClient.getPaymentInfo(pgTransactionId) }
                 verify(exactly = 1) { orderPaymentService.getOrderByOrderNumber(orderNumber) }
                 verify(exactly = 1) { paymentReader.getByOrderId(1L) }
-                verify(exactly = 1) { paymentValidator.validateProcessPayment(pgPaymentInfo, order, payment) }
+                verify(exactly = 1) { paymentValidator.validateProcessPayment(
+                    pgPaymentInfo,
+                    order,
+                    payment
+                ) }
                 verify(exactly = 0) { timeProvider.now() }
             }
         }

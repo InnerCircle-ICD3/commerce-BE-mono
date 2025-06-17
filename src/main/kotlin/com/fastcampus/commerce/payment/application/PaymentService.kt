@@ -8,6 +8,8 @@ import com.fastcampus.commerce.payment.application.response.PaymentProcessRespon
 import com.fastcampus.commerce.payment.domain.error.PaymentErrorCode
 import com.fastcampus.commerce.payment.domain.service.PaymentReader
 import com.fastcampus.commerce.payment.domain.service.PgClient
+import com.fastcampus.commerce.product.application.ProductQueryService
+import com.fastcampus.commerce.product.domain.service.ProductStore
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -18,6 +20,7 @@ class PaymentService(
     private val orderPaymentService: OrderPaymentService,
     private val paymentReader: PaymentReader,
     private val paymentValidator: PaymentValidator,
+    private val productStore: ProductStore,
 ) {
     @Transactional(readOnly = false)
     fun processPayment(request: PaymentProcessRequest): PaymentProcessResponse {
@@ -27,10 +30,21 @@ class PaymentService(
         val order = orderPaymentService.getOrderByOrderNumber(request.orderNumber)
         val payment = paymentReader.getByOrderId(order.id!!)
         paymentValidator.validateProcessPayment(paymentInfo, order, payment)
+
         val paidAt = timeProvider.now()
         payment.paid(paidAt)
-        order.paid(paidAt)
-        return PaymentProcessResponse(payment.paymentNumber)
+
+        try {
+            val orderProducts = orderPaymentService.getOrderProducts(order.id!!)
+            orderProducts.forEach { productStore.decreaseQuantityByProductId(it.productId, it.quantity) }
+            order.paid(paidAt)
+            return PaymentProcessResponse(payment.paymentNumber)
+        } catch (e: CoreException) {
+            payment.fail(paidAt, e.message)
+            order.fail(paidAt)
+            pgClient.refund(payment.transactionId!!, payment.amount)
+            throw CoreException(PaymentErrorCode.QUANTITY_NOT_ENOUGH)
+        }
     }
 
     @Transactional(readOnly = false)

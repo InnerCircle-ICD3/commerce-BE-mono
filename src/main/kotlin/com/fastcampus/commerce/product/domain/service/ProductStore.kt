@@ -42,4 +42,9 @@ class ProductStore(
         val inventory = productReader.getInventoryByProductId(productId)
         inventoryRepository.delete(inventory)
     }
+
+    fun decreaseQuantityByProductId(productId: Long, quantity: Int) {
+        val inventory = productReader.getInventoryByProductId(productId)
+        inventory.decreaseQuantity(quantity)
+    }
 }
