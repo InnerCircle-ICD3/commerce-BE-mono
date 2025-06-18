@@ -13,7 +13,6 @@ import com.fastcampus.commerce.order.interfaces.response.SearchOrderApiResponse
 import com.fastcampus.commerce.user.domain.entity.User
 import com.fastcampus.commerce.user.domain.enums.UserRole
 import org.springframework.data.domain.Pageable
-import org.springframework.data.web.PageableDefault
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
@@ -102,10 +101,11 @@ class OrderController(
 
     @GetMapping
     fun getOrders(
+        @WithRoles([UserRole.USER]) user: User,
         @ModelAttribute request: SearchOrderApiRequest,
-        @PageableDefault(page = 1, size = 10) pageable: Pageable,
+        pageable: Pageable,
     ): PagedData<SearchOrderApiResponse> {
-        return PagedData.of(orderService.getOrders(request, pageable))
+        return PagedData.of(orderService.getOrders(user, request, pageable))
     }
 
     /*@GetMapping("/{orderNumber}")

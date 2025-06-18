@@ -13,6 +13,7 @@ import com.fastcampus.commerce.order.domain.entity.ProductSnapshot
 import com.fastcampus.commerce.order.domain.error.OrderErrorCode
 import com.fastcampus.commerce.order.domain.repository.OrderItemRepository
 import com.fastcampus.commerce.order.domain.repository.OrderRepository
+import com.fastcampus.commerce.order.infrastructure.OrderQueryRepository
 import com.fastcampus.commerce.order.infrastructure.repository.ProductSnapshotRepository
 import com.fastcampus.commerce.order.interfaces.request.OrderApiRequest
 import com.fastcampus.commerce.order.interfaces.request.SearchOrderApiRequest
@@ -53,6 +54,7 @@ class OrderService(
     private val timeProvider: TimeProvider,
     private val paymentRepository: PaymentRepository,
     private val productSnapshotRepository: ProductSnapshotRepository,
+    private val orderQueryRepository: OrderQueryRepository,
 ) {
     // 배송비 정책 (정책에 따라 변경 예정)
     private fun calculateShippingFee(itemsSubtotal: Int): Int = if (itemsSubtotal >= 20000) 0 else 3000
@@ -67,7 +69,13 @@ class OrderService(
         val items = cartItems.map { cartItem ->
             val product = productReader.getProductById(cartItem.productId)
             val inventory = productReader.getInventoryByProductId(cartItem.productId)
-            PrepareOrderItemApiResponse.of(cartItem, product, inventory)
+            if (cartItem.quantity > inventory.quantity) {
+                throw CoreException(
+                    OrderErrorCode.ORDER_QUANTITY_NOT_ENOUGH,
+                    "${product.name}: 남은 수량: ${inventory.quantity}. 요청 수량: ${cartItem.quantity}",
+                )
+            }
+            PrepareOrderItemApiResponse.of(cartItem, product)
         }
 
         // 3. 가격 계산
@@ -118,7 +126,7 @@ class OrderService(
                     "${product.name}: 남은 수량: ${inventory.quantity}. 요청 수량: ${cartItem.quantity}",
                 )
             }
-            PrepareOrderItemApiResponse.of(cartItem, product, inventory)
+            PrepareOrderItemApiResponse.of(cartItem, product)
         }
 
         // 3. 주문 번호 생성
@@ -183,15 +191,12 @@ class OrderService(
     }
 
     @Transactional(readOnly = true)
-    fun getOrders(request: SearchOrderApiRequest, pageable: Pageable): Page<SearchOrderApiResponse> {
+    fun getOrders(user: User, request: SearchOrderApiRequest, pageable: Pageable): Page<SearchOrderApiResponse> {
         // 1. 조건에 맞는 주문 페이지 조회 (ex: 유저ID 기준)
-        val page = orderRepository.findAllByUserId(
-            userId = request.customerId!!.toLong(),
-            pageable = pageable,
-        )
+        val orders = orderQueryRepository.getUserOrders(request.toCondition(user.id!!, timeProvider.now()), pageable)
 
         // 2. 주문별 대표 상품, 가격, 썸네일 등 요약 정보 가공
-        val responses = page.content.map { order ->
+        val responses = orders.map { order ->
             val orderItems = orderItemRepository.findByOrderId(order.id!!)
             val productSnapshot = productSnapshotReader.getById(orderItems.first().productSnapshotId)
             val orderName = let { "${productSnapshot.name} 외 ${orderItems.size - 1}건" } ?: "주문상품 없음"
@@ -209,8 +214,7 @@ class OrderService(
                 refundable = cancellable,
             )
         }
-
-        return PageImpl(responses, pageable, page.totalElements)
+        return responses
     }
 
     @Transactional(readOnly = true)

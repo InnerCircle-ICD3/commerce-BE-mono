@@ -151,7 +151,7 @@ class ProductControllerRestDocTest : DescribeSpec() {
                         field("data.content[0].intensity", "원두 강도", searchProductResponses[0].intensity)
                         field("data.content[0].cupSize", "컵 사이즈", searchProductResponses[0].cupSize)
                         field("data.content[0].isSoldOut", "품절 여부", false)
-                        field("data.page", "현재 페이지 번호", response.number)
+                        field("data.page", "현재 페이지 번호", response.number + 1)
                         field("data.size", "페이지 크기", response.size)
                         field("data.totalPages", "전체 페이지 수", response.totalPages)
                         field("data.totalElements", "총 상품 수", response.totalElements.toInt())
@@ -180,7 +180,7 @@ class ProductControllerRestDocTest : DescribeSpec() {
 
                     responseBody {
                         field("data.content", "상품 목록", emptyList<Any>())
-                        field("data.page", "현재 페이지 번호", response.number)
+                        field("data.page", "현재 페이지 번호", response.number + 1)
                         field("data.size", "페이지 크기", response.size)
                         field("data.totalPages", "전체 페이지 수", response.totalPages)
                         field("data.totalElements", "총 상품 수", response.totalElements.toInt())

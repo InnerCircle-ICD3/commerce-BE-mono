@@ -95,7 +95,7 @@ paths:
                           "cupSize" : "Large",
                           "status" : "ON_SALE"
                         } ],
-                        "page" : 0,
+                        "page" : 1,
                         "size" : 10,
                         "totalPages" : 1,
                         "totalElements" : 1
@@ -240,7 +240,7 @@ paths:
                           },
                           "createdAt" : "2025-06-12T12:00"
                         } ],
-                        "page" : 1,
+                        "page" : 2,
                         "size" : 10,
                         "totalPages" : 2,
                         "totalElements" : 11
@@ -860,9 +860,9 @@ paths:
                         "adminId" : 1,
                         "productId" : 1,
                         "status" : "ON_CHAT",
-                        "createdAt" : "2025-06-17T09:25",
+                        "createdAt" : "2025-06-17T11:43",
                         "lastMessage" : "네, 재고 있습니다",
-                        "lastMessageAt" : "2025-06-18T07:25"
+                        "lastMessageAt" : "2025-06-18T09:43"
                       } ],
                       "error" : null
                     }
@@ -919,9 +919,9 @@ paths:
                         "adminId" : null,
                         "productId" : 1,
                         "status" : "REQUESTED",
-                        "createdAt" : "2025-06-18T09:25",
+                        "createdAt" : "2025-06-18T11:43",
                         "lastMessage" : "이 상품 재고 있나요?",
-                        "lastMessageAt" : "2025-06-18T09:25"
+                        "lastMessageAt" : "2025-06-18T11:43"
                       },
                       "error" : null
                     }
@@ -935,9 +935,9 @@ paths:
                         "adminId" : null,
                         "productId" : 1,
                         "status" : "REQUESTED",
-                        "createdAt" : "2025-06-18T09:25",
+                        "createdAt" : "2025-06-18T11:43",
                         "lastMessage" : "상품 구매 문의드립니다",
-                        "lastMessageAt" : "2025-06-18T09:25"
+                        "lastMessageAt" : "2025-06-18T11:43"
                       },
                       "error" : null
                     }
@@ -972,9 +972,9 @@ paths:
                         "adminId" : 1,
                         "productId" : 1,
                         "status" : "ON_CHAT",
-                        "createdAt" : "2025-06-17T09:25",
+                        "createdAt" : "2025-06-17T11:43",
                         "lastMessage" : "감사합니다",
-                        "lastMessageAt" : "2025-06-18T08:55"
+                        "lastMessageAt" : "2025-06-18T11:13"
                       },
                       "error" : null
                     }
@@ -1075,7 +1075,7 @@ paths:
                           "senderType" : "GUEST",
                           "senderId" : "guest-123",
                           "senderName" : "Guest",
-                          "createdAt" : "2025-06-18T09:15",
+                          "createdAt" : "2025-06-18T11:33",
                           "productInfo" : null
                         } ],
                         "pageable" : {
@@ -1091,8 +1091,8 @@ paths:
                           "unpaged" : false
                         },
                         "last" : true,
-                        "totalPages" : 1,
                         "totalElements" : 1,
+                        "totalPages" : 1,
                         "first" : true,
                         "size" : 20,
                         "number" : 0,
@@ -1155,9 +1155,9 @@ paths:
                         "adminId" : 1,
                         "productId" : 1,
                         "status" : "END",
-                        "createdAt" : "2025-06-17T09:25",
+                        "createdAt" : "2025-06-17T11:43",
                         "lastMessage" : "상담이 종료되었습니다",
-                        "lastMessageAt" : "2025-06-18T09:25"
+                        "lastMessageAt" : "2025-06-18T11:43"
                       },
                       "error" : null
                     }
@@ -1216,10 +1216,22 @@ paths:
       summary: 주문 목록을 조회합니다
       operationId: 주문_목록_조회_성공
       parameters:
+      - name: monthRange
+        in: query
+        description: "주문 월(3,6,12개월)"
+        required: false
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: 주문상태
+        required: false
+        schema:
+          type: string
       - name: page
         in: query
         description: "페이지 번호 (기본값: 1)"
-        required: true
+        required: false
         schema:
           type: string
       - name: Authorization
@@ -1251,7 +1263,7 @@ paths:
                           "cancellable" : true,
                           "refundable" : false
                         } ],
-                        "page" : 1,
+                        "page" : 2,
                         "size" : 10,
                         "totalPages" : 2,
                         "totalElements" : 11
@@ -1695,7 +1707,7 @@ paths:
                           "cupSize" : "Small",
                           "isSoldOut" : false
                         } ],
-                        "page" : 0,
+                        "page" : 1,
                         "size" : 20,
                         "totalPages" : 1,
                         "totalElements" : 2
@@ -1707,7 +1719,7 @@ paths:
                     {
                       "data" : {
                         "content" : [ ],
-                        "page" : 0,
+                        "page" : 1,
                         "size" : 20,
                         "totalPages" : 0,
                         "totalElements" : 0
@@ -2068,7 +2080,7 @@ paths:
                           },
                           "createdAt" : "2025-06-01T12:00"
                         } ],
-                        "page" : 1,
+                        "page" : 2,
                         "size" : 10,
                         "totalPages" : 2,
                         "totalElements" : 11
@@ -2120,7 +2132,7 @@ paths:
                             "nickname" : "user1"
                           }
                         } ],
-                        "page" : 1,
+                        "page" : 2,
                         "size" : 10,
                         "totalPages" : 2,
                         "totalElements" : 11
@@ -2593,6 +2605,86 @@ components:
             detailImage:
               type: string
               description: 상세 이미지 URL
+    admin-reviews1949273614:
+      type: object
+      properties:
+        data:
+          required:
+          - page
+          - size
+          - totalElements
+          - totalPages
+          type: object
+          properties:
+            size:
+              type: number
+              description: 페이지 사이즈(기본값 10)
+            totalPages:
+              type: number
+              description: 전체 페이지 수
+            page:
+              type: number
+              description: 현재 페이지 (기본값 1)
+            content:
+              type: array
+              items:
+                required:
+                - content
+                - createdAt
+                - rating
+                - reviewId
+                type: object
+                properties:
+                  createdAt:
+                    type: string
+                    description: 리뷰 작성일
+                  product:
+                    required:
+                    - productId
+                    - productName
+                    type: object
+                    properties:
+                      productId:
+                        type: number
+                        description: 리뷰 대상 상품 아이디
+                      productName:
+                        type: string
+                        description: 리뷰 대상 상품명
+                  rating:
+                    type: number
+                    description: 별점
+                  user:
+                    required:
+                    - nickname
+                    - userId
+                    type: object
+                    properties:
+                      nickname:
+                        type: string
+                        description: 리뷰 작성자 닉네임
+                      userId:
+                        type: number
+                        description: 리뷰 작성자 아이디
+                  reviewId:
+                    type: number
+                    description: 리뷰 아이디
+                  adminReply:
+                    type: object
+                    properties:
+                      createdAt:
+                        type: string
+                        description: 관리자 답글 작성일
+                        nullable: true
+                      content:
+                        type: string
+                        description: 관리자 답글 내용
+                        nullable: true
+                  content:
+                    type: string
+                    description: 리뷰 내용
+            totalElements:
+              type: number
+              description: 총 수
     products-main-996164674:
       type: object
       properties:
@@ -2683,86 +2775,6 @@ components:
                   detailImage:
                     type: string
                     description: 상세 이미지 URL
-    admin-reviews1949273614:
-      type: object
-      properties:
-        data:
-          required:
-          - page
-          - size
-          - totalElements
-          - totalPages
-          type: object
-          properties:
-            size:
-              type: number
-              description: 페이지 사이즈(기본값 10)
-            totalPages:
-              type: number
-              description: 전체 페이지 수
-            page:
-              type: number
-              description: 현재 페이지 (기본값 1)
-            content:
-              type: array
-              items:
-                required:
-                - content
-                - createdAt
-                - rating
-                - reviewId
-                type: object
-                properties:
-                  createdAt:
-                    type: string
-                    description: 리뷰 작성일
-                  product:
-                    required:
-                    - productId
-                    - productName
-                    type: object
-                    properties:
-                      productId:
-                        type: number
-                        description: 리뷰 대상 상품 아이디
-                      productName:
-                        type: string
-                        description: 리뷰 대상 상품명
-                  rating:
-                    type: number
-                    description: 별점
-                  user:
-                    required:
-                    - nickname
-                    - userId
-                    type: object
-                    properties:
-                      nickname:
-                        type: string
-                        description: 리뷰 작성자 닉네임
-                      userId:
-                        type: number
-                        description: 리뷰 작성자 아이디
-                  reviewId:
-                    type: number
-                    description: 리뷰 아이디
-                  adminReply:
-                    type: object
-                    properties:
-                      createdAt:
-                        type: string
-                        description: 관리자 답글 작성일
-                        nullable: true
-                      content:
-                        type: string
-                        description: 관리자 답글 내용
-                        nullable: true
-                  content:
-                    type: string
-                    description: 리뷰 내용
-            totalElements:
-              type: number
-              description: 총 수
     users-addresses414680085:
       type: object
       properties:
@@ -3336,14 +3348,6 @@ components:
         alias:
           type: string
           description: 배송지 별칭
-    chat-rooms-roomId-status1571194345:
-      required:
-      - status
-      type: object
-      properties:
-        status:
-          type: string
-          description: "변경할 상태 (REQUESTED, ON_CHAT, AWAITING, END)"
     cart-items-cartItemId838557620:
       type: object
       properties:
@@ -3371,6 +3375,14 @@ components:
             userId:
               type: number
               description: 유저 아이디
+    chat-rooms-roomId-status1571194345:
+      required:
+      - status
+      type: object
+      properties:
+        status:
+          type: string
+          description: "변경할 상태 (REQUESTED, ON_CHAT, AWAITING, END)"
     admin-products9820101:
       type: object
       properties:
@@ -3696,6 +3708,18 @@ components:
         orderNumber:
           type: string
           description: 주분번호
+    reviews-reviewId480882763:
+      required:
+      - content
+      - rating
+      type: object
+      properties:
+        rating:
+          type: number
+          description: 별점
+        content:
+          type: string
+          description: 리뷰 내용
     orders-2108059589:
       type: object
       properties:
@@ -3757,18 +3781,6 @@ components:
             totalElements:
               type: number
               description: 총 수
-    reviews-reviewId480882763:
-      required:
-      - content
-      - rating
-      type: object
-      properties:
-        rating:
-          type: number
-          description: 별점
-        content:
-          type: string
-          description: 리뷰 내용
     products-1886796052:
       type: object
       properties:
