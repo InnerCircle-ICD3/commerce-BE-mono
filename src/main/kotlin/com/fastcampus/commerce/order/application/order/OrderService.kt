@@ -122,6 +122,9 @@ class OrderService(
 
         // 1. 장바구니 아이템 정보 조회 (상품ID, 수량, 가격)
         val cartItems = cartItemReader.readCartItems(userId, request.cartItemIds)
+        if (cartItems.isEmpty()) {
+            throw CoreException(OrderErrorCode.CART_ITEM_NOT_MATCH)
+        }
         val items = cartItems.map { cartItem ->
             val product = productReader.getProductById(cartItem.productId)
             val inventory = productReader.getInventoryByProductId(cartItem.productId)
