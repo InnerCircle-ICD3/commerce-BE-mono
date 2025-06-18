@@ -42,7 +42,7 @@ class ChatController(
     @GetMapping("/rooms/{roomId}/messages")
     fun getChatMessages(
         @PathVariable roomId: Long,
-        @PageableDefault(size = 20, sort = ["createdAt"]) pageable: Pageable
+        @PageableDefault(size = 20, sort = ["createdAt"], direction = org.springframework.data.domain.Sort.Direction.DESC) pageable: Pageable
     ): Page<ChatMessageResponse> {
         return chatService.getChatMessages(roomId, pageable)
     }
