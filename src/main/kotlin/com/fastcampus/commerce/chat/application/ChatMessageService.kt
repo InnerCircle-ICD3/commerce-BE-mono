@@ -80,13 +80,13 @@ class ChatMessageService(
 
         // 관리자 배정
         if (chatRoom.adminId == null) {
-            chatRoom.adminId = adminId
-            updateChatRoomStatus(chatRoom, ChatRoomStatus.ON_CHAT)
-            chatRoomRepository.save(chatRoom)
+            chatRoom.assignAdmin(adminId) // 엔터티의 메서드를 사용하여 관리자를 지정하고 상태를 업데이트합니다.
+
+            chatRoomRepository.save(chatRoom) // 업데이트된 chatRoom 엔티티를 한 번 저장합니다.
         }
 
         // 입장 알림 전송
-        sendNotification(roomId, NotificationType.ADMIN_ASSIGNED, "상담사가 입장했습니다.")
+        sendNotification(roomId, NotificationType.ADMIN_ASSIGNED, "관리자가 입장했습니다.")
     }
 
     // 채팅 종료
@@ -97,7 +97,7 @@ class ChatMessageService(
         updateChatRoomStatus(chatRoom, ChatRoomStatus.END)
 
         // 종료 알림 전송
-        sendNotification(roomId, NotificationType.CHAT_ENDED, "상담이 종료되었습니다.")
+        sendNotification(roomId, NotificationType.CHAT_ENDED, "채팅이 종료되었습니다.")
     }
 
     // Helper methods
