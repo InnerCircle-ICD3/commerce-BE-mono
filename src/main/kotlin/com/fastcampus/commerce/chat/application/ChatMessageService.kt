@@ -23,7 +23,6 @@ class ChatMessageService(
     private val productReader: ProductReader,
     private val messagingTemplate: SimpMessagingTemplate,
 ) {
-
     fun saveAndSendMessage(request: ChatMessageRequest): ChatMessageResponse {
         // 채팅방 확인
         val chatRoom = chatRoomRepository.findById(request.chatRoomId)
@@ -40,19 +39,19 @@ class ChatMessageService(
                 ChatMessage.createGuestMessage(
                     chatRoomId = request.chatRoomId,
                     guestId = request.senderId!!,
-                    content = request.content
+                    content = request.content,
                 )
             SenderType.USER ->
                 ChatMessage.createUserMessage(
                     chatRoomId = request.chatRoomId,
                     userId = request.senderId!!.toLong(),
-                    content = request.content
+                    content = request.content,
                 )
             SenderType.ADMIN ->
                 ChatMessage.createAdminMessage(
                     chatRoomId = request.chatRoomId,
                     adminId = request.senderId!!.toLong(),
-                    content = request.content
+                    content = request.content,
                 )
         }
 
@@ -67,7 +66,7 @@ class ChatMessageService(
             senderId = savedMessage.senderId,
             senderName = getSenderName(savedMessage.senderType),
             createdAt = savedMessage.createdAt,
-            productInfo = getProductInfoIfNeeded(request.content, chatRoom.productId)
+            productInfo = getProductInfoIfNeeded(request.content, chatRoom.productId),
         )
 
         // 채팅방 상태 업데이트 (AWAITING -> ON_CHAT)
@@ -83,7 +82,7 @@ class ChatMessageService(
             chatRoomId = roomId,
             type = type,
             message = message,
-            timestamp = LocalDateTime.now()
+            timestamp = LocalDateTime.now(),
         )
 
         messagingTemplate.convertAndSend("/sub/chat/room/$roomId", notification)
@@ -133,7 +132,7 @@ class ChatMessageService(
                 ProductInfo(
                     productId = product.id!!,
                     productName = product.name,
-                    thumbnailUrl = product.thumbnail
+                    thumbnailUrl = product.thumbnail,
                 )
             } catch (e: Exception) {
                 null

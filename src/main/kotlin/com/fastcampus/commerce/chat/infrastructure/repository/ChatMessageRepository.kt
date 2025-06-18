@@ -12,7 +12,6 @@ import java.time.LocalDateTime
 
 @Repository
 interface ChatMessageRepository : JpaRepository<ChatMessage, Long> {
-
     // 채팅방 ID로 메시지 조회 (페이징)
     fun findByChatRoomIdOrderByCreatedAtDesc(chatRoomId: Long, pageable: Pageable): Page<ChatMessage>
 
@@ -26,7 +25,7 @@ interface ChatMessageRepository : JpaRepository<ChatMessage, Long> {
     @Query("SELECT cm FROM ChatMessage cm WHERE cm.chatRoomId = :chatRoomId AND cm.createdAt > :since ORDER BY cm.createdAt")
     fun findRecentMessages(
         @Param("chatRoomId") chatRoomId: Long,
-        @Param("since") since: LocalDateTime
+        @Param("since") since: LocalDateTime,
     ): List<ChatMessage>
 
     // 채팅방의 마지막 메시지 조회
@@ -36,22 +35,25 @@ interface ChatMessageRepository : JpaRepository<ChatMessage, Long> {
     fun countByChatRoomId(chatRoomId: Long): Long
 
     // 여러 채팅방의 마지막 메시지 조회
-    @Query("""
+    @Query(
+        """
         SELECT cm FROM ChatMessage cm
         WHERE cm.id IN (
             SELECT MAX(cm2.id) FROM ChatMessage cm2
             WHERE cm2.chatRoomId IN :chatRoomIds
             GROUP BY cm2.chatRoomId
         )
-    """)
-    fun findLastMessagesByChatRoomIds(@Param("chatRoomIds") chatRoomIds: List<Long>): List<ChatMessage>
+    """,
+    )
+    fun findLastMessagesByChatRoomIds(
+        @Param("chatRoomIds") chatRoomIds: List<Long>,
+    ): List<ChatMessage>
 
     // 특정 내용을 포함하는 메시지 검색
     @Query("SELECT cm FROM ChatMessage cm WHERE cm.chatRoomId = :chatRoomId AND cm.content LIKE %:keyword% ORDER BY cm.createdAt DESC")
     fun searchMessages(
         @Param("chatRoomId") chatRoomId: Long,
         @Param("keyword") keyword: String,
-        pageable: Pageable
+        pageable: Pageable,
     ): Page<ChatMessage>
-
 }

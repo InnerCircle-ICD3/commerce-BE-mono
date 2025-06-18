@@ -9,9 +9,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Configuration
 @EnableWebSocketMessageBroker
 class WebSocketConfig : WebSocketMessageBrokerConfigurer {
-
-
-    override fun configureMessageBroker(registry : MessageBrokerRegistry){
+    override fun configureMessageBroker(registry: MessageBrokerRegistry)  {
         registry.enableSimpleBroker("/sub")
         registry.setApplicationDestinationPrefixes("/pub")
         registry.setUserDestinationPrefix("/user")

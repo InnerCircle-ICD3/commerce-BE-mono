@@ -23,7 +23,7 @@ class ChatMessage(
     val senderId: String,
     @Column(nullable = false)
     val content: String,
-) : BaseEntity(){
+) : BaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
@@ -31,7 +31,7 @@ class ChatMessage(
     @Column
     var deletedAt: LocalDateTime? = null
 
-    fun getSenderIdAsLong(): Long? = 
+    fun getSenderIdAsLong(): Long? =
         when (senderType) {
             SenderType.USER, SenderType.ADMIN -> senderId.toLongOrNull()
             SenderType.GUEST -> null
@@ -43,7 +43,7 @@ class ChatMessage(
                 chatRoomId = chatRoomId,
                 senderType = SenderType.GUEST,
                 senderId = guestId,
-                content = content
+                content = content,
             )
 
         fun createUserMessage(chatRoomId: Long, userId: Long, content: String): ChatMessage =
@@ -51,7 +51,7 @@ class ChatMessage(
                 chatRoomId = chatRoomId,
                 senderType = SenderType.USER,
                 senderId = userId.toString(),
-                content = content
+                content = content,
             )
 
         fun createAdminMessage(chatRoomId: Long, adminId: Long, content: String): ChatMessage =
@@ -59,7 +59,7 @@ class ChatMessage(
                 chatRoomId = chatRoomId,
                 senderType = SenderType.ADMIN,
                 senderId = adminId.toString(),
-                content = content
+                content = content,
             )
     }
 }

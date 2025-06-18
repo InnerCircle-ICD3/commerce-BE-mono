@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ChatRoomRepository : JpaRepository<ChatRoom, Long> {
-
     // 사용자 ID로 채팅방 목록 조회
     fun findByUserIdOrderByCreatedAtDesc(userId: Long): List<ChatRoom>
 
@@ -36,7 +35,7 @@ interface ChatRoomRepository : JpaRepository<ChatRoom, Long> {
     fun findActiveByUserIdAndProductId(
         @Param("userId") userId: Long,
         @Param("productId") productId: Long,
-        @Param("excludeStatus") excludeStatus: ChatRoomStatus = ChatRoomStatus.END
+        @Param("excludeStatus") excludeStatus: ChatRoomStatus = ChatRoomStatus.END,
     ): ChatRoom?
 
     // 게스트와 상품으로 기존 채팅방 조회
@@ -44,10 +43,12 @@ interface ChatRoomRepository : JpaRepository<ChatRoom, Long> {
     fun findActiveByGuestIdAndProductId(
         @Param("guestId") guestId: String,
         @Param("productId") productId: Long,
-        @Param("excludeStatus") excludeStatus: ChatRoomStatus = ChatRoomStatus.END
+        @Param("excludeStatus") excludeStatus: ChatRoomStatus = ChatRoomStatus.END,
     ): ChatRoom?
 
     // 관리자가 배정되지 않은 대기 중인 채팅방 조회
     @Query("SELECT cr FROM ChatRoom cr WHERE cr.adminId IS NULL AND cr.status = :status ORDER BY cr.createdAt ASC")
-    fun findUnassignedRooms(@Param("status") status: ChatRoomStatus = ChatRoomStatus.REQUESTED): List<ChatRoom>
+    fun findUnassignedRooms(
+        @Param("status") status: ChatRoomStatus = ChatRoomStatus.REQUESTED,
+    ): List<ChatRoom>
 }

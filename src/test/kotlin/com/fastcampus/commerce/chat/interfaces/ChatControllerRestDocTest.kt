@@ -1,16 +1,16 @@
 package com.fastcampus.commerce.chat.interfaces
 
-import com.fastcampus.commerce.chat.application.ChatService
 import com.fastcampus.commerce.chat.application.ChatMessageService
+import com.fastcampus.commerce.chat.application.ChatService
 import com.fastcampus.commerce.chat.domain.entity.SenderType
 import com.fastcampus.commerce.config.TestConfig
 import com.fastcampus.commerce.restdoc.documentation
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
+import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
-import io.mockk.Runs
 import io.restassured.module.mockmvc.RestAssuredMockMvc
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
@@ -60,7 +60,7 @@ class ChatControllerRestDocTest : DescribeSpec() {
                     senderType = SenderType.GUEST,
                     senderId = "guest-123",
                     productId = 1L,
-                    initialMessage = "이 상품 재고 있나요?"
+                    initialMessage = "이 상품 재고 있나요?",
                 )
 
                 val now = LocalDateTime.now()
@@ -73,7 +73,7 @@ class ChatControllerRestDocTest : DescribeSpec() {
                     status = "REQUESTED",
                     createdAt = now,
                     lastMessage = "이 상품 재고 있나요?",
-                    lastMessageAt = now
+                    lastMessageAt = now,
                 )
 
                 every { chatService.createChatRoom(request) } returns response
@@ -113,7 +113,7 @@ class ChatControllerRestDocTest : DescribeSpec() {
                     senderType = SenderType.USER,
                     senderId = "123",
                     productId = 1L,
-                    initialMessage = "상품 구매 문의드립니다"
+                    initialMessage = "상품 구매 문의드립니다",
                 )
 
                 val now = LocalDateTime.now()
@@ -126,7 +126,7 @@ class ChatControllerRestDocTest : DescribeSpec() {
                     status = "REQUESTED",
                     createdAt = now,
                     lastMessage = "상품 구매 문의드립니다",
-                    lastMessageAt = now
+                    lastMessageAt = now,
                 )
 
                 every { chatService.createChatRoom(request) } returns response
@@ -181,8 +181,8 @@ class ChatControllerRestDocTest : DescribeSpec() {
                         status = "ON_CHAT",
                         createdAt = now.minusDays(1),
                         lastMessage = "네, 재고 있습니다",
-                        lastMessageAt = now.minusHours(2)
-                    )
+                        lastMessageAt = now.minusHours(2),
+                    ),
                 )
 
                 every { chatService.getChatRoomList(userId = 123L, guestId = null) } returns chatRooms
@@ -237,7 +237,7 @@ class ChatControllerRestDocTest : DescribeSpec() {
                     status = "ON_CHAT",
                     createdAt = now.minusDays(1),
                     lastMessage = "감사합니다",
-                    lastMessageAt = now.minusMinutes(30)
+                    lastMessageAt = now.minusMinutes(30),
                 )
 
                 every { chatService.getChatRoomDetail(roomId) } returns response
@@ -284,8 +284,8 @@ class ChatControllerRestDocTest : DescribeSpec() {
                         senderId = "guest-123",
                         senderName = "Guest",
                         createdAt = now.minusMinutes(10),
-                        productInfo = null
-                    )
+                        productInfo = null,
+                    ),
                 )
 
                 val pageable = PageRequest.of(0, 20)
@@ -356,7 +356,7 @@ class ChatControllerRestDocTest : DescribeSpec() {
                     status = newStatus,
                     createdAt = now.minusDays(1),
                     lastMessage = "상담이 종료되었습니다",
-                    lastMessageAt = now
+                    lastMessageAt = now,
                 )
 
                 every { chatService.updateChatRoomStatus(roomId, newStatus) } returns response

@@ -3,9 +3,9 @@ package com.fastcampus.commerce.chat.application
 import com.fastcampus.commerce.chat.domain.entity.ChatRoom
 import com.fastcampus.commerce.chat.domain.entity.ChatRoomStatus
 import com.fastcampus.commerce.chat.domain.entity.SenderType
+import com.fastcampus.commerce.chat.domain.error.ChatErrorCode
 import com.fastcampus.commerce.chat.infrastructure.repository.ChatMessageRepository
 import com.fastcampus.commerce.chat.infrastructure.repository.ChatRoomRepository
-import com.fastcampus.commerce.chat.domain.error.ChatErrorCode
 import com.fastcampus.commerce.chat.interfaces.*
 import com.fastcampus.commerce.common.error.CoreException
 import org.springframework.data.domain.Page
@@ -21,7 +21,6 @@ class ChatService(
     private val chatMessageRepository: ChatMessageRepository,
     private val chatMessageService: ChatMessageService,
 ) {
-
     @Transactional
     fun createChatRoom(request: CreateChatRoomRequest): ChatRoomResponse {
         // senderType에 따라 userId/guestId 설정
@@ -51,7 +50,7 @@ class ChatService(
             guestId = guestId,
             userId = userId,
             productId = request.productId,
-            status = ChatRoomStatus.REQUESTED
+            status = ChatRoomStatus.REQUESTED,
         )
 
         val savedRoom = chatRoomRepository.save(chatRoom)
@@ -110,7 +109,7 @@ class ChatService(
                     senderId = message.senderId,
                     senderName = getSenderName(message.senderType),
                     createdAt = message.createdAt,
-                    productInfo = null // TODO: 상품 정보 연동 필요
+                    productInfo = null, // TODO: 상품 정보 연동 필요
                 )
             }
     }
@@ -128,8 +127,10 @@ class ChatService(
 
         // 상태 변경 가능 여부 확인
         if (!isValidStatusTransition(chatRoom.status, newStatus)) {
-            throw CoreException(ChatErrorCode.BAD_REQUEST,
-                "현재 상태(${chatRoom.status})에서 ${newStatus}로 변경할 수 없습니다.")
+            throw CoreException(
+                ChatErrorCode.BAD_REQUEST,
+                "현재 상태(${chatRoom.status})에서 ${newStatus}로 변경할 수 없습니다.",
+            )
         }
 
         // status 필드 업데이트
@@ -157,7 +158,7 @@ class ChatService(
     // Helper methods
     private fun toChatRoomResponse(
         chatRoom: ChatRoom,
-        lastMessage: com.fastcampus.commerce.chat.domain.entity.ChatMessage? = null
+        lastMessage: com.fastcampus.commerce.chat.domain.entity.ChatMessage? = null,
     ): ChatRoomResponse {
         return ChatRoomResponse(
             id = chatRoom.id!!,
@@ -168,7 +169,7 @@ class ChatService(
             status = chatRoom.status.name,
             createdAt = chatRoom.createdAt,
             lastMessage = lastMessage?.content,
-            lastMessageAt = lastMessage?.createdAt
+            lastMessageAt = lastMessage?.createdAt,
         )
     }
 
@@ -194,7 +195,7 @@ class ChatService(
             chatRoomId = roomId,
             content = request.initialMessage!!,
             senderType = request.senderType,
-            senderId = request.senderId
+            senderId = request.senderId,
         )
 
         chatMessageService.saveAndSendMessage(messageRequest)
