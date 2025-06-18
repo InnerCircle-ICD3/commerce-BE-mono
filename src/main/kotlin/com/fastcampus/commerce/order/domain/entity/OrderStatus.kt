@@ -14,6 +14,10 @@ enum class OrderStatus(
     ;
 
     fun isCancellable(): Boolean {
-        return this == PAID || this == SHIPPED || this == DELIVERED || this == WAITING_FOR_PAYMENT
+        return this == PAID || this == WAITING_FOR_PAYMENT
+    }
+
+    fun isRefundable(): Boolean {
+        return this == SHIPPED || this == DELIVERED
     }
 }

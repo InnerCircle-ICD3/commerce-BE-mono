@@ -4,7 +4,6 @@ import com.fastcampus.commerce.cart.application.query.CartItemReader
 import com.fastcampus.commerce.cart.infrastructure.repository.CartItemRepository
 import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.common.id.UniqueIdGenerator
-import com.fastcampus.commerce.common.response.CodeResponse
 import com.fastcampus.commerce.common.response.EnumResponse
 import com.fastcampus.commerce.common.util.TimeProvider
 import com.fastcampus.commerce.order.application.query.ProductSnapshotReader
@@ -37,7 +36,6 @@ import com.fastcampus.commerce.review.domain.repository.ReviewRepository
 import com.fastcampus.commerce.user.api.service.UserAddressService
 import com.fastcampus.commerce.user.domain.entity.User
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -210,7 +208,6 @@ class OrderService(
             val productSnapshot = productSnapshotReader.getById(orderItems.first().productSnapshotId)
             val orderName = let { "${productSnapshot.name} 외 ${orderItems.size - 1}건" } ?: "주문상품 없음"
             val mainProductThumbnail = productSnapshot.thumbnail
-            val cancellable = order.status.isCancellable()
 
             SearchOrderApiResponse(
                 orderNumber = order.orderNumber,
@@ -219,8 +216,8 @@ class OrderService(
                 orderStatus = order.status, // enum → 한글 등 매핑 필요
                 finalTotalPrice = order.totalAmount,
                 orderedAt = order.createdAt,
-                cancellable = cancellable,
-                refundable = cancellable,
+                cancellable = order.status.isCancellable(),
+                refundable = order.status.isRefundable(),
             )
         }
         return responses
