@@ -67,7 +67,13 @@ class OrderService(
         val items = cartItems.map { cartItem ->
             val product = productReader.getProductById(cartItem.productId)
             val inventory = productReader.getInventoryByProductId(cartItem.productId)
-            PrepareOrderItemApiResponse.of(cartItem, product, inventory)
+            if (cartItem.quantity > inventory.quantity) {
+                throw CoreException(
+                    OrderErrorCode.ORDER_QUANTITY_NOT_ENOUGH,
+                    "${product.name}: 남은 수량: ${inventory.quantity}. 요청 수량: ${cartItem.quantity}",
+                )
+            }
+            PrepareOrderItemApiResponse.of(cartItem, product)
         }
 
         // 3. 가격 계산
@@ -118,7 +124,7 @@ class OrderService(
                     "${product.name}: 남은 수량: ${inventory.quantity}. 요청 수량: ${cartItem.quantity}",
                 )
             }
-            PrepareOrderItemApiResponse.of(cartItem, product, inventory)
+            PrepareOrderItemApiResponse.of(cartItem, product)
         }
 
         // 3. 주문 번호 생성

@@ -25,15 +25,15 @@ data class PrepareOrderItemApiResponse(
     val itemSubtotal: Int,
 ) {
     companion object {
-        fun of(cartItem: CartItemDto, product: Product, inventory: Inventory) =
+        fun of(cartItem: CartItemDto, product: Product) =
             PrepareOrderItemApiResponse (
                 cartItemId = cartItem.cartItemId,
                 productId = product.id!!,
                 name = product.name,
                 thumbnail = product.thumbnail,
                 unitPrice = product.price,
-                quantity = inventory.quantity,
-                itemSubtotal = product.price * inventory.quantity,
+                quantity = cartItem.quantity,
+                itemSubtotal = product.price * cartItem.quantity,
             )
     }
 }
