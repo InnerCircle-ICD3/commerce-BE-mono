@@ -57,7 +57,7 @@ class OrderService(
     private val orderQueryRepository: OrderQueryRepository,
 ) {
     // 배송비 정책 (정책에 따라 변경 예정)
-    private fun calculateShippingFee(itemsSubtotal: Int): Int = if (itemsSubtotal >= 20000) 0 else 3000
+    private fun calculateShippingFee(itemsSubtotal: Int): Int = if (itemsSubtotal >= 30000) 0 else 3000
 
     @Transactional
     fun prepareOrder(user: User, cartItemIds: Set<Long>): PrepareOrderApiResponse {
@@ -134,10 +134,11 @@ class OrderService(
         val orderNumber = UniqueIdGenerator.generateOrderNumber(now)
 
         // 4. Order Entity 생성 및 저장
+        val itemsSubtotal = items.sumOf { it.itemSubtotal }
         val order = Order(
             orderNumber = orderNumber,
             userId = userId,
-            totalAmount = items.sumOf { it.itemSubtotal },
+            totalAmount = itemsSubtotal + calculateShippingFee(itemsSubtotal),
             recipientName = request.shippingInfo.recipientName,
             recipientPhone = request.shippingInfo.recipientPhone,
             zipCode = request.shippingInfo.zipCode,
