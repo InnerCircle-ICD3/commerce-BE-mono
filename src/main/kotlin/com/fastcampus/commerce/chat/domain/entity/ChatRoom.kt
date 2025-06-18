@@ -27,7 +27,7 @@ class ChatRoom(
     val productId: Long? = null,
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    val status: ChatRoomStatus = ChatRoomStatus.REQUESTED,
+    var status: ChatRoomStatus = ChatRoomStatus.REQUESTED,
 ) : BaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,4 +42,15 @@ class ChatRoom(
 
     @Column
     var deletedAt: LocalDateTime? = null
+
+    // 상태 변경 메서드 추가
+    fun changeStatus(newStatus: ChatRoomStatus) {
+        // 비즈니스 검증 로직을 여기서 수행할 수 있음
+        this.status = newStatus
+    }
+
+    fun assignAdmin(adminId: Long) {
+        this.adminId = adminId
+        this.status = ChatRoomStatus.ON_CHAT
+    }
 }

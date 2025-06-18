@@ -22,6 +22,8 @@ tags:
   description: 관리자 파일 업로드 API
 - name: Admin-Product
   description: 관리자 상품 API
+- name: Chat
+  description: 채팅 API
 - name: Admin-Payment
   description: 관리자 결제 API
 - name: Admin-Review
@@ -80,14 +82,26 @@ paths:
                 $ref: "#/components/schemas/admin-products-1101392596"
               examples:
                 관리자_상품_목록_조회_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"content\" : [ {\r\n      \"\
-                    id\" : 1,\r\n      \"name\" : \"콜드브루\",\r\n      \"price\" : 3500,\r\
-                    \n      \"quantity\" : 100,\r\n      \"thumbnail\" : \"https://test.com/thumbnail.png\"\
-                    ,\r\n      \"intensity\" : \"Strong\",\r\n      \"cupSize\" :\
-                    \ \"Large\",\r\n      \"status\" : \"ON_SALE\"\r\n    } ],\r\n\
-                    \    \"page\" : 0,\r\n    \"size\" : 10,\r\n    \"totalPages\"\
-                    \ : 1,\r\n    \"totalElements\" : 1\r\n  },\r\n  \"error\" : null\r\
-                    \n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "content" : [ {
+                          "id" : 1,
+                          "name" : "콜드브루",
+                          "price" : 3500,
+                          "quantity" : 100,
+                          "thumbnail" : "https://test.com/thumbnail.png",
+                          "intensity" : "Strong",
+                          "cupSize" : "Large",
+                          "status" : "ON_SALE"
+                        } ],
+                        "page" : 0,
+                        "size" : 10,
+                        "totalPages" : 1,
+                        "totalElements" : 1
+                      },
+                      "error" : null
+                    }
     post:
       tags:
       - Admin-Product
@@ -114,10 +128,16 @@ paths:
               $ref: "#/components/schemas/admin-products-247955186"
             examples:
               상품_등록_성공:
-                value: "{\r\n  \"name\" : \"콜드브루\",\r\n  \"price\" : 3500,\r\n  \"\
-                  quantity\" : 100,\r\n  \"thumbnail\" : \"https://test.com/thumbnail.png\"\
-                  ,\r\n  \"detailImage\" : \"https://test.com/detailImage.png\",\r\
-                  \n  \"intensityId\" : 1,\r\n  \"cupSizeId\" : 10\r\n}"
+                value: |-
+                  {
+                    "name" : "콜드브루",
+                    "price" : 3500,
+                    "quantity" : 100,
+                    "thumbnail" : "https://test.com/thumbnail.png",
+                    "detailImage" : "https://test.com/detailImage.png",
+                    "intensityId" : 1,
+                    "cupSizeId" : 10
+                  }
       responses:
         "200":
           description: "200"
@@ -127,8 +147,13 @@ paths:
                 $ref: "#/components/schemas/admin-products9820101"
               examples:
                 상품_등록_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"productId\" : 10\r\n  },\r\n\
-                    \  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "productId" : 10
+                      },
+                      "error" : null
+                    }
   /admin/reviews:
     get:
       tags:
@@ -194,17 +219,34 @@ paths:
                 $ref: "#/components/schemas/admin-reviews1949273614"
               examples:
                 관리자_리뷰목록_조회_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"content\" : [ {\r\n      \"\
-                    reviewId\" : 10,\r\n      \"rating\" : 5,\r\n      \"content\"\
-                    \ : \"좋아요.\",\r\n      \"adminReply\" : {\r\n        \"content\"\
-                    \ : \"감사합니다.\",\r\n        \"createdAt\" : \"2025-06-12T12:00\"\
-                    \r\n      },\r\n      \"user\" : {\r\n        \"userId\" : 1,\r\
-                    \n        \"nickname\" : \"커피좋아\"\r\n      },\r\n      \"product\"\
-                    \ : {\r\n        \"productId\" : 1,\r\n        \"productName\"\
-                    \ : \"스타벅스 캡슐커피\"\r\n      },\r\n      \"createdAt\" : \"2025-06-12T12:00\"\
-                    \r\n    } ],\r\n    \"page\" : 1,\r\n    \"size\" : 10,\r\n  \
-                    \  \"totalPages\" : 2,\r\n    \"totalElements\" : 11\r\n  },\r\
-                    \n  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "content" : [ {
+                          "reviewId" : 10,
+                          "rating" : 5,
+                          "content" : "좋아요.",
+                          "adminReply" : {
+                            "content" : "감사합니다.",
+                            "createdAt" : "2025-06-12T12:00"
+                          },
+                          "user" : {
+                            "userId" : 1,
+                            "nickname" : "커피좋아"
+                          },
+                          "product" : {
+                            "productId" : 1,
+                            "productName" : "스타벅스 캡슐커피"
+                          },
+                          "createdAt" : "2025-06-12T12:00"
+                        } ],
+                        "page" : 1,
+                        "size" : 10,
+                        "totalPages" : 2,
+                        "totalElements" : 11
+                      },
+                      "error" : null
+                    }
   /admin/products/selling-status:
     get:
       tags:
@@ -228,8 +270,14 @@ paths:
                 $ref: "#/components/schemas/admin-products-selling-status-152159338"
               examples:
                 상품_판매상태_조회_성공:
-                  value: "{\r\n  \"data\" : [ {\r\n    \"code\" : \"ON_SALE\",\r\n\
-                    \    \"label\" : \"판매중\"\r\n  } ],\r\n  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : [ {
+                        "code" : "ON_SALE",
+                        "label" : "판매중"
+                      } ],
+                      "error" : null
+                    }
   /admin/products/{productId}:
     get:
       tags:
@@ -255,13 +303,21 @@ paths:
                 $ref: "#/components/schemas/admin-products-productId-412506376"
               examples:
                 관리자_상품_상세_조회_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"id\" : 1,\r\n    \"name\" :\
-                    \ \"콜드브루\",\r\n    \"price\" : 3500,\r\n    \"quantity\" : 100,\r\
-                    \n    \"thumbnail\" : \"https://test.com/thumbnail.png\",\r\n\
-                    \    \"detailImage\" : \"https://test.com/detail.png\",\r\n  \
-                    \  \"intensity\" : \"Strong\",\r\n    \"cupSize\" : \"Large\"\
-                    ,\r\n    \"status\" : \"ON_SALE\"\r\n  },\r\n  \"error\" : null\r\
-                    \n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "id" : 1,
+                        "name" : "콜드브루",
+                        "price" : 3500,
+                        "quantity" : 100,
+                        "thumbnail" : "https://test.com/thumbnail.png",
+                        "detailImage" : "https://test.com/detail.png",
+                        "intensity" : "Strong",
+                        "cupSize" : "Large",
+                        "status" : "ON_SALE"
+                      },
+                      "error" : null
+                    }
     put:
       tags:
       - Admin-Product
@@ -296,11 +352,17 @@ paths:
               $ref: "#/components/schemas/admin-products-productId-1789436874"
             examples:
               상품_수정_성공:
-                value: "{\r\n  \"name\" : \"콜드브루\",\r\n  \"price\" : 3500,\r\n  \"\
-                  quantity\" : 100,\r\n  \"thumbnail\" : \"https://test.com/thumbnail.png\"\
-                  ,\r\n  \"detailImage\" : \"https://test.com/detailImage.png\",\r\
-                  \n  \"intensityId\" : 1,\r\n  \"cupSizeId\" : 10,\r\n  \"status\"\
-                  \ : \"UNAVAILABLE\"\r\n}"
+                value: |-
+                  {
+                    "name" : "콜드브루",
+                    "price" : 3500,
+                    "quantity" : 100,
+                    "thumbnail" : "https://test.com/thumbnail.png",
+                    "detailImage" : "https://test.com/detailImage.png",
+                    "intensityId" : 1,
+                    "cupSizeId" : 10,
+                    "status" : "UNAVAILABLE"
+                  }
       responses:
         "200":
           description: "200"
@@ -310,8 +372,13 @@ paths:
                 $ref: "#/components/schemas/admin-products-productId-1712578160"
               examples:
                 상품_수정_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"productId\" : 10\r\n  },\r\n\
-                    \  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "productId" : 10
+                      },
+                      "error" : null
+                    }
     delete:
       tags:
       - Admin-Product
@@ -340,11 +407,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/payments-cancel1686665306"
+                $ref: "#/components/schemas/reviews-reviewId1686665306"
               examples:
                 상품_삭제_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"message\" : \"OK\"\r\n  },\r\
-                    \n  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "message" : "OK"
+                      },
+                      "error" : null
+                    }
   /admin/payments/refund/approve:
     post:
       tags:
@@ -370,18 +442,26 @@ paths:
               $ref: "#/components/schemas/admin-payments-refund-reject-1038851161"
             examples:
               관리자_환불승인_성공:
-                value: "{\r\n  \"paymentNumber\" : \"PAY00001\"\r\n}"
+                value: |-
+                  {
+                    "paymentNumber" : "PAY00001"
+                  }
       responses:
         "200":
           description: "200"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/payments-cancel1686665306"
+                $ref: "#/components/schemas/reviews-reviewId1686665306"
               examples:
                 관리자_환불승인_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"message\" : \"OK\"\r\n  },\r\
-                    \n  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "message" : "OK"
+                      },
+                      "error" : null
+                    }
   /admin/payments/refund/reject:
     post:
       tags:
@@ -407,18 +487,26 @@ paths:
               $ref: "#/components/schemas/admin-payments-refund-reject-1038851161"
             examples:
               관리자_환불거절_성공:
-                value: "{\r\n  \"paymentNumber\" : \"PAY00001\"\r\n}"
+                value: |-
+                  {
+                    "paymentNumber" : "PAY00001"
+                  }
       responses:
         "200":
           description: "200"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/payments-cancel1686665306"
+                $ref: "#/components/schemas/reviews-reviewId1686665306"
               examples:
                 관리자_환불거절_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"message\" : \"OK\"\r\n  },\r\
-                    \n  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "message" : "OK"
+                      },
+                      "error" : null
+                    }
   /admin/reviews/reply/{replyId}:
     put:
       tags:
@@ -449,7 +537,10 @@ paths:
               $ref: "#/components/schemas/admin-reviews-reply-replyId800783421"
             examples:
               관리자_리뷰답글_수정_성공:
-                value: "{\r\n  \"content\" : \"감사합니다.\"\r\n}"
+                value: |-
+                  {
+                    "content" : "감사합니다."
+                  }
       responses:
         "200":
           description: "200"
@@ -459,8 +550,13 @@ paths:
                 $ref: "#/components/schemas/admin-reviews-reply-replyId1254049025"
               examples:
                 관리자_리뷰답글_수정_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"replyId\" : 1\r\n  },\r\n \
-                    \ \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "replyId" : 1
+                      },
+                      "error" : null
+                    }
     delete:
       tags:
       - Admin-Review
@@ -487,11 +583,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/payments-cancel1686665306"
+                $ref: "#/components/schemas/reviews-reviewId1686665306"
               examples:
                 관리자_리뷰답글_삭제_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"message\" : \"OK\"\r\n  },\r\
-                    \n  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "message" : "OK"
+                      },
+                      "error" : null
+                    }
   /admin/reviews/{reviewId}/reply:
     post:
       tags:
@@ -522,7 +623,10 @@ paths:
               $ref: "#/components/schemas/admin-reviews-reply-replyId800783421"
             examples:
               관리자_리뷰답글_등록_성공:
-                value: "{\r\n  \"content\" : \"감사합니다.\"\r\n}"
+                value: |-
+                  {
+                    "content" : "감사합니다."
+                  }
       responses:
         "200":
           description: "200"
@@ -532,8 +636,13 @@ paths:
                 $ref: "#/components/schemas/admin-reviews-reply-replyId1254049025"
               examples:
                 관리자_리뷰답글_등록_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"replyId\" : 1\r\n  },\r\n \
-                    \ \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "replyId" : 1
+                      },
+                      "error" : null
+                    }
   /cart-items:
     get:
       tags:
@@ -557,18 +666,33 @@ paths:
                 $ref: "#/components/schemas/cart-items-761185737"
               examples:
                 장바구니_상품_목록_조회_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"totalPrice\" : 80000,\r\n \
-                    \   \"deliveryPrice\" : 0,\r\n    \"cartItems\" : [ {\r\n    \
-                    \  \"cartItemId\" : 101,\r\n      \"productId\" : 1,\r\n     \
-                    \ \"productName\" : \"Product 1\",\r\n      \"quantity\" : 2,\r\
-                    \n      \"price\" : 10000,\r\n      \"stockQuantity\" : 10,\r\n\
-                    \      \"thumbnail\" : \"thumbnail1.jpg\",\r\n      \"isAvailable\"\
-                    \ : true\r\n    }, {\r\n      \"cartItemId\" : 102,\r\n      \"\
-                    productId\" : 2,\r\n      \"productName\" : \"Product 2\",\r\n\
-                    \      \"quantity\" : 3,\r\n      \"price\" : 20000,\r\n     \
-                    \ \"stockQuantity\" : 5,\r\n      \"thumbnail\" : \"thumbnail2.jpg\"\
-                    ,\r\n      \"isAvailable\" : true\r\n    } ]\r\n  },\r\n  \"error\"\
-                    \ : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "totalPrice" : 80000,
+                        "deliveryPrice" : 0,
+                        "cartItems" : [ {
+                          "cartItemId" : 101,
+                          "productId" : 1,
+                          "productName" : "Product 1",
+                          "quantity" : 2,
+                          "price" : 10000,
+                          "stockQuantity" : 10,
+                          "thumbnail" : "thumbnail1.jpg",
+                          "isAvailable" : true
+                        }, {
+                          "cartItemId" : 102,
+                          "productId" : 2,
+                          "productName" : "Product 2",
+                          "quantity" : 3,
+                          "price" : 20000,
+                          "stockQuantity" : 5,
+                          "thumbnail" : "thumbnail2.jpg",
+                          "isAvailable" : true
+                        } ]
+                      },
+                      "error" : null
+                    }
     post:
       tags:
       - Cart
@@ -589,7 +713,11 @@ paths:
               $ref: "#/components/schemas/cart-items1349440338"
             examples:
               장바구니에_상품_추가_성공:
-                value: "{\r\n  \"productId\" : 1,\r\n  \"quantity\" : 100\r\n}"
+                value: |-
+                  {
+                    "productId" : 1,
+                    "quantity" : 100
+                  }
       responses:
         "200":
           description: "200"
@@ -599,9 +727,15 @@ paths:
                 $ref: "#/components/schemas/cart-items151658045"
               examples:
                 장바구니에_상품_추가_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"quantity\" : 80,\r\n    \"\
-                    stockQuantity\" : 80,\r\n    \"requiresQuantityAdjustment\" :\
-                    \ true\r\n  },\r\n  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "quantity" : 80,
+                        "stockQuantity" : 80,
+                        "requiresQuantityAdjustment" : true
+                      },
+                      "error" : null
+                    }
     delete:
       tags:
       - Cart
@@ -620,11 +754,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/payments-cancel1686665306"
+                $ref: "#/components/schemas/reviews-reviewId1686665306"
               examples:
                 장바구니_상품_삭제_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"message\" : \"Successfully\
-                    \ deleted 1 cart items\"\r\n  },\r\n  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "message" : "Successfully deleted 1 cart items"
+                      },
+                      "error" : null
+                    }
   /cart-items/{cartItemId}:
     patch:
       tags:
@@ -652,7 +791,11 @@ paths:
               $ref: "#/components/schemas/cart-items-cartItemId-2049702389"
             examples:
               장바구니_상품_수정_성공:
-                value: "{\r\n  \"cartItemId\" : 1,\r\n  \"quantity\" : 100\r\n}"
+                value: |-
+                  {
+                    "cartItemId" : 1,
+                    "quantity" : 100
+                  }
       responses:
         "200":
           description: "200"
@@ -662,10 +805,362 @@ paths:
                 $ref: "#/components/schemas/cart-items-cartItemId838557620"
               examples:
                 장바구니_상품_수정_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"userId\" : 1,\r\n    \"productId\"\
-                    \ : 1,\r\n    \"quantity\" : 80,\r\n    \"stockQuantity\" : 80,\r\
-                    \n    \"requiresQuantityAdjustment\" : true\r\n  },\r\n  \"error\"\
-                    \ : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "userId" : 1,
+                        "productId" : 1,
+                        "quantity" : 80,
+                        "stockQuantity" : 80,
+                        "requiresQuantityAdjustment" : true
+                      },
+                      "error" : null
+                    }
+  /chat/rooms:
+    get:
+      tags:
+      - Chat
+      summary: 사용자의 채팅방 목록을 조회한다.
+      operationId: 채팅방_목록_조회_성공
+      parameters:
+      - name: userId
+        in: query
+        description: 유저 ID
+        required: false
+        schema:
+          type: string
+      - name: guestId
+        in: query
+        description: 게스트 ID
+        required: false
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/chat-rooms823257196"
+              examples:
+                채팅방_목록_조회_성공:
+                  value: |-
+                    {
+                      "data" : [ {
+                        "id" : 1,
+                        "guestId" : null,
+                        "userId" : 123,
+                        "adminId" : 1,
+                        "productId" : 1,
+                        "status" : "ON_CHAT",
+                        "createdAt" : "2025-06-17T09:25",
+                        "lastMessage" : "네, 재고 있습니다",
+                        "lastMessageAt" : "2025-06-18T07:25"
+                      } ],
+                      "error" : null
+                    }
+    post:
+      tags:
+      - Chat
+      summary: 새로운 채팅방을 생성하거나 기존 채팅방을 반환한다.
+      operationId: 채팅방_생성_
+      parameters:
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/chat-rooms657381828"
+            examples:
+              채팅방_생성_게스트_성공:
+                value: |-
+                  {
+                    "senderType" : "GUEST",
+                    "senderId" : "guest-123",
+                    "productId" : 1,
+                    "initialMessage" : "이 상품 재고 있나요?"
+                  }
+              채팅방_생성_회원_성공:
+                value: |-
+                  {
+                    "senderType" : "USER",
+                    "senderId" : "123",
+                    "productId" : 1,
+                    "initialMessage" : "상품 구매 문의드립니다"
+                  }
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/chat-rooms1997009470"
+              examples:
+                채팅방_생성_게스트_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "id" : 1,
+                        "guestId" : "guest-123",
+                        "userId" : null,
+                        "adminId" : null,
+                        "productId" : 1,
+                        "status" : "REQUESTED",
+                        "createdAt" : "2025-06-18T09:25",
+                        "lastMessage" : "이 상품 재고 있나요?",
+                        "lastMessageAt" : "2025-06-18T09:25"
+                      },
+                      "error" : null
+                    }
+                채팅방_생성_회원_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "id" : 2,
+                        "guestId" : null,
+                        "userId" : 123,
+                        "adminId" : null,
+                        "productId" : 1,
+                        "status" : "REQUESTED",
+                        "createdAt" : "2025-06-18T09:25",
+                        "lastMessage" : "상품 구매 문의드립니다",
+                        "lastMessageAt" : "2025-06-18T09:25"
+                      },
+                      "error" : null
+                    }
+  /chat/rooms/{roomId}:
+    get:
+      tags:
+      - Chat
+      summary: 특정 채팅방의 상세 정보를 조회한다.
+      operationId: 채팅방_상세_조회_성공
+      parameters:
+      - name: roomId
+        in: path
+        description: 채팅방 ID
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/chat-rooms-roomId-status-1530925551"
+              examples:
+                채팅방_상세_조회_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "id" : 1,
+                        "guestId" : "guest-123",
+                        "userId" : null,
+                        "adminId" : 1,
+                        "productId" : 1,
+                        "status" : "ON_CHAT",
+                        "createdAt" : "2025-06-17T09:25",
+                        "lastMessage" : "감사합니다",
+                        "lastMessageAt" : "2025-06-18T08:55"
+                      },
+                      "error" : null
+                    }
+  /chat/rooms/{roomId}/admin-join:
+    post:
+      tags:
+      - Chat
+      summary: 관리자가 채팅방에 입장한다.
+      operationId: 관리자_채팅방_입장_성공
+      parameters:
+      - name: roomId
+        in: path
+        description: 채팅방 ID
+        required: true
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer admin-token
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/chat-rooms-roomId-admin-join-721045196"
+            examples:
+              관리자_채팅방_입장_성공:
+                value: |-
+                  {
+                    "adminId" : 100
+                  }
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/chat-rooms-roomId-admin-join1389647186"
+              examples:
+                관리자_채팅방_입장_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "message" : "관리자가 채팅방에 입장했습니다."
+                      },
+                      "error" : null
+                    }
+  /chat/rooms/{roomId}/messages:
+    get:
+      tags:
+      - Chat
+      summary: 채팅방의 메시지 목록을 페이징하여 조회한다.
+      operationId: 채팅_메시지_조회_성공
+      parameters:
+      - name: roomId
+        in: path
+        description: 채팅방 ID
+        required: true
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: 페이지 번호 (0부터 시작)
+        required: false
+        schema:
+          type: string
+      - name: size
+        in: query
+        description: 페이지 크기
+        required: false
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: 정렬 기준
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/chat-rooms-roomId-messages-335568352"
+              examples:
+                채팅_메시지_조회_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "content" : [ {
+                          "id" : 1,
+                          "chatRoomId" : 1,
+                          "content" : "안녕하세요",
+                          "senderType" : "GUEST",
+                          "senderId" : "guest-123",
+                          "senderName" : "Guest",
+                          "createdAt" : "2025-06-18T09:15",
+                          "productInfo" : null
+                        } ],
+                        "pageable" : {
+                          "pageNumber" : 0,
+                          "pageSize" : 20,
+                          "sort" : {
+                            "empty" : true,
+                            "sorted" : false,
+                            "unsorted" : true
+                          },
+                          "offset" : 0,
+                          "paged" : true,
+                          "unpaged" : false
+                        },
+                        "last" : true,
+                        "totalPages" : 1,
+                        "totalElements" : 1,
+                        "first" : true,
+                        "size" : 20,
+                        "number" : 0,
+                        "sort" : {
+                          "empty" : true,
+                          "sorted" : false,
+                          "unsorted" : true
+                        },
+                        "numberOfElements" : 1,
+                        "empty" : false
+                      },
+                      "error" : null
+                    }
+  /chat/rooms/{roomId}/status:
+    patch:
+      tags:
+      - Chat
+      summary: 채팅방의 상태를 변경한다. (관리자 권한 필요)
+      operationId: 채팅방_상태_변경_성공
+      parameters:
+      - name: roomId
+        in: path
+        description: 채팅방 ID
+        required: true
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer admin-token
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/chat-rooms-roomId-status1571194345"
+            examples:
+              채팅방_상태_변경_성공:
+                value: |-
+                  {
+                    "status" : "END"
+                  }
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/chat-rooms-roomId-status-1530925551"
+              examples:
+                채팅방_상태_변경_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "id" : 1,
+                        "guestId" : "guest-123",
+                        "userId" : null,
+                        "adminId" : 1,
+                        "productId" : 1,
+                        "status" : "END",
+                        "createdAt" : "2025-06-17T09:25",
+                        "lastMessage" : "상담이 종료되었습니다",
+                        "lastMessageAt" : "2025-06-18T09:25"
+                      },
+                      "error" : null
+                    }
   /files/presigned-url:
     post:
       tags:
@@ -687,10 +1182,15 @@ paths:
               $ref: "#/components/schemas/files-presigned-url-1375438577"
             examples:
               PresignedURL_발급_성공:
-                value: "{\r\n  \"fileName\" : \"사진입니다.jpg\",\r\n  \"contentType\"\
-                  \ : \"image/jpeg\",\r\n  \"fileSize\" : 1048576,\r\n  \"domainType\"\
-                  \ : \"PRODUCT\",\r\n  \"domainContext\" : \"thumbnail\",\r\n  \"\
-                  contextId\" : \"6d851850-3b6f-4230-97fe-1a55b44fc862\"\r\n}"
+                value: |-
+                  {
+                    "fileName" : "사진입니다.jpg",
+                    "contentType" : "image/jpeg",
+                    "fileSize" : 1048576,
+                    "domainType" : "PRODUCT",
+                    "domainContext" : "thumbnail",
+                    "contextId" : "6d851850-3b6f-4230-97fe-1a55b44fc862"
+                  }
       responses:
         "200":
           description: "200"
@@ -700,10 +1200,15 @@ paths:
                 $ref: "#/components/schemas/files-presigned-url-2064193514"
               examples:
                 PresignedURL_발급_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"uploadUrl\" : \"https://test-801base-bucket.com/product/6d851850-3b6f-4230-97fe-1a55b44fc862/thumbnail-uuid.jpg\"\
-                    ,\r\n    \"key\" : \"product/6d851850-3b6f-4230-97fe-1a55b44fc862/thumbnail-uuid.jpg\"\
-                    ,\r\n    \"contextId\" : \"6d851850-3b6f-4230-97fe-1a55b44fc862\"\
-                    \r\n  },\r\n  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "uploadUrl" : "https://test-801base-bucket.com/product/6d851850-3b6f-4230-97fe-1a55b44fc862/thumbnail-uuid.jpg",
+                        "key" : "product/6d851850-3b6f-4230-97fe-1a55b44fc862/thumbnail-uuid.jpg",
+                        "contextId" : "6d851850-3b6f-4230-97fe-1a55b44fc862"
+                      },
+                      "error" : null
+                    }
   /orders:
     get:
       tags:
@@ -733,15 +1238,26 @@ paths:
                 $ref: "#/components/schemas/orders-2108059589"
               examples:
                 주문_목록_조회_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"content\" : [ {\r\n      \"\
-                    orderNumber\" : \"ORD20250609123456789\",\r\n      \"orderName\"\
-                    \ : \"스페셜 리버즈 외 3건\",\r\n      \"mainProductThumbnail\" : \"https://example.com/thumbnail.jpg\"\
-                    ,\r\n      \"orderStatus\" : \"DELIVERED\",\r\n      \"finalTotalPrice\"\
-                    \ : 13000,\r\n      \"orderedAt\" : \"2025-06-08T12:34\",\r\n\
-                    \      \"cancellable\" : true,\r\n      \"refundable\" : false\r\
-                    \n    } ],\r\n    \"page\" : 1,\r\n    \"size\" : 10,\r\n    \"\
-                    totalPages\" : 2,\r\n    \"totalElements\" : 11\r\n  },\r\n  \"\
-                    error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "content" : [ {
+                          "orderNumber" : "ORD20250609123456789",
+                          "orderName" : "스페셜 리버즈 외 3건",
+                          "mainProductThumbnail" : "https://example.com/thumbnail.jpg",
+                          "orderStatus" : "DELIVERED",
+                          "finalTotalPrice" : 13000,
+                          "orderedAt" : "2025-06-08T12:34",
+                          "cancellable" : true,
+                          "refundable" : false
+                        } ],
+                        "page" : 1,
+                        "size" : 10,
+                        "totalPages" : 2,
+                        "totalElements" : 11
+                      },
+                      "error" : null
+                    }
     post:
       tags:
       - Order
@@ -762,12 +1278,19 @@ paths:
               $ref: "#/components/schemas/orders-1934294331"
             examples:
               주문_생성_성공:
-                value: "{\r\n  \"cartItemIds\" : [ 1, 2, 3 ],\r\n  \"shippingInfo\"\
-                  \ : {\r\n    \"recipientName\" : \"홍길동\",\r\n    \"recipientPhone\"\
-                  \ : \"010-1234-1234\",\r\n    \"zipCode\" : \"12345\",\r\n    \"\
-                  address1\" : \"서울특별시 관악구\",\r\n    \"address2\" : \"서울대입구역 6번출구\"\
-                  ,\r\n    \"deliveryMessage\" : \"문앞에 놔주세요\"\r\n  },\r\n  \"paymentMethod\"\
-                  \ : \"TOSS_PAY\"\r\n}"
+                value: |-
+                  {
+                    "cartItemIds" : [ 1, 2, 3 ],
+                    "shippingInfo" : {
+                      "recipientName" : "홍길동",
+                      "recipientPhone" : "010-1234-1234",
+                      "zipCode" : "12345",
+                      "address1" : "서울특별시 관악구",
+                      "address2" : "서울대입구역 6번출구",
+                      "deliveryMessage" : "문앞에 놔주세요"
+                    },
+                    "paymentMethod" : "TOSS_PAY"
+                  }
       responses:
         "200":
           description: "200"
@@ -777,8 +1300,13 @@ paths:
                 $ref: "#/components/schemas/orders-841088526"
               examples:
                 주문_생성_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"orderNumber\" : \"ORD20250609123456789\"\
-                    \r\n  },\r\n  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "orderNumber" : "ORD20250609123456789"
+                      },
+                      "error" : null
+                    }
   /orders/prepare:
     get:
       tags:
@@ -808,20 +1336,37 @@ paths:
                 $ref: "#/components/schemas/orders-prepare-1852172854"
               examples:
                 주문서_생성_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"cartItemIds\" : [ 1 ],\r\n\
-                    \    \"itemsSubtotal\" : 10000,\r\n    \"shippingFee\" : 3000,\r\
-                    \n    \"finalTotalPrice\" : 13000,\r\n    \"items\" : [ {\r\n\
-                    \      \"cartItemId\" : 1,\r\n      \"productId\" : 1,\r\n   \
-                    \   \"name\" : \"상품A\",\r\n      \"thumbnail\" : \"http://localhost:8080/api/v1/product/1/thumbnail\"\
-                    ,\r\n      \"unitPrice\" : 1000,\r\n      \"quantity\" : 10,\r\
-                    \n      \"itemSubtotal\" : 10000\r\n    } ],\r\n    \"shippingInfo\"\
-                    \ : {\r\n      \"recipientName\" : \"홍길동\",\r\n      \"recipientPhone\"\
-                    \ : \"010-1234-1234\",\r\n      \"zipCode\" : \"12345\",\r\n \
-                    \     \"addressId\" : 1,\r\n      \"address1\" : \"서울특별시 관악구\"\
-                    ,\r\n      \"address2\" : \"서울대입구역 6번출구\"\r\n    },\r\n    \"\
-                    paymentMethod\" : [ {\r\n      \"code\" : \"MOCK\",\r\n      \"\
-                    label\" : \"테스트\"\r\n    } ]\r\n  },\r\n  \"error\" : null\r\n\
-                    }"
+                  value: |-
+                    {
+                      "data" : {
+                        "cartItemIds" : [ 1 ],
+                        "itemsSubtotal" : 10000,
+                        "shippingFee" : 3000,
+                        "finalTotalPrice" : 13000,
+                        "items" : [ {
+                          "cartItemId" : 1,
+                          "productId" : 1,
+                          "name" : "상품A",
+                          "thumbnail" : "http://localhost:8080/api/v1/product/1/thumbnail",
+                          "unitPrice" : 1000,
+                          "quantity" : 10,
+                          "itemSubtotal" : 10000
+                        } ],
+                        "shippingInfo" : {
+                          "recipientName" : "홍길동",
+                          "recipientPhone" : "010-1234-1234",
+                          "zipCode" : "12345",
+                          "addressId" : 1,
+                          "address1" : "서울특별시 관악구",
+                          "address2" : "서울대입구역 6번출구"
+                        },
+                        "paymentMethod" : [ {
+                          "code" : "MOCK",
+                          "label" : "테스트"
+                        } ]
+                      },
+                      "error" : null
+                    }
   /orders/{orderNumber}:
     get:
       tags:
@@ -851,28 +1396,49 @@ paths:
                 $ref: "#/components/schemas/orders-orderNumber1806927897"
               examples:
                 주문_상세_조회_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"orderNumber\" : \"ORD20250609123456789\"\
-                    ,\r\n    \"orderName\" : \"홍길동님의 주문\",\r\n    \"orderStatus\"\
-                    \ : \"배송 준비중\",\r\n    \"paymentNumber\" : \"PAY1231414124\",\r\
-                    \n    \"paymentMethod\" : \"토스페이\",\r\n    \"itemsSubTotal\" :\
-                    \ 10000,\r\n    \"shippingFee\" : 3000,\r\n    \"finalTotalPrice\"\
-                    \ : 13000,\r\n    \"items\" : [ {\r\n      \"orderItemId\" : 1,\r\
-                    \n      \"productSnapshotId\" : 1,\r\n      \"name\" : \"상품명\"\
-                    ,\r\n      \"thumbnail\" : \"https://example.com/thumbnail.jpg\"\
-                    ,\r\n      \"unitPrice\" : 1000,\r\n      \"quantity\" : 10,\r\
-                    \n      \"itemSubTotal\" : 10000\r\n    } ],\r\n    \"shippingInfo\"\
-                    \ : {\r\n      \"recipientName\" : \"홍길동\",\r\n      \"recipientPhone\"\
-                    \ : \"010-1234-1234\",\r\n      \"zipCode\" : \"08123\",\r\n \
-                    \     \"address1\" : \"서울특별시 관악구\",\r\n      \"address2\" : \"\
-                    1000003동 123호\",\r\n      \"deliveryMessage\" : \"문앞에 놔주세요.\"\r\
-                    \n    },\r\n    \"orderedAt\" : \"2025-06-08T12:34\",\r\n    \"\
-                    paidAt\" : \"2025-06-08T12:34\",\r\n    \"cancellable\" : true,\r\
-                    \n    \"cancelRequested\" : false,\r\n    \"cancelledAt\" : null,\r\
-                    \n    \"refundable\" : false,\r\n    \"refundRequested\" : false,\r\
-                    \n    \"refundRequestedAt\" : null,\r\n    \"refunded\" : false,\r\
-                    \n    \"refundedAt\" : null,\r\n    \"reviewable\" : true,\r\n\
-                    \    \"reviewWritten\" : false\r\n  },\r\n  \"error\" : null\r\
-                    \n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "orderNumber" : "ORD20250609123456789",
+                        "orderName" : "홍길동님의 주문",
+                        "orderStatus" : "배송 준비중",
+                        "paymentNumber" : "PAY1231414124",
+                        "paymentMethod" : "토스페이",
+                        "itemsSubTotal" : 10000,
+                        "shippingFee" : 3000,
+                        "finalTotalPrice" : 13000,
+                        "items" : [ {
+                          "orderItemId" : 1,
+                          "productSnapshotId" : 1,
+                          "name" : "상품명",
+                          "thumbnail" : "https://example.com/thumbnail.jpg",
+                          "unitPrice" : 1000,
+                          "quantity" : 10,
+                          "itemSubTotal" : 10000
+                        } ],
+                        "shippingInfo" : {
+                          "recipientName" : "홍길동",
+                          "recipientPhone" : "010-1234-1234",
+                          "zipCode" : "08123",
+                          "address1" : "서울특별시 관악구",
+                          "address2" : "1000003동 123호",
+                          "deliveryMessage" : "문앞에 놔주세요."
+                        },
+                        "orderedAt" : "2025-06-08T12:34",
+                        "paidAt" : "2025-06-08T12:34",
+                        "cancellable" : true,
+                        "cancelRequested" : false,
+                        "cancelledAt" : null,
+                        "refundable" : false,
+                        "refundRequested" : false,
+                        "refundRequestedAt" : null,
+                        "refunded" : false,
+                        "refundedAt" : null,
+                        "reviewable" : true,
+                        "reviewWritten" : false
+                      },
+                      "error" : null
+                    }
   /orders/{orderNumber}/cancel:
     post:
       tags:
@@ -907,11 +1473,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/payments-cancel1686665306"
+                $ref: "#/components/schemas/reviews-reviewId1686665306"
               examples:
                 주문_취소_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"message\" : \"OK\"\r\n  },\r\
-                    \n  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "message" : "OK"
+                      },
+                      "error" : null
+                    }
   /payments:
     post:
       tags:
@@ -940,8 +1511,11 @@ paths:
               $ref: "#/components/schemas/payments808279509"
             examples:
               결제처리_성공:
-                value: "{\r\n  \"orderNumber\" : \"ORD123123123\",\r\n  \"transactionId\"\
-                  \ : \"12312312-123\"\r\n}"
+                value: |-
+                  {
+                    "orderNumber" : "ORD123123123",
+                    "transactionId" : "12312312-123"
+                  }
       responses:
         "200":
           description: "200"
@@ -951,8 +1525,13 @@ paths:
                 $ref: "#/components/schemas/payments-2018243494"
               examples:
                 결제처리_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"paymentNumber\" : \"PAY00001\"\
-                    \r\n  },\r\n  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "paymentNumber" : "PAY00001"
+                      },
+                      "error" : null
+                    }
   /payments/cancel:
     post:
       tags:
@@ -978,21 +1557,29 @@ paths:
         content:
           application/json;charset=UTF-8:
             schema:
-              $ref: "#/components/schemas/payments-cancel-919447853"
+              $ref: "#/components/schemas/payments-refund-919447853"
             examples:
               결제취소_성공:
-                value: "{\r\n  \"orderNumber\" : \"ORD123123123\"\r\n}"
+                value: |-
+                  {
+                    "orderNumber" : "ORD123123123"
+                  }
       responses:
         "200":
           description: "200"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/payments-cancel1686665306"
+                $ref: "#/components/schemas/reviews-reviewId1686665306"
               examples:
                 결제취소_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"message\" : \"OK\"\r\n  },\r\
-                    \n  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "message" : "OK"
+                      },
+                      "error" : null
+                    }
   /payments/refund:
     post:
       tags:
@@ -1015,21 +1602,29 @@ paths:
         content:
           application/json;charset=UTF-8:
             schema:
-              $ref: "#/components/schemas/payments-cancel-919447853"
+              $ref: "#/components/schemas/payments-refund-919447853"
             examples:
               결제환불요청_성공:
-                value: "{\r\n  \"orderNumber\" : \"ORD123123123\"\r\n}"
+                value: |-
+                  {
+                    "orderNumber" : "ORD123123123"
+                  }
       responses:
         "200":
           description: "200"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/payments-cancel1686665306"
+                $ref: "#/components/schemas/reviews-reviewId1686665306"
               examples:
                 결제환불요청_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"message\" : \"OK\"\r\n  },\r\
-                    \n  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "message" : "OK"
+                      },
+                      "error" : null
+                    }
   /products:
     get:
       tags:
@@ -1039,8 +1634,8 @@ paths:
       parameters:
       - name: name
         in: query
-        description: 존재하지 않는 상품명
-        required: true
+        description: 상품명 (부분 검색)
+        required: false
         schema:
           type: string
       - name: intensityId
@@ -1075,25 +1670,50 @@ paths:
               schema:
                 $ref: "#/components/schemas/products-1886796052"
               examples:
-                상품_검색_결과_없음:
-                  value: "{\r\n  \"data\" : {\r\n    \"content\" : [ ],\r\n    \"\
-                    page\" : 0,\r\n    \"size\" : 20,\r\n    \"totalPages\" : 0,\r\
-                    \n    \"totalElements\" : 0\r\n  },\r\n  \"error\" : null\r\n}"
                 상품_목록_조회_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"content\" : [ {\r\n      \"\
-                    id\" : 1,\r\n      \"name\" : \"콜드브루\",\r\n      \"price\" : 3500,\r\
-                    \n      \"quantity\" : 100,\r\n      \"thumbnail\" : \"https://test.com/thumbnail.png\"\
-                    ,\r\n      \"detailImage\" : \"https://test.com/detail.png\",\r\
-                    \n      \"intensity\" : \"Strong\",\r\n      \"cupSize\" : \"\
-                    Large\",\r\n      \"isSoldOut\" : false\r\n    }, {\r\n      \"\
-                    id\" : 2,\r\n      \"name\" : \"아메리카노\",\r\n      \"price\" :\
-                    \ 3000,\r\n      \"quantity\" : 150,\r\n      \"thumbnail\" :\
-                    \ \"https://test.com/americano.png\",\r\n      \"detailImage\"\
-                    \ : \"https://test.com/americano-detail.png\",\r\n      \"intensity\"\
-                    \ : \"Medium\",\r\n      \"cupSize\" : \"Small\",\r\n      \"\
-                    isSoldOut\" : false\r\n    } ],\r\n    \"page\" : 0,\r\n    \"\
-                    size\" : 20,\r\n    \"totalPages\" : 1,\r\n    \"totalElements\"\
-                    \ : 2\r\n  },\r\n  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "content" : [ {
+                          "id" : 1,
+                          "name" : "콜드브루",
+                          "price" : 3500,
+                          "quantity" : 100,
+                          "thumbnail" : "https://test.com/thumbnail.png",
+                          "detailImage" : "https://test.com/detail.png",
+                          "intensity" : "Strong",
+                          "cupSize" : "Large",
+                          "isSoldOut" : false
+                        }, {
+                          "id" : 2,
+                          "name" : "아메리카노",
+                          "price" : 3000,
+                          "quantity" : 150,
+                          "thumbnail" : "https://test.com/americano.png",
+                          "detailImage" : "https://test.com/americano-detail.png",
+                          "intensity" : "Medium",
+                          "cupSize" : "Small",
+                          "isSoldOut" : false
+                        } ],
+                        "page" : 0,
+                        "size" : 20,
+                        "totalPages" : 1,
+                        "totalElements" : 2
+                      },
+                      "error" : null
+                    }
+                상품_검색_결과_없음:
+                  value: |-
+                    {
+                      "data" : {
+                        "content" : [ ],
+                        "page" : 0,
+                        "size" : 20,
+                        "totalPages" : 0,
+                        "totalElements" : 0
+                      },
+                      "error" : null
+                    }
   /products/categories:
     get:
       tags:
@@ -1109,13 +1729,26 @@ paths:
                 $ref: "#/components/schemas/products-categories466113931"
               examples:
                 카테고리_목록_조회_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"cupSizes\" : [ {\r\n      \"\
-                    id\" : \"1\",\r\n      \"label\" : \"25ml\"\r\n    }, {\r\n  \
-                    \    \"id\" : \"2\",\r\n      \"label\" : \"80ml\"\r\n    } ],\r\
-                    \n    \"intensities\" : [ {\r\n      \"id\" : \"3\",\r\n     \
-                    \ \"label\" : \"1\"\r\n    }, {\r\n      \"id\" : \"4\",\r\n \
-                    \     \"label\" : \"2\"\r\n    } ]\r\n  },\r\n  \"error\" : null\r\
-                    \n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "cupSizes" : [ {
+                          "id" : "1",
+                          "label" : "25ml"
+                        }, {
+                          "id" : "2",
+                          "label" : "80ml"
+                        } ],
+                        "intensities" : [ {
+                          "id" : "3",
+                          "label" : "1"
+                        }, {
+                          "id" : "4",
+                          "label" : "2"
+                        } ]
+                      },
+                      "error" : null
+                    }
   /products/main:
     get:
       tags:
@@ -1131,19 +1764,34 @@ paths:
                 $ref: "#/components/schemas/products-main-996164674"
               examples:
                 메인_상품목록_조회:
-                  value: "{\r\n  \"data\" : {\r\n    \"new\" : [ {\r\n      \"id\"\
-                    \ : 1,\r\n      \"name\" : \"콜드브루\",\r\n      \"price\" : 3500,\r\
-                    \n      \"quantity\" : 100,\r\n      \"thumbnail\" : \"https://test.com/thumbnail.png\"\
-                    ,\r\n      \"detailImage\" : \"https://test.com/detail.png\",\r\
-                    \n      \"intensity\" : \"Strong\",\r\n      \"cupSize\" : \"\
-                    Large\",\r\n      \"isSoldOut\" : false\r\n    } ],\r\n    \"\
-                    best\" : [ {\r\n      \"id\" : 1,\r\n      \"name\" : \"콜드브루\"\
-                    ,\r\n      \"price\" : 3500,\r\n      \"quantity\" : 100,\r\n\
-                    \      \"thumbnail\" : \"https://test.com/thumbnail.png\",\r\n\
-                    \      \"detailImage\" : \"https://test.com/detail.png\",\r\n\
-                    \      \"intensity\" : \"Strong\",\r\n      \"cupSize\" : \"Large\"\
-                    ,\r\n      \"isSoldOut\" : false\r\n    } ]\r\n  },\r\n  \"error\"\
-                    \ : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "new" : [ {
+                          "id" : 1,
+                          "name" : "콜드브루",
+                          "price" : 3500,
+                          "quantity" : 100,
+                          "thumbnail" : "https://test.com/thumbnail.png",
+                          "detailImage" : "https://test.com/detail.png",
+                          "intensity" : "Strong",
+                          "cupSize" : "Large",
+                          "isSoldOut" : false
+                        } ],
+                        "best" : [ {
+                          "id" : 1,
+                          "name" : "콜드브루",
+                          "price" : 3500,
+                          "quantity" : 100,
+                          "thumbnail" : "https://test.com/thumbnail.png",
+                          "detailImage" : "https://test.com/detail.png",
+                          "intensity" : "Strong",
+                          "cupSize" : "Large",
+                          "isSoldOut" : false
+                        } ]
+                      },
+                      "error" : null
+                    }
   /products/{productId}:
     get:
       tags:
@@ -1169,12 +1817,20 @@ paths:
                 $ref: "#/components/schemas/products-productId-988628468"
               examples:
                 상품_상세_조회_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"id\" : 1,\r\n    \"name\" :\
-                    \ \"콜드브루\",\r\n    \"price\" : 3500,\r\n    \"quantity\" : 100,\r\
-                    \n    \"thumbnail\" : \"https://test.com/thumbnail.png\",\r\n\
-                    \    \"detailImage\" : \"https://test.com/detail.png\",\r\n  \
-                    \  \"intensity\" : \"Strong\",\r\n    \"cupSize\" : \"Large\"\r\
-                    \n  },\r\n  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "id" : 1,
+                        "name" : "콜드브루",
+                        "price" : 3500,
+                        "quantity" : 100,
+                        "thumbnail" : "https://test.com/thumbnail.png",
+                        "detailImage" : "https://test.com/detail.png",
+                        "intensity" : "Strong",
+                        "cupSize" : "Large"
+                      },
+                      "error" : null
+                    }
   /reviews:
     post:
       tags:
@@ -1202,8 +1858,13 @@ paths:
               $ref: "#/components/schemas/reviews1890941445"
             examples:
               리뷰_등록_성공:
-                value: "{\r\n  \"orderNumber\" : \"ORDER1234\",\r\n  \"orderItemId\"\
-                  \ : 10,\r\n  \"rating\" : 3,\r\n  \"content\" : \"좋습니다.\"\r\n}"
+                value: |-
+                  {
+                    "orderNumber" : "ORDER1234",
+                    "orderItemId" : 10,
+                    "rating" : 3,
+                    "content" : "좋습니다."
+                  }
       responses:
         "200":
           description: "200"
@@ -1213,8 +1874,13 @@ paths:
                 $ref: "#/components/schemas/reviews-1411419170"
               examples:
                 리뷰_등록_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"reviewId\" : 10\r\n  },\r\n\
-                    \  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "reviewId" : 10
+                      },
+                      "error" : null
+                    }
   /reviews/rating:byProduct:
     get:
       tags:
@@ -1237,12 +1903,21 @@ paths:
                 $ref: "#/components/schemas/reviews-rating:byProduct-66572293"
               examples:
                 상품_리뷰별점통계_조회_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"averageRating\" : 3.5,\r\n\
-                    \    \"totalCount\" : 10,\r\n    \"ratingDistribution\" : {\r\n\
-                    \      \"oneStarCount\" : 2,\r\n      \"twoStarsCount\" : 3,\r\
-                    \n      \"threeStarsCount\" : 5,\r\n      \"fourStarsCount\" :\
-                    \ 1,\r\n      \"fiveStarsCount\" : 8\r\n    }\r\n  },\r\n  \"\
-                    error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "averageRating" : 3.5,
+                        "totalCount" : 10,
+                        "ratingDistribution" : {
+                          "oneStarCount" : 2,
+                          "twoStarsCount" : 3,
+                          "threeStarsCount" : 5,
+                          "fourStarsCount" : 1,
+                          "fiveStarsCount" : 8
+                        }
+                      },
+                      "error" : null
+                    }
   /reviews/{reviewId}:
     put:
       tags:
@@ -1275,7 +1950,11 @@ paths:
               $ref: "#/components/schemas/reviews-reviewId480882763"
             examples:
               리뷰_수정_성공:
-                value: "{\r\n  \"rating\" : 3,\r\n  \"content\" : \"좋습니다.\"\r\n}"
+                value: |-
+                  {
+                    "rating" : 3,
+                    "content" : "좋습니다."
+                  }
       responses:
         "200":
           description: "200"
@@ -1285,8 +1964,13 @@ paths:
                 $ref: "#/components/schemas/reviews-reviewId-215377401"
               examples:
                 리뷰_수정_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"reviewId\" : 10\r\n  },\r\n\
-                    \  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "reviewId" : 10
+                      },
+                      "error" : null
+                    }
     delete:
       tags:
       - Review
@@ -1315,11 +1999,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/payments-cancel1686665306"
+                $ref: "#/components/schemas/reviews-reviewId1686665306"
               examples:
                 리뷰_삭제_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"message\" : \"OK\"\r\n  },\r\
-                    \n  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "message" : "OK"
+                      },
+                      "error" : null
+                    }
   /reviews:byAuthor:
     get:
       tags:
@@ -1361,17 +2050,31 @@ paths:
                 $ref: "#/components/schemas/reviews:byAuthor819692058"
               examples:
                 사용자_리뷰목록_조회_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"content\" : [ {\r\n      \"\
-                    reviewId\" : 1,\r\n      \"rating\" : 5,\r\n      \"content\"\
-                    \ : \"아주 만족해요\",\r\n      \"adminReply\" : {\r\n        \"content\"\
-                    \ : \"감사합니다\",\r\n        \"createdAt\" : \"2025-06-01T12:00\"\
-                    \r\n      },\r\n      \"product\" : {\r\n        \"productId\"\
-                    \ : 1,\r\n        \"productName\" : \"상품\",\r\n        \"productThumbnail\"\
-                    \ : \"https://example.com/product/1.jpg\"\r\n      },\r\n    \
-                    \  \"createdAt\" : \"2025-06-01T12:00\"\r\n    } ],\r\n    \"\
-                    page\" : 1,\r\n    \"size\" : 10,\r\n    \"totalPages\" : 2,\r\
-                    \n    \"totalElements\" : 11\r\n  },\r\n  \"error\" : null\r\n\
-                    }"
+                  value: |-
+                    {
+                      "data" : {
+                        "content" : [ {
+                          "reviewId" : 1,
+                          "rating" : 5,
+                          "content" : "아주 만족해요",
+                          "adminReply" : {
+                            "content" : "감사합니다",
+                            "createdAt" : "2025-06-01T12:00"
+                          },
+                          "product" : {
+                            "productId" : 1,
+                            "productName" : "상품",
+                            "productThumbnail" : "https://example.com/product/1.jpg"
+                          },
+                          "createdAt" : "2025-06-01T12:00"
+                        } ],
+                        "page" : 1,
+                        "size" : 10,
+                        "totalPages" : 2,
+                        "totalElements" : 11
+                      },
+                      "error" : null
+                    }
   /reviews:byProduct:
     get:
       tags:
@@ -1400,16 +2103,30 @@ paths:
                 $ref: "#/components/schemas/reviews:byProduct1810816546"
               examples:
                 상품_리뷰목록_조회_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"content\" : [ {\r\n      \"\
-                    reviewId\" : 1,\r\n      \"rating\" : 5,\r\n      \"content\"\
-                    \ : \"아주 만족해요\",\r\n      \"createdAt\" : \"2025-06-01T12:00\"\
-                    ,\r\n      \"adminReply\" : {\r\n        \"content\" : \"감사합니다\
-                    \",\r\n        \"createdAt\" : \"2025-06-01T12:00\"\r\n      },\r\
-                    \n      \"user\" : {\r\n        \"userId\" : \"USR123123\",\r\n\
-                    \        \"nickname\" : \"user1\"\r\n      }\r\n    } ],\r\n \
-                    \   \"page\" : 1,\r\n    \"size\" : 10,\r\n    \"totalPages\"\
-                    \ : 2,\r\n    \"totalElements\" : 11\r\n  },\r\n  \"error\" :\
-                    \ null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "content" : [ {
+                          "reviewId" : 1,
+                          "rating" : 5,
+                          "content" : "아주 만족해요",
+                          "createdAt" : "2025-06-01T12:00",
+                          "adminReply" : {
+                            "content" : "감사합니다",
+                            "createdAt" : "2025-06-01T12:00"
+                          },
+                          "user" : {
+                            "userId" : "USR123123",
+                            "nickname" : "user1"
+                          }
+                        } ],
+                        "page" : 1,
+                        "size" : 10,
+                        "totalPages" : 2,
+                        "totalElements" : 11
+                      },
+                      "error" : null
+                    }
   /users/addresses:
     get:
       tags:
@@ -1433,12 +2150,20 @@ paths:
                 $ref: "#/components/schemas/users-addresses1010895288"
               examples:
                 배송지_목록조회_성공:
-                  value: "{\r\n  \"data\" : [ {\r\n    \"addressId\" : 1,\r\n    \"\
-                    alias\" : \"집\",\r\n    \"recipientName\" : \"홍길동\",\r\n    \"\
-                    recipientPhone\" : \"010-1234-5678\",\r\n    \"zipCode\" : \"\
-                    12345\",\r\n    \"address1\" : \"서울시 강남구 테헤란로 123\",\r\n    \"\
-                    address2\" : \"A동 101호\",\r\n    \"isDefault\" : true\r\n  } ],\r\
-                    \n  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : [ {
+                        "addressId" : 1,
+                        "alias" : "집",
+                        "recipientName" : "홍길동",
+                        "recipientPhone" : "010-1234-5678",
+                        "zipCode" : "12345",
+                        "address1" : "서울시 강남구 테헤란로 123",
+                        "address2" : "A동 101호",
+                        "isDefault" : true
+                      } ],
+                      "error" : null
+                    }
     post:
       tags:
       - Address
@@ -1459,10 +2184,16 @@ paths:
               $ref: "#/components/schemas/users-addresses135049666"
             examples:
               배송지_등록_성공:
-                value: "{\r\n  \"alias\" : \"회사\",\r\n  \"recipientName\" : \"홍길동\"\
-                  ,\r\n  \"recipientPhone\" : \"010-1234-1234\",\r\n  \"zipCode\"\
-                  \ : \"08123\",\r\n  \"address1\" : \"서울특별시 관악구\",\r\n  \"address2\"\
-                  \ : \"123동 123호\",\r\n  \"isDefault\" : true\r\n}"
+                value: |-
+                  {
+                    "alias" : "회사",
+                    "recipientName" : "홍길동",
+                    "recipientPhone" : "010-1234-1234",
+                    "zipCode" : "08123",
+                    "address1" : "서울특별시 관악구",
+                    "address2" : "123동 123호",
+                    "isDefault" : true
+                  }
       responses:
         "200":
           description: "200"
@@ -1472,8 +2203,13 @@ paths:
                 $ref: "#/components/schemas/users-addresses414680085"
               examples:
                 배송지_등록_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"addressId\" : 10\r\n  },\r\n\
-                    \  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "addressId" : 10
+                      },
+                      "error" : null
+                    }
   /users/addresses/default:
     get:
       tags:
@@ -1496,17 +2232,33 @@ paths:
               schema:
                 $ref: "#/components/schemas/users-addresses-default772693087"
               examples:
-                기본배송지_없음:
-                  value: "{\r\n  \"data\" : {\r\n    \"hasDefault\" : false,\r\n \
-                    \   \"address\" : null\r\n  },\r\n  \"error\" : null\r\n}"
                 기본배송지_조회_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"hasDefault\" : true,\r\n  \
-                    \  \"address\" : {\r\n      \"addressId\" : 1,\r\n      \"alias\"\
-                    \ : \"집\",\r\n      \"recipientName\" : \"홍길동\",\r\n      \"recipientPhone\"\
-                    \ : \"010-1234-5678\",\r\n      \"zipCode\" : \"12345\",\r\n \
-                    \     \"address1\" : \"서울시 강남구 테헤란로 123\",\r\n      \"address2\"\
-                    \ : \"A동 101호\",\r\n      \"isDefault\" : true\r\n    }\r\n  },\r\
-                    \n  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "hasDefault" : true,
+                        "address" : {
+                          "addressId" : 1,
+                          "alias" : "집",
+                          "recipientName" : "홍길동",
+                          "recipientPhone" : "010-1234-5678",
+                          "zipCode" : "12345",
+                          "address1" : "서울시 강남구 테헤란로 123",
+                          "address2" : "A동 101호",
+                          "isDefault" : true
+                        }
+                      },
+                      "error" : null
+                    }
+                기본배송지_없음:
+                  value: |-
+                    {
+                      "data" : {
+                        "hasDefault" : false,
+                        "address" : null
+                      },
+                      "error" : null
+                    }
   /users/addresses/{addressId}:
     put:
       tags:
@@ -1537,10 +2289,16 @@ paths:
               $ref: "#/components/schemas/users-addresses135049666"
             examples:
               배송지_수정_성공:
-                value: "{\r\n  \"alias\" : \"회사\",\r\n  \"recipientName\" : \"홍길동\"\
-                  ,\r\n  \"recipientPhone\" : \"010-1234-1234\",\r\n  \"zipCode\"\
-                  \ : \"08123\",\r\n  \"address1\" : \"서울특별시 관악구\",\r\n  \"address2\"\
-                  \ : \"123동 123호\",\r\n  \"isDefault\" : true\r\n}"
+                value: |-
+                  {
+                    "alias" : "회사",
+                    "recipientName" : "홍길동",
+                    "recipientPhone" : "010-1234-1234",
+                    "zipCode" : "08123",
+                    "address1" : "서울특별시 관악구",
+                    "address2" : "123동 123호",
+                    "isDefault" : true
+                  }
       responses:
         "200":
           description: "200"
@@ -1550,8 +2308,13 @@ paths:
                 $ref: "#/components/schemas/users-addresses414680085"
               examples:
                 배송지_수정_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"addressId\" : 10\r\n  },\r\n\
-                    \  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "addressId" : 10
+                      },
+                      "error" : null
+                    }
     delete:
       tags:
       - Address
@@ -1580,11 +2343,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/payments-cancel1686665306"
+                $ref: "#/components/schemas/reviews-reviewId1686665306"
               examples:
                 배송지_삭제_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"message\" : \"OK\"\r\n  },\r\
-                    \n  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "message" : "OK"
+                      },
+                      "error" : null
+                    }
   /users/addresses/{userAddressId}:
     get:
       tags:
@@ -1614,12 +2382,20 @@ paths:
                 $ref: "#/components/schemas/users-addresses-userAddressId133936271"
               examples:
                 배송지_조회_성공:
-                  value: "{\r\n  \"data\" : {\r\n    \"addressId\" : 1,\r\n    \"\
-                    alias\" : \"집\",\r\n    \"recipientName\" : \"홍길동\",\r\n    \"\
-                    recipientPhone\" : \"010-1234-5678\",\r\n    \"zipCode\" : \"\
-                    12345\",\r\n    \"address1\" : \"서울시 강남구 테헤란로 123\",\r\n    \"\
-                    address2\" : \"A동 101호\",\r\n    \"isDefault\" : true\r\n  },\r\
-                    \n  \"error\" : null\r\n}"
+                  value: |-
+                    {
+                      "data" : {
+                        "addressId" : 1,
+                        "alias" : "집",
+                        "recipientName" : "홍길동",
+                        "recipientPhone" : "010-1234-5678",
+                        "zipCode" : "12345",
+                        "address1" : "서울시 강남구 테헤란로 123",
+                        "address2" : "A동 101호",
+                        "isDefault" : true
+                      },
+                      "error" : null
+                    }
 components:
   schemas:
     reviews-1411419170:
@@ -1633,117 +2409,17 @@ components:
             reviewId:
               type: number
               description: 생성된 리뷰 아이디
-    reviews:byAuthor819692058:
+    chat-rooms-roomId-admin-join1389647186:
       type: object
       properties:
         data:
           required:
-          - page
-          - size
-          - totalElements
-          - totalPages
+          - message
           type: object
           properties:
-            size:
-              type: number
-              description: 페이지 사이즈(기본값 10)
-            totalPages:
-              type: number
-              description: 전체 페이지 수
-            page:
-              type: number
-              description: 현재 페이지 (기본값 1)
-            content:
-              type: array
-              items:
-                required:
-                - content
-                - createdAt
-                - rating
-                - reviewId
-                type: object
-                properties:
-                  createdAt:
-                    type: string
-                    description: 리뷰 작성일
-                  product:
-                    required:
-                    - productId
-                    - productName
-                    - productThumbnail
-                    type: object
-                    properties:
-                      productId:
-                        type: number
-                        description: 상품 아이디
-                      productThumbnail:
-                        type: string
-                        description: 상품 썸네일
-                      productName:
-                        type: string
-                        description: 상품명
-                  rating:
-                    type: number
-                    description: 별점
-                  reviewId:
-                    type: number
-                    description: 리뷰 아이디
-                  adminReply:
-                    type: object
-                    properties:
-                      createdAt:
-                        type: string
-                        description: 관리자 답글 작성일
-                        nullable: true
-                      content:
-                        type: string
-                        description: 관리자 답글 내용
-                        nullable: true
-                  content:
-                    type: string
-                    description: 리뷰 내용
-            totalElements:
-              type: number
-              description: 총 수
-    products-categories466113931:
-      type: object
-      properties:
-        data:
-          required:
-          - cupSizes
-          - intensities
-          type: object
-          properties:
-            cupSizes:
-              type: array
-              description: 컵 사이즈 목록
-              items:
-                required:
-                - id
-                - label
-                type: object
-                properties:
-                  label:
-                    type: string
-                    description: 카테고리명
-                  id:
-                    type: string
-                    description: 카테고리 ID
-            intensities:
-              type: array
-              description: 원두 강도 목록
-              items:
-                required:
-                - id
-                - label
-                type: object
-                properties:
-                  label:
-                    type: string
-                    description: 카테고리명
-                  id:
-                    type: string
-                    description: 카테고리 ID
+            message:
+              type: string
+              description: 응답 메시지
     admin-reviews-reply-replyId800783421:
       required:
       - content
@@ -1780,249 +2456,6 @@ components:
         contentType:
           type: string
           description: 파일 Content-Type
-    reviews:byProduct1810816546:
-      type: object
-      properties:
-        data:
-          required:
-          - page
-          - size
-          - totalElements
-          - totalPages
-          type: object
-          properties:
-            size:
-              type: number
-              description: 페이지 사이즈(기본값 10)
-            totalPages:
-              type: number
-              description: 전체 페이지 수
-            page:
-              type: number
-              description: 현재 페이지 (기본값 1)
-            content:
-              type: array
-              items:
-                required:
-                - content
-                - createdAt
-                - rating
-                - reviewId
-                type: object
-                properties:
-                  createdAt:
-                    type: string
-                    description: 리뷰 작성일
-                  rating:
-                    type: number
-                    description: 별점
-                  user:
-                    required:
-                    - nickname
-                    - userId
-                    type: object
-                    properties:
-                      nickname:
-                        type: string
-                        description: 리뷰작성자 닉네임
-                      userId:
-                        type: string
-                        description: 리뷰작성자 아이디
-                  reviewId:
-                    type: number
-                    description: 리뷰 아이디
-                  adminReply:
-                    type: object
-                    properties:
-                      createdAt:
-                        type: string
-                        description: 관리자 답글 작성일
-                        nullable: true
-                      content:
-                        type: string
-                        description: 관리자 답글 내용
-                        nullable: true
-                  content:
-                    type: string
-                    description: 리뷰 내용
-            totalElements:
-              type: number
-              description: 총 수
-    users-addresses135049666:
-      required:
-      - address1
-      - alias
-      - recipientName
-      - recipientPhone
-      - zipCode
-      type: object
-      properties:
-        zipCode:
-          type: string
-          description: 우편번호
-        isDefault:
-          type: boolean
-          description: "기본 배송지 여부(기본값: false)"
-          nullable: true
-        recipientPhone:
-          type: string
-          description: 수신자 연락처
-        address2:
-          type: string
-          description: 상세주소
-          nullable: true
-        address1:
-          type: string
-          description: 주소
-        recipientName:
-          type: string
-          description: 수신자
-        alias:
-          type: string
-          description: 배송지 별칭
-    cart-items-cartItemId838557620:
-      type: object
-      properties:
-        data:
-          required:
-          - productId
-          - quantity
-          - requiresQuantityAdjustment
-          - stockQuantity
-          - userId
-          type: object
-          properties:
-            quantity:
-              type: number
-              description: 수량
-            productId:
-              type: number
-              description: 상품 아이디
-            requiresQuantityAdjustment:
-              type: boolean
-              description: 수량 변경 여부
-            stockQuantity:
-              type: number
-              description: 재고 수량
-            userId:
-              type: number
-              description: 유저 아이디
-    orders-prepare-1852172854:
-      type: object
-      properties:
-        data:
-          required:
-          - cartItemIds
-          - finalTotalPrice
-          - itemsSubtotal
-          - shippingFee
-          type: object
-          properties:
-            itemsSubtotal:
-              type: number
-              description: 상품 금액 합계
-            shippingFee:
-              type: number
-              description: 배송비
-            cartItemIds:
-              type: array
-              description: 장바구니 아이템 아이디
-              items:
-                oneOf:
-                - type: object
-                - type: boolean
-                - type: string
-                - type: number
-            finalTotalPrice:
-              type: number
-              description: 최종 결제 금액
-            shippingInfo:
-              required:
-              - address1
-              - addressId
-              - recipientName
-              - recipientPhone
-              - zipCode
-              type: object
-              properties:
-                zipCode:
-                  type: string
-                  description: 우편번호
-                recipientPhone:
-                  type: string
-                  description: 수령인 전화번호
-                address2:
-                  type: string
-                  description: 상세주소
-                  nullable: true
-                address1:
-                  type: string
-                  description: 주소
-                recipientName:
-                  type: string
-                  description: 수령인 이름
-                addressId:
-                  type: number
-                  description: 배송지 아이디
-            paymentMethod:
-              type: array
-              items:
-                required:
-                - code
-                - label
-                type: object
-                properties:
-                  code:
-                    type: string
-                    description: 결제 수단 코드
-                  label:
-                    type: string
-                    description: 결제 수단 이름
-            items:
-              type: array
-              items:
-                required:
-                - cartItemId
-                - itemSubtotal
-                - name
-                - productId
-                - quantity
-                - thumbnail
-                - unitPrice
-                type: object
-                properties:
-                  itemSubtotal:
-                    type: number
-                    description: 상품 소계
-                  unitPrice:
-                    type: number
-                    description: 상품 단가
-                  thumbnail:
-                    type: string
-                    description: 상품 썸네일 URL
-                  quantity:
-                    type: number
-                    description: 수량
-                  productId:
-                    type: number
-                    description: 상품 ID
-                  name:
-                    type: string
-                    description: 상품명
-                  cartItemId:
-                    type: number
-                    description: 장바구니 ID
-    admin-products9820101:
-      type: object
-      properties:
-        data:
-          required:
-          - productId
-          type: object
-          properties:
-            productId:
-              type: number
-              description: 생성된 상품 아이디
     admin-products-productId-412506376:
       type: object
       properties:
@@ -2066,65 +2499,6 @@ components:
             detailImage:
               type: string
               description: 상세 이미지 URL
-    users-addresses-default772693087:
-      type: object
-      properties:
-        data:
-          required:
-          - hasDefault
-          type: object
-          properties:
-            hasDefault:
-              type: boolean
-              description: 기본 배송지 존재 여부
-            address:
-              required:
-              - address1
-              - addressId
-              - alias
-              - isDefault
-              - recipientName
-              - recipientPhone
-              - zipCode
-              type: object
-              properties:
-                zipCode:
-                  type: string
-                  description: 우편번호
-                isDefault:
-                  type: boolean
-                  description: 기본 배송지 여부
-                recipientPhone:
-                  type: string
-                  description: 수령인 전화번호
-                address2:
-                  type: string
-                  description: 상세 주소
-                  nullable: true
-                address1:
-                  type: string
-                  description: 기본 주소
-                recipientName:
-                  type: string
-                  description: 수령인 이름
-                alias:
-                  type: string
-                  description: 배송지 별칭
-                addressId:
-                  type: number
-                  description: 배송지 ID
-              description: 기본 배송지
-    payments-cancel1686665306:
-      type: object
-      properties:
-        data:
-          required:
-          - message
-          type: object
-          properties:
-            message:
-              type: string
-              description: 응답 메시지
     cart-items-761185737:
       type: object
       properties:
@@ -2219,47 +2593,6 @@ components:
             detailImage:
               type: string
               description: 상세 이미지 URL
-    orders-orderNumber-cancel486549215:
-      type: object
-    cart-items-cartItemId-2049702389:
-      required:
-      - cartItemId
-      - quantity
-      type: object
-      properties:
-        quantity:
-          type: number
-          description: 수량
-        cartItemId:
-          type: number
-          description: 카트 아이디
-    files-presigned-url-2064193514:
-      type: object
-      properties:
-        data:
-          required:
-          - contextId
-          - key
-          - uploadUrl
-          type: object
-          properties:
-            uploadUrl:
-              type: string
-              description: 업로드 경로
-            contextId:
-              type: string
-              description: 업로드 세션 ID
-            key:
-              type: string
-              description: S3 Object Key
-    payments-cancel-919447853:
-      required:
-      - orderNumber
-      type: object
-      properties:
-        orderNumber:
-          type: string
-          description: 주분번호
     products-main-996164674:
       type: object
       properties:
@@ -2430,42 +2763,6 @@ components:
             totalElements:
               type: number
               description: 총 수
-    admin-products-productId-1789436874:
-      required:
-      - cupSizeId
-      - detailImage
-      - intensityId
-      - name
-      - price
-      - quantity
-      - status
-      - thumbnail
-      type: object
-      properties:
-        thumbnail:
-          type: string
-          description: 썸네일 이미지
-        intensityId:
-          type: number
-          description: 강도 카테고리 아이디
-        quantity:
-          type: number
-          description: 재고 수량
-        price:
-          type: number
-          description: 가격
-        cupSizeId:
-          type: number
-          description: 컵사이즈 카테고리 아이디
-        name:
-          type: string
-          description: 상품명
-        status:
-          type: string
-          description: 판매상태 코드
-        detailImage:
-          type: string
-          description: 상세 이미지
     users-addresses414680085:
       type: object
       properties:
@@ -2477,146 +2774,6 @@ components:
             addressId:
               type: number
               description: 배송지 아이디
-    reviews-reviewId480882763:
-      required:
-      - content
-      - rating
-      type: object
-      properties:
-        rating:
-          type: number
-          description: 별점
-        content:
-          type: string
-          description: 리뷰 내용
-    orders-2108059589:
-      type: object
-      properties:
-        data:
-          required:
-          - page
-          - size
-          - totalElements
-          - totalPages
-          type: object
-          properties:
-            size:
-              type: number
-              description: 페이지 사이즈(기본값 10)
-            totalPages:
-              type: number
-              description: 전체 페이지 수
-            page:
-              type: number
-              description: 현재 페이지 (기본값 1)
-            content:
-              type: array
-              items:
-                required:
-                - cancellable
-                - finalTotalPrice
-                - mainProductThumbnail
-                - orderName
-                - orderNumber
-                - orderStatus
-                - orderedAt
-                - refundable
-                type: object
-                properties:
-                  orderedAt:
-                    type: string
-                    description: 주문 날짜
-                  mainProductThumbnail:
-                    type: string
-                    description: 대표 상품 썸네일
-                  orderNumber:
-                    type: string
-                    description: 주문 번호
-                  finalTotalPrice:
-                    type: number
-                    description: 최종 결제 금액
-                  orderStatus:
-                    type: string
-                    description: 주문 상태
-                  refundable:
-                    type: boolean
-                    description: 환불 가능 여부
-                  cancellable:
-                    type: boolean
-                    description: 취소 가능 여부
-                  orderName:
-                    type: string
-                    description: 주문명
-            totalElements:
-              type: number
-              description: 총 수
-    products-1886796052:
-      type: object
-      properties:
-        data:
-          required:
-          - content
-          - page
-          - size
-          - totalElements
-          - totalPages
-          type: object
-          properties:
-            size:
-              type: number
-              description: 페이지 크기
-            totalPages:
-              type: number
-              description: 전체 페이지 수
-            page:
-              type: number
-              description: 현재 페이지 번호
-            content:
-              type: array
-              description: 상품 목록
-              items:
-                required:
-                - cupSize
-                - detailImage
-                - id
-                - intensity
-                - isSoldOut
-                - name
-                - price
-                - quantity
-                - thumbnail
-                type: object
-                properties:
-                  intensity:
-                    type: string
-                    description: 원두 강도
-                  thumbnail:
-                    type: string
-                    description: 썸네일 이미지 URL
-                  quantity:
-                    type: number
-                    description: 재고 수량
-                  price:
-                    type: number
-                    description: 가격
-                  isSoldOut:
-                    type: boolean
-                    description: 품절 여부
-                  name:
-                    type: string
-                    description: 상품명
-                  id:
-                    type: number
-                    description: 상품 ID
-                  cupSize:
-                    type: string
-                    description: 컵 사이즈
-                  detailImage:
-                    type: string
-                    description: 상세 이미지 URL
-            totalElements:
-              type: number
-              description: 총 상품 수
     orders-orderNumber1806927897:
       type: object
       properties:
@@ -2765,17 +2922,45 @@ components:
             orderNumber:
               type: string
               description: 주문 번호
-    payments-2018243494:
+    chat-rooms-roomId-status-1530925551:
       type: object
       properties:
         data:
           required:
-          - paymentNumber
+          - adminId
+          - createdAt
+          - guestId
+          - id
+          - lastMessage
+          - lastMessageAt
+          - productId
+          - status
           type: object
           properties:
-            paymentNumber:
+            createdAt:
               type: string
-              description: 결제번호
+              description: 생성 시간
+            lastMessageAt:
+              type: string
+              description: 마지막 메시지 시간
+            productId:
+              type: number
+              description: 상품 ID
+            lastMessage:
+              type: string
+              description: 마지막 메시지
+            adminId:
+              type: number
+              description: 관리자 ID
+            id:
+              type: number
+              description: 채팅방 ID
+            guestId:
+              type: string
+              description: 게스트 ID
+            status:
+              type: string
+              description: 채팅방 상태
     reviews-reviewId-215377401:
       type: object
       properties:
@@ -2807,6 +2992,881 @@ components:
         content:
           type: string
           description: 리뷰 내용
+    chat-rooms-roomId-admin-join-721045196:
+      required:
+      - adminId
+      type: object
+      properties:
+        adminId:
+          type: number
+          description: 관리자 ID
+    admin-payments-refund-reject-1038851161:
+      required:
+      - paymentNumber
+      type: object
+      properties:
+        paymentNumber:
+          type: string
+          description: 결제 번호
+    admin-products-247955186:
+      required:
+      - cupSizeId
+      - detailImage
+      - intensityId
+      - name
+      - price
+      - quantity
+      - thumbnail
+      type: object
+      properties:
+        thumbnail:
+          type: string
+          description: 썸네일 이미지
+        intensityId:
+          type: number
+          description: 강도 카테고리 아이디
+        quantity:
+          type: number
+          description: 재고 수량
+        price:
+          type: number
+          description: 가격
+        cupSizeId:
+          type: number
+          description: 컵사이즈 카테고리 아이디
+        name:
+          type: string
+          description: 상품명
+        detailImage:
+          type: string
+          description: 상세 이미지
+    cart-items151658045:
+      type: object
+      properties:
+        data:
+          required:
+          - quantity
+          - requiresQuantityAdjustment
+          - stockQuantity
+          type: object
+          properties:
+            quantity:
+              type: number
+              description: 상품 수량
+            requiresQuantityAdjustment:
+              type: boolean
+              description: 상품 수량이 재고 수량을 초과함
+            stockQuantity:
+              type: number
+              description: 재고 수량
+    chat-rooms1997009470:
+      type: object
+      properties:
+        data:
+          required:
+          - createdAt
+          - id
+          - lastMessage
+          - lastMessageAt
+          - productId
+          - status
+          type: object
+          properties:
+            createdAt:
+              type: string
+              description: 생성 시간
+            lastMessageAt:
+              type: string
+              description: 마지막 메시지 시간
+            productId:
+              type: number
+              description: 상품 ID
+            lastMessage:
+              type: string
+              description: 마지막 메시지
+            id:
+              type: number
+              description: 채팅방 ID
+            userId:
+              description: 유저 ID
+              nullable: true
+              oneOf:
+              - type: number
+              - null
+            guestId:
+              description: 게스트 ID (게스트인 경우)
+              nullable: true
+              oneOf:
+              - null
+              - type: string
+            status:
+              type: string
+              description: 채팅방 상태
+    cart-items1349440338:
+      required:
+      - productId
+      - quantity
+      type: object
+      properties:
+        quantity:
+          type: number
+          description: 상품수량
+        productId:
+          type: number
+          description: 상품Id
+    admin-reviews-reply-replyId1254049025:
+      type: object
+      properties:
+        data:
+          required:
+          - replyId
+          type: object
+          properties:
+            replyId:
+              type: number
+              description: 리뷰 답글 아이디
+    reviews:byAuthor819692058:
+      type: object
+      properties:
+        data:
+          required:
+          - page
+          - size
+          - totalElements
+          - totalPages
+          type: object
+          properties:
+            size:
+              type: number
+              description: 페이지 사이즈(기본값 10)
+            totalPages:
+              type: number
+              description: 전체 페이지 수
+            page:
+              type: number
+              description: 현재 페이지 (기본값 1)
+            content:
+              type: array
+              items:
+                required:
+                - content
+                - createdAt
+                - rating
+                - reviewId
+                type: object
+                properties:
+                  createdAt:
+                    type: string
+                    description: 리뷰 작성일
+                  product:
+                    required:
+                    - productId
+                    - productName
+                    - productThumbnail
+                    type: object
+                    properties:
+                      productId:
+                        type: number
+                        description: 상품 아이디
+                      productThumbnail:
+                        type: string
+                        description: 상품 썸네일
+                      productName:
+                        type: string
+                        description: 상품명
+                  rating:
+                    type: number
+                    description: 별점
+                  reviewId:
+                    type: number
+                    description: 리뷰 아이디
+                  adminReply:
+                    type: object
+                    properties:
+                      createdAt:
+                        type: string
+                        description: 관리자 답글 작성일
+                        nullable: true
+                      content:
+                        type: string
+                        description: 관리자 답글 내용
+                        nullable: true
+                  content:
+                    type: string
+                    description: 리뷰 내용
+            totalElements:
+              type: number
+              description: 총 수
+    products-categories466113931:
+      type: object
+      properties:
+        data:
+          required:
+          - cupSizes
+          - intensities
+          type: object
+          properties:
+            cupSizes:
+              type: array
+              description: 컵 사이즈 목록
+              items:
+                required:
+                - id
+                - label
+                type: object
+                properties:
+                  label:
+                    type: string
+                    description: 카테고리명
+                  id:
+                    type: string
+                    description: 카테고리 ID
+            intensities:
+              type: array
+              description: 원두 강도 목록
+              items:
+                required:
+                - id
+                - label
+                type: object
+                properties:
+                  label:
+                    type: string
+                    description: 카테고리명
+                  id:
+                    type: string
+                    description: 카테고리 ID
+    reviews:byProduct1810816546:
+      type: object
+      properties:
+        data:
+          required:
+          - page
+          - size
+          - totalElements
+          - totalPages
+          type: object
+          properties:
+            size:
+              type: number
+              description: 페이지 사이즈(기본값 10)
+            totalPages:
+              type: number
+              description: 전체 페이지 수
+            page:
+              type: number
+              description: 현재 페이지 (기본값 1)
+            content:
+              type: array
+              items:
+                required:
+                - content
+                - createdAt
+                - rating
+                - reviewId
+                type: object
+                properties:
+                  createdAt:
+                    type: string
+                    description: 리뷰 작성일
+                  rating:
+                    type: number
+                    description: 별점
+                  user:
+                    required:
+                    - nickname
+                    - userId
+                    type: object
+                    properties:
+                      nickname:
+                        type: string
+                        description: 리뷰작성자 닉네임
+                      userId:
+                        type: string
+                        description: 리뷰작성자 아이디
+                  reviewId:
+                    type: number
+                    description: 리뷰 아이디
+                  adminReply:
+                    type: object
+                    properties:
+                      createdAt:
+                        type: string
+                        description: 관리자 답글 작성일
+                        nullable: true
+                      content:
+                        type: string
+                        description: 관리자 답글 내용
+                        nullable: true
+                  content:
+                    type: string
+                    description: 리뷰 내용
+            totalElements:
+              type: number
+              description: 총 수
+    users-addresses135049666:
+      required:
+      - address1
+      - alias
+      - recipientName
+      - recipientPhone
+      - zipCode
+      type: object
+      properties:
+        zipCode:
+          type: string
+          description: 우편번호
+        isDefault:
+          type: boolean
+          description: "기본 배송지 여부(기본값: false)"
+          nullable: true
+        recipientPhone:
+          type: string
+          description: 수신자 연락처
+        address2:
+          type: string
+          description: 상세주소
+          nullable: true
+        address1:
+          type: string
+          description: 주소
+        recipientName:
+          type: string
+          description: 수신자
+        alias:
+          type: string
+          description: 배송지 별칭
+    chat-rooms-roomId-status1571194345:
+      required:
+      - status
+      type: object
+      properties:
+        status:
+          type: string
+          description: "변경할 상태 (REQUESTED, ON_CHAT, AWAITING, END)"
+    cart-items-cartItemId838557620:
+      type: object
+      properties:
+        data:
+          required:
+          - productId
+          - quantity
+          - requiresQuantityAdjustment
+          - stockQuantity
+          - userId
+          type: object
+          properties:
+            quantity:
+              type: number
+              description: 수량
+            productId:
+              type: number
+              description: 상품 아이디
+            requiresQuantityAdjustment:
+              type: boolean
+              description: 수량 변경 여부
+            stockQuantity:
+              type: number
+              description: 재고 수량
+            userId:
+              type: number
+              description: 유저 아이디
+    admin-products9820101:
+      type: object
+      properties:
+        data:
+          required:
+          - productId
+          type: object
+          properties:
+            productId:
+              type: number
+              description: 생성된 상품 아이디
+    orders-prepare-1852172854:
+      type: object
+      properties:
+        data:
+          required:
+          - cartItemIds
+          - finalTotalPrice
+          - itemsSubtotal
+          - shippingFee
+          type: object
+          properties:
+            itemsSubtotal:
+              type: number
+              description: 상품 금액 합계
+            shippingFee:
+              type: number
+              description: 배송비
+            cartItemIds:
+              type: array
+              description: 장바구니 아이템 아이디
+              items:
+                oneOf:
+                - type: object
+                - type: boolean
+                - type: string
+                - type: number
+            finalTotalPrice:
+              type: number
+              description: 최종 결제 금액
+            shippingInfo:
+              required:
+              - address1
+              - addressId
+              - recipientName
+              - recipientPhone
+              - zipCode
+              type: object
+              properties:
+                zipCode:
+                  type: string
+                  description: 우편번호
+                recipientPhone:
+                  type: string
+                  description: 수령인 전화번호
+                address2:
+                  type: string
+                  description: 상세주소
+                  nullable: true
+                address1:
+                  type: string
+                  description: 주소
+                recipientName:
+                  type: string
+                  description: 수령인 이름
+                addressId:
+                  type: number
+                  description: 배송지 아이디
+            paymentMethod:
+              type: array
+              items:
+                required:
+                - code
+                - label
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: 결제 수단 코드
+                  label:
+                    type: string
+                    description: 결제 수단 이름
+            items:
+              type: array
+              items:
+                required:
+                - cartItemId
+                - itemSubtotal
+                - name
+                - productId
+                - quantity
+                - thumbnail
+                - unitPrice
+                type: object
+                properties:
+                  itemSubtotal:
+                    type: number
+                    description: 상품 소계
+                  unitPrice:
+                    type: number
+                    description: 상품 단가
+                  thumbnail:
+                    type: string
+                    description: 상품 썸네일 URL
+                  quantity:
+                    type: number
+                    description: 수량
+                  productId:
+                    type: number
+                    description: 상품 ID
+                  name:
+                    type: string
+                    description: 상품명
+                  cartItemId:
+                    type: number
+                    description: 장바구니 ID
+    users-addresses-default772693087:
+      type: object
+      properties:
+        data:
+          required:
+          - hasDefault
+          type: object
+          properties:
+            hasDefault:
+              type: boolean
+              description: 기본 배송지 존재 여부
+            address:
+              required:
+              - address1
+              - addressId
+              - alias
+              - isDefault
+              - recipientName
+              - recipientPhone
+              - zipCode
+              type: object
+              properties:
+                zipCode:
+                  type: string
+                  description: 우편번호
+                isDefault:
+                  type: boolean
+                  description: 기본 배송지 여부
+                recipientPhone:
+                  type: string
+                  description: 수령인 전화번호
+                address2:
+                  type: string
+                  description: 상세 주소
+                  nullable: true
+                address1:
+                  type: string
+                  description: 기본 주소
+                recipientName:
+                  type: string
+                  description: 수령인 이름
+                alias:
+                  type: string
+                  description: 배송지 별칭
+                addressId:
+                  type: number
+                  description: 배송지 ID
+              description: 기본 배송지
+    reviews-reviewId1686665306:
+      type: object
+      properties:
+        data:
+          required:
+          - message
+          type: object
+          properties:
+            message:
+              type: string
+              description: 응답 메시지
+    cart-items-cartItemId-2049702389:
+      required:
+      - cartItemId
+      - quantity
+      type: object
+      properties:
+        quantity:
+          type: number
+          description: 수량
+        cartItemId:
+          type: number
+          description: 카트 아이디
+    chat-rooms-roomId-messages-335568352:
+      type: object
+      properties:
+        data:
+          required:
+          - empty
+          - first
+          - last
+          - number
+          - numberOfElements
+          - size
+          - totalElements
+          - totalPages
+          type: object
+          properties:
+            number:
+              type: number
+              description: 현재 페이지 번호
+            numberOfElements:
+              type: number
+              description: 현재 메세지 요소 수
+            last:
+              type: boolean
+              description: 마지막 페이지 여부
+            size:
+              type: number
+              description: 페이지 크기
+            totalPages:
+              type: number
+              description: 전체 페이지 수
+            first:
+              type: boolean
+              description: 첫 페이지 여부
+            content:
+              type: array
+              items:
+                required:
+                - chatRoomId
+                - content
+                - createdAt
+                - id
+                - senderId
+                - senderName
+                - senderType
+                type: object
+                properties:
+                  createdAt:
+                    type: string
+                    description: 전송 시간
+                  senderName:
+                    type: string
+                    description: 발신자 이름
+                  senderId:
+                    type: string
+                    description: 발신자 ID
+                  chatRoomId:
+                    type: number
+                    description: 채팅방 ID
+                  senderType:
+                    type: string
+                    description: 발신자 타입
+                  id:
+                    type: number
+                    description: 메시지 ID
+                  content:
+                    type: string
+                    description: 메시지 내용
+            empty:
+              type: boolean
+              description: 빈 페이지 여부
+            totalElements:
+              type: number
+              description: 전체 메시지 수
+    orders-orderNumber-cancel486549215:
+      type: object
+    files-presigned-url-2064193514:
+      type: object
+      properties:
+        data:
+          required:
+          - contextId
+          - key
+          - uploadUrl
+          type: object
+          properties:
+            uploadUrl:
+              type: string
+              description: 업로드 경로
+            contextId:
+              type: string
+              description: 업로드 세션 ID
+            key:
+              type: string
+              description: S3 Object Key
+    admin-products-productId-1789436874:
+      required:
+      - cupSizeId
+      - detailImage
+      - intensityId
+      - name
+      - price
+      - quantity
+      - status
+      - thumbnail
+      type: object
+      properties:
+        thumbnail:
+          type: string
+          description: 썸네일 이미지
+        intensityId:
+          type: number
+          description: 강도 카테고리 아이디
+        quantity:
+          type: number
+          description: 재고 수량
+        price:
+          type: number
+          description: 가격
+        cupSizeId:
+          type: number
+          description: 컵사이즈 카테고리 아이디
+        name:
+          type: string
+          description: 상품명
+        status:
+          type: string
+          description: 판매상태 코드
+        detailImage:
+          type: string
+          description: 상세 이미지
+    payments-refund-919447853:
+      required:
+      - orderNumber
+      type: object
+      properties:
+        orderNumber:
+          type: string
+          description: 주분번호
+    orders-2108059589:
+      type: object
+      properties:
+        data:
+          required:
+          - page
+          - size
+          - totalElements
+          - totalPages
+          type: object
+          properties:
+            size:
+              type: number
+              description: 페이지 사이즈(기본값 10)
+            totalPages:
+              type: number
+              description: 전체 페이지 수
+            page:
+              type: number
+              description: 현재 페이지 (기본값 1)
+            content:
+              type: array
+              items:
+                required:
+                - cancellable
+                - finalTotalPrice
+                - mainProductThumbnail
+                - orderName
+                - orderNumber
+                - orderStatus
+                - orderedAt
+                - refundable
+                type: object
+                properties:
+                  orderedAt:
+                    type: string
+                    description: 주문 날짜
+                  mainProductThumbnail:
+                    type: string
+                    description: 대표 상품 썸네일
+                  orderNumber:
+                    type: string
+                    description: 주문 번호
+                  finalTotalPrice:
+                    type: number
+                    description: 최종 결제 금액
+                  orderStatus:
+                    type: string
+                    description: 주문 상태
+                  refundable:
+                    type: boolean
+                    description: 환불 가능 여부
+                  cancellable:
+                    type: boolean
+                    description: 취소 가능 여부
+                  orderName:
+                    type: string
+                    description: 주문명
+            totalElements:
+              type: number
+              description: 총 수
+    reviews-reviewId480882763:
+      required:
+      - content
+      - rating
+      type: object
+      properties:
+        rating:
+          type: number
+          description: 별점
+        content:
+          type: string
+          description: 리뷰 내용
+    products-1886796052:
+      type: object
+      properties:
+        data:
+          required:
+          - content
+          - page
+          - size
+          - totalElements
+          - totalPages
+          type: object
+          properties:
+            size:
+              type: number
+              description: 페이지 크기
+            totalPages:
+              type: number
+              description: 전체 페이지 수
+            page:
+              type: number
+              description: 현재 페이지 번호
+            content:
+              type: array
+              description: 상품 목록
+              items:
+                required:
+                - cupSize
+                - detailImage
+                - id
+                - intensity
+                - isSoldOut
+                - name
+                - price
+                - quantity
+                - thumbnail
+                type: object
+                properties:
+                  intensity:
+                    type: string
+                    description: 원두 강도
+                  thumbnail:
+                    type: string
+                    description: 썸네일 이미지 URL
+                  quantity:
+                    type: number
+                    description: 재고 수량
+                  price:
+                    type: number
+                    description: 가격
+                  isSoldOut:
+                    type: boolean
+                    description: 품절 여부
+                  name:
+                    type: string
+                    description: 상품명
+                  id:
+                    type: number
+                    description: 상품 ID
+                  cupSize:
+                    type: string
+                    description: 컵 사이즈
+                  detailImage:
+                    type: string
+                    description: 상세 이미지 URL
+            totalElements:
+              type: number
+              description: 총 상품 수
+    chat-rooms657381828:
+      required:
+      - initialMessage
+      - productId
+      - senderId
+      - senderType
+      type: object
+      properties:
+        initialMessage:
+          type: string
+          description: 초기 메시지
+        senderId:
+          type: string
+          description: 발신자 ID
+        productId:
+          type: number
+          description: 상품 ID
+        senderType:
+          type: string
+          description: 발신자 타입
+    payments-2018243494:
+      type: object
+      properties:
+        data:
+          required:
+          - paymentNumber
+          type: object
+          properties:
+            paymentNumber:
+              type: string
+              description: 결제번호
     orders-1934294331:
       required:
       - cartItemIds
@@ -2829,14 +3889,6 @@ components:
         paymentMethod:
           type: string
           description: 결제 수단
-    admin-payments-refund-reject-1038851161:
-      required:
-      - paymentNumber
-      type: object
-      properties:
-        paymentNumber:
-          type: string
-          description: 결제 번호
     reviews-rating:byProduct-66572293:
       type: object
       properties:
@@ -2976,69 +4028,6 @@ components:
             totalElements:
               type: number
               description: 총 상품 수
-    admin-products-247955186:
-      required:
-      - cupSizeId
-      - detailImage
-      - intensityId
-      - name
-      - price
-      - quantity
-      - thumbnail
-      type: object
-      properties:
-        thumbnail:
-          type: string
-          description: 썸네일 이미지
-        intensityId:
-          type: number
-          description: 강도 카테고리 아이디
-        quantity:
-          type: number
-          description: 재고 수량
-        price:
-          type: number
-          description: 가격
-        cupSizeId:
-          type: number
-          description: 컵사이즈 카테고리 아이디
-        name:
-          type: string
-          description: 상품명
-        detailImage:
-          type: string
-          description: 상세 이미지
-    cart-items151658045:
-      type: object
-      properties:
-        data:
-          required:
-          - quantity
-          - requiresQuantityAdjustment
-          - stockQuantity
-          type: object
-          properties:
-            quantity:
-              type: number
-              description: 상품 수량
-            requiresQuantityAdjustment:
-              type: boolean
-              description: 상품 수량이 재고 수량을 초과함
-            stockQuantity:
-              type: number
-              description: 재고 수량
-    payments808279509:
-      required:
-      - orderNumber
-      - transactionId
-      type: object
-      properties:
-        orderNumber:
-          type: string
-          description: 주분번호
-        transactionId:
-          type: string
-          description: PG사 결제 아이디
     admin-products-selling-status-152159338:
       type: object
       properties:
@@ -3056,6 +4045,18 @@ components:
               label:
                 type: string
                 description: 판매상태
+    payments808279509:
+      required:
+      - orderNumber
+      - transactionId
+      type: object
+      properties:
+        orderNumber:
+          type: string
+          description: 주분번호
+        transactionId:
+          type: string
+          description: PG사 결제 아이디
     users-addresses1010895288:
       type: object
       properties:
@@ -3097,18 +4098,6 @@ components:
               addressId:
                 type: number
                 description: 배송지 ID
-    cart-items1349440338:
-      required:
-      - productId
-      - quantity
-      type: object
-      properties:
-        quantity:
-          type: number
-          description: 상품수량
-        productId:
-          type: number
-          description: 상품Id
     admin-products-productId-1712578160:
       type: object
       properties:
@@ -3120,14 +4109,44 @@ components:
             productId:
               type: number
               description: 수정된 상품 아이디
-    admin-reviews-reply-replyId1254049025:
+    chat-rooms823257196:
       type: object
       properties:
         data:
-          required:
-          - replyId
-          type: object
-          properties:
-            replyId:
-              type: number
-              description: 리뷰 답글 아이디
+          type: array
+          items:
+            required:
+            - createdAt
+            - id
+            - lastMessage
+            - lastMessageAt
+            - productId
+            - status
+            - userId
+            type: object
+            properties:
+              createdAt:
+                type: string
+                description: 생성 시간
+              lastMessageAt:
+                type: string
+                description: 마지막 메시지 시간
+              productId:
+                type: number
+                description: 상품 ID
+              lastMessage:
+                type: string
+                description: 마지막 메시지
+              adminId:
+                type: number
+                description: 관리자 ID
+                nullable: true
+              id:
+                type: number
+                description: 채팅방 ID
+              userId:
+                type: number
+                description: 유저 ID
+              status:
+                type: string
+                description: 채팅방 상태
