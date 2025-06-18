@@ -42,7 +42,7 @@ class CartItemController(
 
     @DeleteMapping("/cart-items")
     fun deleteCartItems(
-        @RequestParam(value = "cartItems", required = true) cartItemIds: List<Long>,
+        @RequestParam(value = "cartItemIds", required = true) cartItemIds: List<Long>,
     ): CartDeleteResponse {
         val deletedCount = cartItemService.deleteCartItems(cartItemIds)
         val response = CartDeleteResponse("Successfully deleted $deletedCount cart items")
