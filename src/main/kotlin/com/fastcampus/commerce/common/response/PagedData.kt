@@ -13,7 +13,7 @@ data class PagedData<T> private constructor(
         fun <S> of(page: Page<S>): PagedData<S> {
             return PagedData(
                 content = page.content,
-                page = page.number,
+                page = page.number + 1,
                 size = page.size,
                 totalPages = page.totalPages,
                 totalElements = page.totalElements,

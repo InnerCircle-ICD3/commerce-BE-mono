@@ -106,7 +106,7 @@ class UserReviewControllerRestDocTest : DescribeSpec() {
                         field("data.content[0].product.productName", "상품명", userReviews[0].product.productName)
                         field("data.content[0].product.productThumbnail", "상품 썸네일", userReviews[0].product.productThumbnail)
                         field("data.content[0].createdAt", "리뷰 작성일", userReviews[0].createdAt.toString())
-                        field("data.page", "현재 페이지 (기본값 1)", response.number)
+                        field("data.page", "현재 페이지 (기본값 1)", response.number + 1)
                         field("data.size", "페이지 사이즈(기본값 10)", response.size)
                         field("data.totalPages", "전체 페이지 수", response.totalPages)
                         field("data.totalElements", "총 수", response.totalElements.toInt())

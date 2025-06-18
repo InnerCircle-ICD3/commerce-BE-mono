@@ -217,7 +217,7 @@ class OrderControllerRestDocTest : DescribeSpec() {
                         field("data.content[0].orderedAt", "주문 날짜", LocalDateTime.of(2025, 6, 8, 12, 34).toString())
                         field("data.content[0].cancellable", "취소 가능 여부", true)
                         field("data.content[0].refundable", "환불 가능 여부", false)
-                        field("data.page", "현재 페이지 (기본값 1)", 1)
+                        field("data.page", "현재 페이지 (기본값 1)", 2)
                         field("data.size", "페이지 사이즈(기본값 10)", 10)
                         field("data.totalPages", "전체 페이지 수", 2)
                         field("data.totalElements", "총 수", 11)

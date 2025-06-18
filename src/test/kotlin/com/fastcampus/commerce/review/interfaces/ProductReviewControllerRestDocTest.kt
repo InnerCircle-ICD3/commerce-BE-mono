@@ -102,7 +102,7 @@ class ProductReviewControllerRestDocTest : DescribeSpec() {
                         )
                         field("data.content[0].user.userId", "리뷰작성자 아이디", productReviews[0].user.userId)
                         field("data.content[0].user.nickname", "리뷰작성자 닉네임", productReviews[0].user.nickname)
-                        field("data.page", "현재 페이지 (기본값 1)", response.number)
+                        field("data.page", "현재 페이지 (기본값 1)", response.number + 1)
                         field("data.size", "페이지 사이즈(기본값 10)", response.size)
                         field("data.totalPages", "전체 페이지 수", response.totalPages)
                         field("data.totalElements", "총 수", response.totalElements.toInt())
