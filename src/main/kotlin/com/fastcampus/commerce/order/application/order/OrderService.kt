@@ -64,6 +64,7 @@ class OrderService(
         val items = cartItems.map { cartItem ->
             val snapshot = productSnapshotReader.getById(cartItem.productSnapshotId!!)
             PrepareOrderItemApiResponse(
+                cartItemId = cartItem.id!!,
                 productId = snapshot.productId,
                 name = snapshot.name,
                 thumbnail = snapshot.thumbnail,

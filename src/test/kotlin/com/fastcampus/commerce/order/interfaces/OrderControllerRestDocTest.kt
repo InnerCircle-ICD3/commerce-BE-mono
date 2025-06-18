@@ -61,6 +61,7 @@ class OrderControllerRestDocTest : DescribeSpec() {
                     finalTotalPrice = 13000,
                     items = listOf(
                         PrepareOrderItemApiResponse(
+                            cartItemId = 1L,
                             productId = 1L,
                             name = "상품A",
                             thumbnail = "http://localhost:8080/api/v1/product/1/thumbnail",
@@ -103,6 +104,7 @@ class OrderControllerRestDocTest : DescribeSpec() {
                         field("data.itemsSubtotal", "상품 금액 합계", 10000)
                         field("data.shippingFee", "배송비", 3000)
                         field("data.finalTotalPrice", "최종 결제 금액", 13000)
+                        field("data.items[0].cartItemId", "장바구니 ID", 1)
                         field("data.items[0].productId", "상품 ID", 1)
                         field("data.items[0].name", "상품명", "상품A")
                         field(

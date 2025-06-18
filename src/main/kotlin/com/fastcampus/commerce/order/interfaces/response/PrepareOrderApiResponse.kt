@@ -13,6 +13,7 @@ data class PrepareOrderApiResponse(
 )
 
 data class PrepareOrderItemApiResponse(
+    val cartItemId: Long,
     val productId: Long,
     val name: String,
     val thumbnail: String,
