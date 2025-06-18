@@ -127,9 +127,8 @@ class ChatMessageService(
     }
 
     private fun updateChatRoomStatus(chatRoom: com.fastcampus.commerce.chat.domain.entity.ChatRoom, newStatus: ChatRoomStatus) {
-        val statusField = com.fastcampus.commerce.chat.domain.entity.ChatRoom::class.java.getDeclaredField("status")
-        statusField.isAccessible = true
-        statusField.set(chatRoom, newStatus)
+        chatRoom.changeStatus(newStatus) // Use the entity's method to change status
+
         chatRoomRepository.save(chatRoom)
     }
 }
