@@ -192,7 +192,7 @@ class OrderControllerRestDocTest : DescribeSpec() {
                     refundable = false,
                 )
                 val response = PageImpl(listOf(searchOrderApiResponse), PageRequest.of(1, 10), 1L)
-                every { orderService.getOrders(any(), any()) } returns response
+                every { orderService.getOrders(any(), any(), any()) } returns response
                 documentation(
                     identifier = "주문_목록_조회_성공",
                     tag = tag,
@@ -201,7 +201,9 @@ class OrderControllerRestDocTest : DescribeSpec() {
                     requestLine(HttpMethod.GET, "/orders")
 
                     queryParameters {
-                        field("page", "페이지 번호 (기본값: 1)", "1")
+                        optionalField("monthRange", "주문 월(3,6,12개월)", 3)
+                        optionalField("status", "주문상태", OrderStatus.DELIVERED)
+                        optionalField("page", "페이지 번호 (기본값: 1)", 1)
                     }
 
                     requestHeaders {
