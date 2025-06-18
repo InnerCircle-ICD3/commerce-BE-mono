@@ -107,7 +107,7 @@ class ChatService(
                     chatRoomId = message.chatRoomId,
                     content = message.content,
                     senderType = message.senderType,
-                    senderId = null, // TODO: 메시지에 senderId 추가 필요
+                    senderId = message.senderId,
                     senderName = getSenderName(message.senderType),
                     createdAt = message.createdAt,
                     productInfo = null // TODO: 상품 정보 연동 필요

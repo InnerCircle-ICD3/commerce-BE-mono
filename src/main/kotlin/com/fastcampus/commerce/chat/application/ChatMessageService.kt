@@ -3,6 +3,7 @@ package com.fastcampus.commerce.chat.application
 import com.fastcampus.commerce.chat.domain.entity.ChatMessage
 import com.fastcampus.commerce.chat.domain.entity.ChatRoomStatus
 import com.fastcampus.commerce.chat.domain.entity.NotificationType
+import com.fastcampus.commerce.chat.domain.entity.SenderType
 import com.fastcampus.commerce.chat.domain.error.ChatErrorCode
 import com.fastcampus.commerce.chat.infrastructure.repository.ChatMessageRepository
 import com.fastcampus.commerce.chat.infrastructure.repository.ChatRoomRepository
@@ -34,11 +35,26 @@ class ChatMessageService(
         }
 
         // 메시지 저장
-        val message = ChatMessage(
-            chatRoomId = request.chatRoomId,
-            senderType = request.senderType,
-            content = request.content
-        )
+        val message = when (request.senderType) {
+            SenderType.GUEST ->
+                ChatMessage.createGuestMessage(
+                    chatRoomId = request.chatRoomId,
+                    guestId = request.senderId!!,
+                    content = request.content
+                )
+            SenderType.USER ->
+                ChatMessage.createUserMessage(
+                    chatRoomId = request.chatRoomId,
+                    userId = request.senderId!!.toLong(),
+                    content = request.content
+                )
+            SenderType.ADMIN ->
+                ChatMessage.createAdminMessage(
+                    chatRoomId = request.chatRoomId,
+                    adminId = request.senderId!!.toLong(),
+                    content = request.content
+                )
+        }
 
         val savedMessage = chatMessageRepository.save(message)
 
@@ -48,7 +64,7 @@ class ChatMessageService(
             chatRoomId = savedMessage.chatRoomId,
             content = savedMessage.content,
             senderType = savedMessage.senderType,
-            senderId = request.senderId,
+            senderId = savedMessage.senderId,
             senderName = getSenderName(savedMessage.senderType),
             createdAt = savedMessage.createdAt,
             productInfo = getProductInfoIfNeeded(request.content, chatRoom.productId)
@@ -101,11 +117,11 @@ class ChatMessageService(
     }
 
     // Helper methods
-    private fun getSenderName(senderType: com.fastcampus.commerce.chat.domain.entity.SenderType): String {
+    private fun getSenderName(senderType: SenderType): String {
         return when (senderType) {
-            com.fastcampus.commerce.chat.domain.entity.SenderType.GUEST -> "고객"
-            com.fastcampus.commerce.chat.domain.entity.SenderType.USER -> "회원"
-            com.fastcampus.commerce.chat.domain.entity.SenderType.ADMIN -> "상담사"
+            SenderType.GUEST -> "비회원"
+            SenderType.USER -> "회원"
+            SenderType.ADMIN -> "관리자"
         }
     }
 
