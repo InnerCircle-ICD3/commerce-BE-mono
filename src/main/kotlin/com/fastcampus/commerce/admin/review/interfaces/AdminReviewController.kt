@@ -44,22 +44,22 @@ class AdminReviewController(
         return RegisterReviewReplyApiResponse(replyId)
     }
 
-    @PutMapping("/reply/{replyId}")
+    @PutMapping("/{reviewId}/reply")
     fun updateReply(
-        @PathVariable replyId: Long,
+        @PathVariable reviewId: Long,
         @RequestBody request: UpdateReviewReplyApiRequest,
     ): UpdateReviewReplyApiResponse {
         val adminId = 1L
-        adminReviewService.updateReply(adminId, replyId, request.content)
-        return UpdateReviewReplyApiResponse(replyId)
+        adminReviewService.updateReply(adminId, reviewId, request.content)
+        return UpdateReviewReplyApiResponse(reviewId)
     }
 
-    @DeleteMapping("/reply/{replyId}")
+    @DeleteMapping("/{reviewId}/reply")
     fun deleteReply(
-        @PathVariable replyId: Long,
+        @PathVariable reviewId: Long,
     ): DeleteReviewReplyApiResponse {
         val adminId = 1L
-        adminReviewService.deleteReply(adminId, replyId)
+        adminReviewService.deleteReply(adminId, reviewId)
         return DeleteReviewReplyApiResponse()
     }
 }

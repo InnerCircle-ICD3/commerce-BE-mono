@@ -507,7 +507,7 @@ paths:
                       },
                       "error" : null
                     }
-  /admin/reviews/reply/{replyId}:
+  /admin/reviews/{reviewId}/reply:
     put:
       tags:
       - Admin-Review
@@ -517,9 +517,9 @@ paths:
                         RVW-103: 리뷰 답글을 조회할 수 없습니다.
       operationId: 관리자_리뷰답글_수정_성공
       parameters:
-      - name: replyId
+      - name: reviewId
         in: path
-        description: 리뷰 답글 아이디
+        description: 리뷰 아이디
         required: true
         schema:
           type: string
@@ -534,7 +534,7 @@ paths:
         content:
           application/json;charset=UTF-8:
             schema:
-              $ref: "#/components/schemas/admin-reviews-reply-replyId800783421"
+              $ref: "#/components/schemas/admin-reviews-reviewId-reply800783421"
             examples:
               관리자_리뷰답글_수정_성공:
                 value: |-
@@ -547,7 +547,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/admin-reviews-reply-replyId1254049025"
+                $ref: "#/components/schemas/admin-reviews-reviewId-reply1254049025"
               examples:
                 관리자_리뷰답글_수정_성공:
                   value: |-
@@ -557,43 +557,6 @@ paths:
                       },
                       "error" : null
                     }
-    delete:
-      tags:
-      - Admin-Review
-      summary: 관리자의 리뷰 답글 삭제
-      description: "                RVW-103: 리뷰 답글을 조회할 수 없습니다."
-      operationId: 관리자_리뷰답글_삭제_성공
-      parameters:
-      - name: replyId
-        in: path
-        description: 리뷰 답글 아이디
-        required: true
-        schema:
-          type: string
-      - name: Authorization
-        in: header
-        description: Authorization
-        required: true
-        schema:
-          type: string
-        example: Bearer sample-token
-      responses:
-        "200":
-          description: "200"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/reviews-reviewId1686665306"
-              examples:
-                관리자_리뷰답글_삭제_성공:
-                  value: |-
-                    {
-                      "data" : {
-                        "message" : "OK"
-                      },
-                      "error" : null
-                    }
-  /admin/reviews/{reviewId}/reply:
     post:
       tags:
       - Admin-Review
@@ -620,7 +583,7 @@ paths:
         content:
           application/json;charset=UTF-8:
             schema:
-              $ref: "#/components/schemas/admin-reviews-reply-replyId800783421"
+              $ref: "#/components/schemas/admin-reviews-reviewId-reply800783421"
             examples:
               관리자_리뷰답글_등록_성공:
                 value: |-
@@ -633,13 +596,49 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/admin-reviews-reply-replyId1254049025"
+                $ref: "#/components/schemas/admin-reviews-reviewId-reply1254049025"
               examples:
                 관리자_리뷰답글_등록_성공:
                   value: |-
                     {
                       "data" : {
                         "replyId" : 1
+                      },
+                      "error" : null
+                    }
+    delete:
+      tags:
+      - Admin-Review
+      summary: 관리자의 리뷰 답글 삭제
+      description: "                RVW-103: 리뷰 답글을 조회할 수 없습니다."
+      operationId: 관리자_리뷰답글_삭제_성공
+      parameters:
+      - name: reviewId
+        in: path
+        description: 리뷰 아이디
+        required: true
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/reviews-reviewId1686665306"
+              examples:
+                관리자_리뷰답글_삭제_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "message" : "OK"
                       },
                       "error" : null
                     }
@@ -860,9 +859,9 @@ paths:
                         "adminId" : 1,
                         "productId" : 1,
                         "status" : "ON_CHAT",
-                        "createdAt" : "2025-06-17T13:40",
+                        "createdAt" : "2025-06-17T15:36",
                         "lastMessage" : "네, 재고 있습니다",
-                        "lastMessageAt" : "2025-06-18T11:40"
+                        "lastMessageAt" : "2025-06-18T13:36"
                       } ],
                       "error" : null
                     }
@@ -919,9 +918,9 @@ paths:
                         "adminId" : null,
                         "productId" : 1,
                         "status" : "REQUESTED",
-                        "createdAt" : "2025-06-18T13:40",
+                        "createdAt" : "2025-06-18T15:36",
                         "lastMessage" : "이 상품 재고 있나요?",
-                        "lastMessageAt" : "2025-06-18T13:40"
+                        "lastMessageAt" : "2025-06-18T15:36"
                       },
                       "error" : null
                     }
@@ -935,9 +934,9 @@ paths:
                         "adminId" : null,
                         "productId" : 1,
                         "status" : "REQUESTED",
-                        "createdAt" : "2025-06-18T13:40",
+                        "createdAt" : "2025-06-18T15:36",
                         "lastMessage" : "상품 구매 문의드립니다",
-                        "lastMessageAt" : "2025-06-18T13:40"
+                        "lastMessageAt" : "2025-06-18T15:36"
                       },
                       "error" : null
                     }
@@ -972,9 +971,9 @@ paths:
                         "adminId" : 1,
                         "productId" : 1,
                         "status" : "ON_CHAT",
-                        "createdAt" : "2025-06-17T13:40",
+                        "createdAt" : "2025-06-17T15:36",
                         "lastMessage" : "감사합니다",
-                        "lastMessageAt" : "2025-06-18T13:10"
+                        "lastMessageAt" : "2025-06-18T15:06"
                       },
                       "error" : null
                     }
@@ -1075,7 +1074,7 @@ paths:
                           "senderType" : "GUEST",
                           "senderId" : "guest-123",
                           "senderName" : "Guest",
-                          "createdAt" : "2025-06-18T13:30",
+                          "createdAt" : "2025-06-18T15:26",
                           "productInfo" : null
                         } ],
                         "pageable" : {
@@ -1083,23 +1082,23 @@ paths:
                           "pageSize" : 20,
                           "sort" : {
                             "empty" : true,
-                            "sorted" : false,
-                            "unsorted" : true
+                            "unsorted" : true,
+                            "sorted" : false
                           },
                           "offset" : 0,
                           "paged" : true,
                           "unpaged" : false
                         },
                         "last" : true,
-                        "totalPages" : 1,
                         "totalElements" : 1,
+                        "totalPages" : 1,
                         "first" : true,
                         "size" : 20,
                         "number" : 0,
                         "sort" : {
                           "empty" : true,
-                          "sorted" : false,
-                          "unsorted" : true
+                          "unsorted" : true,
+                          "sorted" : false
                         },
                         "numberOfElements" : 1,
                         "empty" : false
@@ -1155,9 +1154,9 @@ paths:
                         "adminId" : 1,
                         "productId" : 1,
                         "status" : "END",
-                        "createdAt" : "2025-06-17T13:40",
+                        "createdAt" : "2025-06-17T15:36",
                         "lastMessage" : "상담이 종료되었습니다",
-                        "lastMessageAt" : "2025-06-18T13:40"
+                        "lastMessageAt" : "2025-06-18T15:36"
                       },
                       "error" : null
                     }
@@ -2463,7 +2462,7 @@ components:
             message:
               type: string
               description: 응답 메시지
-    admin-reviews-reply-replyId800783421:
+    admin-reviews-reviewId-reply800783421:
       required:
       - content
       type: object
@@ -2965,6 +2964,17 @@ components:
             orderNumber:
               type: string
               description: 주문 번호
+    reviews-reviewId-215377401:
+      type: object
+      properties:
+        data:
+          required:
+          - reviewId
+          type: object
+          properties:
+            reviewId:
+              type: number
+              description: 수정된 리뷰 아이디
     chat-rooms-roomId-1530925551:
       type: object
       properties:
@@ -3004,17 +3014,6 @@ components:
             status:
               type: string
               description: 채팅방 상태
-    reviews-reviewId-215377401:
-      type: object
-      properties:
-        data:
-          required:
-          - reviewId
-          type: object
-          properties:
-            reviewId:
-              type: number
-              description: 수정된 리뷰 아이디
     reviews1890941445:
       required:
       - content
@@ -3157,7 +3156,7 @@ components:
         productId:
           type: number
           description: 상품Id
-    admin-reviews-reply-replyId1254049025:
+    admin-reviews-reviewId-reply1254049025:
       type: object
       properties:
         data:

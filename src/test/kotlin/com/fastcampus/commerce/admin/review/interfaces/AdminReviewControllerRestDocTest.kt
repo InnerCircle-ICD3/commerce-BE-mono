@@ -145,7 +145,7 @@ class AdminReviewControllerRestDocTest : DescribeSpec() {
             }
         }
 
-        describe("PUT /admin/reviews/reply/{replyId} - 리뷰 답글수정") {
+        describe("PUT /admin/reviews/{reviewId}/reply - 리뷰 답글수정") {
             val summary = "관리자의 리뷰 답글 수정"
             val description = """
                 RVW-102: 리뷰 답글 내용을 입력해주세요.
@@ -161,8 +161,8 @@ class AdminReviewControllerRestDocTest : DescribeSpec() {
                     description = description,
                     privateResource = privateResource,
                 ) {
-                    requestLine(HttpMethod.PUT, "/admin/reviews/reply/{replyId}") {
-                        pathVariable("replyId", "리뷰 답글 아이디", 1)
+                    requestLine(HttpMethod.PUT, "/admin/reviews/{reviewId}/reply") {
+                        pathVariable("reviewId", "리뷰 아이디", 1)
                     }
 
                     requestHeaders {
@@ -181,7 +181,7 @@ class AdminReviewControllerRestDocTest : DescribeSpec() {
             }
         }
 
-        describe("DELETE /admin/reviews/reply/{replyId} - 리뷰 답글삭제") {
+        describe("DELETE /admin/reviews/{reviewId}/reply - 리뷰 답글삭제") {
             val summary = "관리자의 리뷰 답글 삭제"
             val description = """
                 RVW-103: 리뷰 답글을 조회할 수 없습니다.
@@ -196,8 +196,8 @@ class AdminReviewControllerRestDocTest : DescribeSpec() {
                     description = description,
                     privateResource = privateResource,
                 ) {
-                    requestLine(HttpMethod.DELETE, "/admin/reviews/reply/{replyId}") {
-                        pathVariable("replyId", "리뷰 답글 아이디", 1)
+                    requestLine(HttpMethod.DELETE, "/admin/reviews/{reviewId}/reply") {
+                        pathVariable("reviewId", "리뷰 아이디", 1)
                     }
 
                     requestHeaders {

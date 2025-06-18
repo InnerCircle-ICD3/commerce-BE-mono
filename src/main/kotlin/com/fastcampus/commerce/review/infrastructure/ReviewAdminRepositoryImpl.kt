@@ -105,7 +105,7 @@ class ReviewAdminRepositoryImpl(
     }
 
     override fun findReply(replyId: Long): Optional<ReviewReply> {
-        return reviewReplyJpaRepository.findById(replyId)
+        return reviewReplyJpaRepository.findByReviewId(replyId)
     }
 
     override fun deleteReply(reply: ReviewReply) {
