@@ -10,21 +10,14 @@ import org.springframework.stereotype.Component
 @Component
 class CartItemReaderImpl(
     private val cartItemRepository: CartItemRepository,
-    private val productReader: ProductReader,
-    private val productSnapshotReader: ProductSnapshotReader,
 ) : CartItemReader {
     override fun readCartItems(userId: Long, cartItemIds: Set<Long>): List<CartItemDto> {
         val cartItems = cartItemRepository.findAllByUserId(userId)!!.filter { cartItemIds.contains(it.id) }
         return cartItems.map { cartItem ->
-            val product = productReader.getProductById(cartItem.productId)
-            val productSnapshot = productSnapshotReader.getById(product.id!!)
             CartItemDto(
-                id = cartItem.id,
+                cartItemId = cartItem.id!!,
                 productId = cartItem.productId,
-                productName = product.name,
                 quantity = cartItem.quantity,
-                unitPrice = product.price,
-                productSnapshotId = productSnapshot.id,
             )
         }
     }

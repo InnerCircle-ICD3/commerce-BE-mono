@@ -4,6 +4,8 @@ import com.fastcampus.commerce.auth.api.dto.LoginRequest
 import com.fastcampus.commerce.common.error.AuthErrorCode
 import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.common.id.IdGenerator
+import com.fastcampus.commerce.common.id.UniqueIdGenerator
+import com.fastcampus.commerce.common.util.TimeProvider
 import com.fastcampus.commerce.user.api.dto.UserDto
 import com.fastcampus.commerce.user.domain.entity.Oauth2Provider
 import com.fastcampus.commerce.user.domain.entity.User
@@ -25,7 +27,7 @@ class UserService(
     private val userRoleRepository: UserRoleRepository,
     private val oauth2ProviderRepository: Oauth2ProviderRepository,
     private val userOauth2ConnectionRepository: UserOauth2ConnectionRepository,
-    private val idGenerator: IdGenerator,
+    private val timeProvider: TimeProvider,
 ) {
     @Transactional(rollbackFor = [Exception::class])
     fun loginUser(request: LoginRequest): UserDto {
@@ -59,7 +61,7 @@ class UserService(
 
         // 2. User 저장 (snowflake externalId는 별도 생성 함수로)
         val newUser = User(
-            externalId = idGenerator.generate().toString(),
+            externalId = UniqueIdGenerator.generateUserId(timeProvider.now().toLocalDate()),
             name = name,
             email = email,
             nickname = nickname,
