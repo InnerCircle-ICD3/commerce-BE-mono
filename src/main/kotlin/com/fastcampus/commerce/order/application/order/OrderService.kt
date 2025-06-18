@@ -1,6 +1,7 @@
 package com.fastcampus.commerce.order.application.order
 
 import com.fastcampus.commerce.cart.application.query.CartItemReader
+import com.fastcampus.commerce.cart.infrastructure.repository.CartItemRepository
 import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.common.id.UniqueIdGenerator
 import com.fastcampus.commerce.common.response.EnumResponse
@@ -8,11 +9,11 @@ import com.fastcampus.commerce.common.util.TimeProvider
 import com.fastcampus.commerce.order.application.query.ProductSnapshotReader
 import com.fastcampus.commerce.order.domain.entity.Order
 import com.fastcampus.commerce.order.domain.entity.OrderItem
-import com.fastcampus.commerce.order.domain.entity.OrderStatus
+import com.fastcampus.commerce.order.domain.entity.ProductSnapshot
 import com.fastcampus.commerce.order.domain.error.OrderErrorCode
 import com.fastcampus.commerce.order.domain.repository.OrderItemRepository
 import com.fastcampus.commerce.order.domain.repository.OrderRepository
-import com.fastcampus.commerce.order.domain.service.OrderNumberGenerator
+import com.fastcampus.commerce.order.infrastructure.repository.ProductSnapshotRepository
 import com.fastcampus.commerce.order.interfaces.request.OrderApiRequest
 import com.fastcampus.commerce.order.interfaces.request.SearchOrderApiRequest
 import com.fastcampus.commerce.order.interfaces.response.GetOrderApiResponse
@@ -28,6 +29,7 @@ import com.fastcampus.commerce.payment.domain.entity.PaymentMethod
 import com.fastcampus.commerce.payment.domain.error.PaymentErrorCode
 import com.fastcampus.commerce.payment.domain.repository.PaymentRepository
 import com.fastcampus.commerce.payment.domain.service.PaymentReader
+import com.fastcampus.commerce.product.domain.service.ProductReader
 import com.fastcampus.commerce.review.domain.repository.ReviewRepository
 import com.fastcampus.commerce.user.api.service.UserAddressService
 import com.fastcampus.commerce.user.domain.entity.User
@@ -42,13 +44,15 @@ class OrderService(
     private val orderRepository: OrderRepository,
     private val orderItemRepository: OrderItemRepository,
     private val cartItemReader: CartItemReader, // 장바구니 조회용 컴포넌트
-    private val orderNumberGenerator: OrderNumberGenerator,
+    private val cartItemRepository: CartItemRepository,
+    private val productReader: ProductReader,
     private val productSnapshotReader: ProductSnapshotReader,
     private val userAddressService: UserAddressService,
     private val paymentReader: PaymentReader,
     private val reviewRepository: ReviewRepository,
     private val timeProvider: TimeProvider,
     private val paymentRepository: PaymentRepository,
+    private val productSnapshotRepository: ProductSnapshotRepository,
 ) {
     // 배송비 정책 (정책에 따라 변경 예정)
     private fun calculateShippingFee(itemsSubtotal: Int): Int = if (itemsSubtotal >= 20000) 0 else 3000
@@ -60,18 +64,10 @@ class OrderService(
         val userId = user.id!!
         val cartItems = cartItemReader.readCartItems(userId, cartItemIds)
 
-        // 2. 상품 스냅샷 조회 및 가공
         val items = cartItems.map { cartItem ->
-            val snapshot = productSnapshotReader.getById(cartItem.productSnapshotId!!)
-            PrepareOrderItemApiResponse(
-                cartItemId = cartItem.id!!,
-                productId = snapshot.productId,
-                name = snapshot.name,
-                thumbnail = snapshot.thumbnail,
-                unitPrice = snapshot.price,
-                quantity = cartItem.quantity,
-                itemSubtotal = snapshot.price * cartItem.quantity,
-            )
+            val product = productReader.getProductById(cartItem.productId)
+            val inventory = productReader.getInventoryByProductId(cartItem.productId)
+            PrepareOrderItemApiResponse.of(cartItem, product, inventory)
         }
 
         // 3. 가격 계산
@@ -112,9 +108,18 @@ class OrderService(
 
         // 1. 장바구니 아이템 정보 조회 (상품ID, 수량, 가격)
         val cartItems = cartItemReader.readCartItems(userId, request.cartItemIds)
+        val items = cartItems.map { cartItem ->
+            val product = productReader.getProductById(cartItem.productId)
+            val inventory = productReader.getInventoryByProductId(cartItem.productId)
 
-        // 2. 총 주문 금액 계산
-        val totalAmount = cartItems.sumOf { it.unitPrice!! * it.quantity }
+            if (cartItem.quantity > inventory.quantity) {
+                throw CoreException(
+                    OrderErrorCode.ORDER_QUANTITY_NOT_ENOUGH,
+                    "${product.name}: 남은 수량: ${inventory.quantity}. 요청 수량: ${cartItem.quantity}",
+                )
+            }
+            PrepareOrderItemApiResponse.of(cartItem, product, inventory)
+        }
 
         // 3. 주문 번호 생성
         val now = timeProvider.now().toLocalDate()
@@ -124,24 +129,35 @@ class OrderService(
         val order = Order(
             orderNumber = orderNumber,
             userId = userId,
-            totalAmount = totalAmount,
+            totalAmount = items.sumOf { it.itemSubtotal },
             recipientName = request.shippingInfo.recipientName,
             recipientPhone = request.shippingInfo.recipientPhone,
             zipCode = request.shippingInfo.zipCode,
             address1 = request.shippingInfo.address1,
             address2 = request.shippingInfo.address2,
             deliveryMessage = request.shippingInfo.deliveryMessage,
-            status = OrderStatus.WAITING_FOR_PAYMENT, // 상태 초기화
         )
         orderRepository.save(order)
 
         // 5. OrderItem Entity 생성 및 저장
-        val orderItems = cartItems.map { cartItem ->
+        val orderItems = items.map { cartItem ->
+            var snapshot = productSnapshotReader.findLatestByProductId(cartItem.productId)
+            if (snapshot == null || snapshot.name != cartItem.name || snapshot.price != cartItem.unitPrice || snapshot.thumbnail != cartItem.thumbnail) {
+                snapshot = productSnapshotRepository.save(
+                    ProductSnapshot(
+                        productId = cartItem.productId,
+                        name = cartItem.name,
+                        price = cartItem.unitPrice,
+                        thumbnail = cartItem.thumbnail,
+                    ),
+                )
+            }
+
             OrderItem(
                 orderId = order.id!!,
-                productSnapshotId = cartItem.productSnapshotId!!,
+                productSnapshotId = snapshot.id!!,
                 quantity = cartItem.quantity,
-                unitPrice = cartItem.unitPrice!!,
+                unitPrice = cartItem.unitPrice,
             )
         }
         orderItemRepository.saveAll(orderItems)
@@ -149,7 +165,7 @@ class OrderService(
         val paymentMethod = (
             PaymentMethod.fromCode(request.paymentMethod)
                 ?: throw CoreException(PaymentErrorCode.INVALID_PAYMENT_METHOD)
-        )
+            )
 
         paymentRepository.save(
             Payment(
@@ -160,6 +176,7 @@ class OrderService(
                 paymentMethod = paymentMethod,
             ),
         )
+        cartItemRepository.deleteAllByIdInBatch(cartItems.map { it.cartItemId })
 
         // 6. 응답 반환
         return OrderApiResponse(orderNumber)

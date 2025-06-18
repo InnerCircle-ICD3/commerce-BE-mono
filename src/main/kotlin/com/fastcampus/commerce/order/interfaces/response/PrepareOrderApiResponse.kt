@@ -1,6 +1,9 @@
 package com.fastcampus.commerce.order.interfaces.response
 
+import com.fastcampus.commerce.cart.application.query.dto.CartItemDto
 import com.fastcampus.commerce.common.response.EnumResponse
+import com.fastcampus.commerce.product.domain.entity.Inventory
+import com.fastcampus.commerce.product.domain.entity.Product
 
 data class PrepareOrderApiResponse(
     val cartItemIds: Set<Long>,
@@ -20,7 +23,20 @@ data class PrepareOrderItemApiResponse(
     val unitPrice: Int,
     val quantity: Int,
     val itemSubtotal: Int,
-)
+) {
+    companion object {
+        fun of(cartItem: CartItemDto, product: Product, inventory: Inventory) =
+            PrepareOrderItemApiResponse (
+                cartItemId = cartItem.cartItemId,
+                productId = product.id!!,
+                name = product.name,
+                thumbnail = product.thumbnail,
+                unitPrice = product.price,
+                quantity = inventory.quantity,
+                itemSubtotal = product.price * inventory.quantity,
+            )
+    }
+}
 
 data class PrepareOrderShippingInfoApiResponse(
     val recipientName: String,
