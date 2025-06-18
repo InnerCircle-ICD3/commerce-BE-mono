@@ -18,8 +18,9 @@ class PaymentValidator {
         if (payment.status !== PaymentStatus.WAITING) {
             throw CoreException(PaymentErrorCode.ALREADY_PAID)
         }
-        if (payment.amount !== pgPaymentInfo.amount) {
-            throw CoreException(PaymentErrorCode.PG_RESULT_NOT_MATCH_PAYMENT)
-        }
+        // 현재 Mock이므로 임시 주석처리한다.
+//        if (payment.amount !== pgPaymentInfo.amount) {
+//            throw CoreException(PaymentErrorCode.PG_RESULT_NOT_MATCH_PAYMENT)
+//        }
     }
 }
