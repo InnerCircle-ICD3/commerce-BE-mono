@@ -860,9 +860,9 @@ paths:
                         "adminId" : 1,
                         "productId" : 1,
                         "status" : "ON_CHAT",
-                        "createdAt" : "2025-06-17T11:43",
+                        "createdAt" : "2025-06-17T13:40",
                         "lastMessage" : "네, 재고 있습니다",
-                        "lastMessageAt" : "2025-06-18T09:43"
+                        "lastMessageAt" : "2025-06-18T11:40"
                       } ],
                       "error" : null
                     }
@@ -919,9 +919,9 @@ paths:
                         "adminId" : null,
                         "productId" : 1,
                         "status" : "REQUESTED",
-                        "createdAt" : "2025-06-18T11:43",
+                        "createdAt" : "2025-06-18T13:40",
                         "lastMessage" : "이 상품 재고 있나요?",
-                        "lastMessageAt" : "2025-06-18T11:43"
+                        "lastMessageAt" : "2025-06-18T13:40"
                       },
                       "error" : null
                     }
@@ -935,9 +935,9 @@ paths:
                         "adminId" : null,
                         "productId" : 1,
                         "status" : "REQUESTED",
-                        "createdAt" : "2025-06-18T11:43",
+                        "createdAt" : "2025-06-18T13:40",
                         "lastMessage" : "상품 구매 문의드립니다",
-                        "lastMessageAt" : "2025-06-18T11:43"
+                        "lastMessageAt" : "2025-06-18T13:40"
                       },
                       "error" : null
                     }
@@ -960,7 +960,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/chat-rooms-roomId-status-1530925551"
+                $ref: "#/components/schemas/chat-rooms-roomId-1530925551"
               examples:
                 채팅방_상세_조회_성공:
                   value: |-
@@ -972,9 +972,9 @@ paths:
                         "adminId" : 1,
                         "productId" : 1,
                         "status" : "ON_CHAT",
-                        "createdAt" : "2025-06-17T11:43",
+                        "createdAt" : "2025-06-17T13:40",
                         "lastMessage" : "감사합니다",
-                        "lastMessageAt" : "2025-06-18T11:13"
+                        "lastMessageAt" : "2025-06-18T13:10"
                       },
                       "error" : null
                     }
@@ -1075,7 +1075,7 @@ paths:
                           "senderType" : "GUEST",
                           "senderId" : "guest-123",
                           "senderName" : "Guest",
-                          "createdAt" : "2025-06-18T11:33",
+                          "createdAt" : "2025-06-18T13:30",
                           "productInfo" : null
                         } ],
                         "pageable" : {
@@ -1091,8 +1091,8 @@ paths:
                           "unpaged" : false
                         },
                         "last" : true,
-                        "totalElements" : 1,
                         "totalPages" : 1,
+                        "totalElements" : 1,
                         "first" : true,
                         "size" : 20,
                         "number" : 0,
@@ -1143,7 +1143,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/chat-rooms-roomId-status-1530925551"
+                $ref: "#/components/schemas/chat-rooms-roomId-1530925551"
               examples:
                 채팅방_상태_변경_성공:
                   value: |-
@@ -1155,9 +1155,9 @@ paths:
                         "adminId" : 1,
                         "productId" : 1,
                         "status" : "END",
-                        "createdAt" : "2025-06-17T11:43",
+                        "createdAt" : "2025-06-17T13:40",
                         "lastMessage" : "상담이 종료되었습니다",
-                        "lastMessageAt" : "2025-06-18T11:43"
+                        "lastMessageAt" : "2025-06-18T13:40"
                       },
                       "error" : null
                     }
@@ -1377,6 +1377,37 @@ paths:
                           "label" : "테스트"
                         } ]
                       },
+                      "error" : null
+                    }
+  /orders/status:
+    get:
+      tags:
+      - Order
+      summary: 주문 상태 코드 목록
+      operationId: 주문상태_코드목록_조회_성공
+      parameters:
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/orders-status436844904"
+              examples:
+                주문상태_코드목록_조회_성공:
+                  value: |-
+                    {
+                      "data" : [ {
+                        "code" : "WAITING_FOR_PAYMENT",
+                        "label" : "결제 대기중"
+                      } ],
                       "error" : null
                     }
   /orders/{orderNumber}:
@@ -2934,7 +2965,7 @@ components:
             orderNumber:
               type: string
               description: 주문 번호
-    chat-rooms-roomId-status-1530925551:
+    chat-rooms-roomId-1530925551:
       type: object
       properties:
         data:
@@ -3664,6 +3695,23 @@ components:
             key:
               type: string
               description: S3 Object Key
+    orders-status436844904:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            required:
+            - code
+            - label
+            type: object
+            properties:
+              code:
+                type: string
+                description: 주문상태 코드
+              label:
+                type: string
+                description: 주문상태 라벨
     admin-products-productId-1789436874:
       required:
       - cupSizeId
