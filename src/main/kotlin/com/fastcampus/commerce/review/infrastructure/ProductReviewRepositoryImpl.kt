@@ -53,6 +53,8 @@ class ProductReviewRepositoryImpl(
             queryFactory
                 .select(review.id.count())
                 .from(review)
+                .leftJoin(reviewReply).on(review.id.eq(reviewReply.reviewId))
+                .join(user).on(review.userId.eq(user.id))
                 .where(review.productId.eq(productId))
                 .fetchOne() ?: 0L
         }
