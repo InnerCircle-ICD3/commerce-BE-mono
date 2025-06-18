@@ -1,6 +1,7 @@
 package com.fastcampus.commerce.order.interfaces
 
 import com.fastcampus.commerce.auth.interfaces.web.security.annotation.WithRoles
+import com.fastcampus.commerce.common.response.EnumResponse
 import com.fastcampus.commerce.common.response.PagedData
 import com.fastcampus.commerce.order.application.order.OrderService
 import com.fastcampus.commerce.order.interfaces.request.OrderApiRequest
@@ -27,6 +28,11 @@ import org.springframework.web.bind.annotation.RestController
 class OrderController(
     private val orderService: OrderService,
 ) {
+    @GetMapping("/status")
+    fun getOrderStatus(): List<EnumResponse> {
+        return orderService.getOrderStatus()
+    }
+
     /*@GetMapping("/prepare")
     fun prepareOrders(
         @RequestParam cartItemIds: String,

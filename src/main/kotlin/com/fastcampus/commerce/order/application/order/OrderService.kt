@@ -4,11 +4,13 @@ import com.fastcampus.commerce.cart.application.query.CartItemReader
 import com.fastcampus.commerce.cart.infrastructure.repository.CartItemRepository
 import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.common.id.UniqueIdGenerator
+import com.fastcampus.commerce.common.response.CodeResponse
 import com.fastcampus.commerce.common.response.EnumResponse
 import com.fastcampus.commerce.common.util.TimeProvider
 import com.fastcampus.commerce.order.application.query.ProductSnapshotReader
 import com.fastcampus.commerce.order.domain.entity.Order
 import com.fastcampus.commerce.order.domain.entity.OrderItem
+import com.fastcampus.commerce.order.domain.entity.OrderStatus
 import com.fastcampus.commerce.order.domain.entity.ProductSnapshot
 import com.fastcampus.commerce.order.domain.error.OrderErrorCode
 import com.fastcampus.commerce.order.domain.repository.OrderItemRepository
@@ -58,6 +60,12 @@ class OrderService(
 ) {
     // 배송비 정책 (정책에 따라 변경 예정)
     private fun calculateShippingFee(itemsSubtotal: Int): Int = if (itemsSubtotal >= 30000) 0 else 3000
+
+    fun getOrderStatus(): List<EnumResponse> {
+        return OrderStatus.entries.map {
+            EnumResponse(it.name, it.label)
+        }
+    }
 
     @Transactional
     fun prepareOrder(user: User, cartItemIds: Set<Long>): PrepareOrderApiResponse {

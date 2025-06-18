@@ -51,6 +51,37 @@ class OrderControllerRestDocTest : DescribeSpec() {
             RestAssuredMockMvc.mockMvc(mockMvc)
         }
 
+        describe("GET /orders/status - 주문 상태 코드 목록") {
+            val summary = "주문 상태 코드 목록"
+            it("주문 상태 코드 목록을 조회할 수 있다.") {
+                val response = listOf(
+                    EnumResponse(
+                        OrderStatus.WAITING_FOR_PAYMENT.name,
+                        OrderStatus.WAITING_FOR_PAYMENT.label,
+                        )
+                )
+                every { orderService.getOrderStatus() } returns response
+                documentation(
+                    identifier = "주문상태_코드목록_조회_성공",
+                    tag = tag,
+                    summary = summary,
+                ) {
+                    requestLine(HttpMethod.GET, "/orders/status")
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                    }
+
+                    responseBody {
+                        field("data[0].code", "주문상태 코드", OrderStatus.WAITING_FOR_PAYMENT.name)
+                        field("data[0].label", "주문상태 라벨", OrderStatus.WAITING_FOR_PAYMENT.label)
+                        ignoredField("error")
+                    }
+                }
+            }
+
+        }
+
         describe("GET /orders/prepare - 주문서") {
             val summary = "주문서 생성"
             it("주문서를 생성할 수 있다.") {
