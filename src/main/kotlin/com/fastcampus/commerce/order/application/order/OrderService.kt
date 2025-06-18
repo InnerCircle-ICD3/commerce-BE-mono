@@ -193,7 +193,7 @@ class OrderService(
                 paymentMethod = paymentMethod,
             ),
         )
-        cartItemRepository.deleteAllByIdInBatch(cartItems.map { it.cartItemId })
+        cartItemRepository.softDeleteByIds(cartItems.map { it.cartItemId })
 
         // 6. 응답 반환
         return OrderApiResponse(orderNumber)
