@@ -27,7 +27,7 @@ class ChatService(
         // senderType에 따라 userId/guestId 설정
         val userId = if (request.senderType == SenderType.USER) request.senderId.toLongOrNull() else null
         val guestId = if (request.senderType == SenderType.GUEST) request.senderId else null
-        
+
         // 기존 활성 채팅방 확인
         val existingRoom = when {
             userId != null && request.productId != null ->
@@ -132,10 +132,8 @@ class ChatService(
                 "현재 상태(${chatRoom.status})에서 ${newStatus}로 변경할 수 없습니다.")
         }
 
-        // 리플렉션을 사용하여 status 필드 업데이트
-        val statusField = ChatRoom::class.java.getDeclaredField("status")
-        statusField.isAccessible = true
-        statusField.set(chatRoom, newStatus)
+        // status 필드 업데이트
+        chatRoom.changeStatus(newStatus)
 
         val updatedRoom = chatRoomRepository.save(chatRoom)
         return toChatRoomResponse(updatedRoom)
@@ -150,12 +148,7 @@ class ChatService(
             throw CoreException(ChatErrorCode.BAD_REQUEST, "이미 관리자가 배정된 채팅방입니다.")
         }
 
-        chatRoom.adminId = adminId
-
-        // 상태를 ON_CHAT으로 변경
-        val statusField = ChatRoom::class.java.getDeclaredField("status")
-        statusField.isAccessible = true
-        statusField.set(chatRoom, ChatRoomStatus.ON_CHAT)
+        chatRoom.assignAdmin(adminId)
 
         val updatedRoom = chatRoomRepository.save(chatRoom)
         return toChatRoomResponse(updatedRoom)
