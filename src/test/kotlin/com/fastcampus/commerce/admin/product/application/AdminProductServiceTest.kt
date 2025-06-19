@@ -5,16 +5,13 @@ import com.fastcampus.commerce.admin.product.application.request.SearchAdminProd
 import com.fastcampus.commerce.admin.product.application.request.UpdateProductRequest
 import com.fastcampus.commerce.admin.product.application.response.AdminProductDetailResponse
 import com.fastcampus.commerce.admin.product.application.response.SearchAdminProductResponse
-import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.file.application.FileCommandService
-import com.fastcampus.commerce.file.domain.error.FileErrorCode
 import com.fastcampus.commerce.file.domain.service.UploadedFileVerifier
 import com.fastcampus.commerce.product.application.ProductCommandService
 import com.fastcampus.commerce.product.application.ProductQueryService
 import com.fastcampus.commerce.product.domain.entity.SellingStatus
 import com.fastcampus.commerce.product.domain.model.ProductCategoryInfo
 import com.fastcampus.commerce.product.domain.model.ProductInfo
-import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe

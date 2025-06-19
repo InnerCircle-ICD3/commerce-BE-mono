@@ -32,7 +32,7 @@ class AdminProductService(
     }
 
     fun register(adminId: Long, request: RegisterProductRequest): Long {
-        //uploadedFileVerifier.verifyFileWithS3Urls(request.files)
+        // uploadedFileVerifier.verifyFileWithS3Urls(request.files)
         val command = request.toCommand(adminId)
         return transactionTemplate.execute {
             val register = productCommandService.register(command)
@@ -47,7 +47,7 @@ class AdminProductService(
         //  이미지만 변경하는 PATCH를 만들던가,
         //  product를 조회한 후 url이 변경되었는지 확인 후 요청하도록 수정
         //  현재 markFilesAsSuccess는 멱등성있게 작성되어있어 문제 없음.
-        //uploadedFileVerifier.verifyFileWithS3Urls(request.files)
+        // uploadedFileVerifier.verifyFileWithS3Urls(request.files)
         val command = request.toCommand(adminId)
         transactionTemplate.execute {
             productCommandService.updateProduct(command)

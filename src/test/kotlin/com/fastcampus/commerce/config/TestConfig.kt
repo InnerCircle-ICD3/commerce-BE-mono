@@ -4,9 +4,7 @@ import com.fastcampus.commerce.auth.interfaces.web.security.model.LoginUser
 import com.fastcampus.commerce.auth.interfaces.web.security.resolver.RoleBasedUserArgumentResolver
 import com.fastcampus.commerce.common.resolver.PageableProperties
 import com.fastcampus.commerce.user.api.service.UserService
-import com.fastcampus.commerce.user.domain.entity.User
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
-import io.mockk.every
 import io.mockk.mockk
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
