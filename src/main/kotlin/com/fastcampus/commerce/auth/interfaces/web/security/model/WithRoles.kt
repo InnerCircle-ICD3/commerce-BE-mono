@@ -1,4 +1,4 @@
-package com.fastcampus.commerce.auth.interfaces.web.security.annotation
+package com.fastcampus.commerce.auth.interfaces.web.security.model
 
 import com.fastcampus.commerce.user.domain.enums.UserRole
 

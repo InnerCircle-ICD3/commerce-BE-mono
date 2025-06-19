@@ -1,5 +1,6 @@
 package com.fastcampus.commerce.config
 
+import com.fastcampus.commerce.auth.interfaces.web.security.model.LoginUser
 import com.fastcampus.commerce.auth.interfaces.web.security.resolver.RoleBasedUserArgumentResolver
 import com.fastcampus.commerce.common.resolver.PageableProperties
 import com.fastcampus.commerce.user.api.service.UserService
@@ -61,11 +62,8 @@ class TestConfig {
                 mavContainer: ModelAndViewContainer?,
                 webRequest: NativeWebRequest,
                 binderFactory: WebDataBinderFactory?,
-            ): Any? {
-                return mockk<User> {
-                    every { id } returns 1L
-                    every { name } returns "testUser"
-                }
+            ): LoginUser {
+                return LoginUser(1L, "USR0001")
             }
         }
     }
