@@ -1,8 +1,9 @@
 package com.fastcampus.commerce.payment.interfaces
 
+import com.fastcampus.commerce.auth.interfaces.web.security.model.LoginUser
+import com.fastcampus.commerce.auth.interfaces.web.security.model.WithRoles
 import com.fastcampus.commerce.payment.application.PaymentService
 import com.fastcampus.commerce.payment.interfaces.request.PaymentApiRequest
-import com.fastcampus.commerce.payment.interfaces.request.PaymentCommandRequest
 import com.fastcampus.commerce.payment.interfaces.response.CancelPaymentApiResponse
 import com.fastcampus.commerce.payment.interfaces.response.PaymentApiResponse
 import com.fastcampus.commerce.user.domain.enums.UserRole
@@ -18,6 +19,7 @@ class PaymentController(
 ) {
     @PostMapping
     fun verifyPayment(
+        @WithRoles([UserRole.USER]) user: LoginUser,
         @RequestBody request: PaymentApiRequest,
     ): PaymentApiResponse {
         val response = paymentService.processPayment(request.toServiceRequest())
@@ -26,17 +28,19 @@ class PaymentController(
 
     @PostMapping("/cancel")
     fun cancelPayment(
-        @RequestBody request: PaymentCommandRequest,
+        @WithRoles([UserRole.USER]) user: LoginUser,
+        @RequestBody orderNumber: String,
     ): CancelPaymentApiResponse {
-        paymentService.cancelPayment(1L, request.orderNumber)
+        paymentService.cancelPayment(user.id, orderNumber)
         return CancelPaymentApiResponse()
     }
 
     @PostMapping("/refund")
     fun refundPayment(
-        @RequestBody request: PaymentCommandRequest,
+        @WithRoles([UserRole.USER]) user: LoginUser,
+        @RequestBody orderNumber: String,
     ): CancelPaymentApiResponse {
-        paymentService.refundRequestPayment(1L, request.orderNumber)
+        paymentService.refundRequestPayment(user.id, orderNumber)
         return CancelPaymentApiResponse()
     }
 }
