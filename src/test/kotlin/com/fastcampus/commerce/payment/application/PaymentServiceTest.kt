@@ -323,6 +323,7 @@ class PaymentServiceTest : FunSpec(
                 every { paymentReader.getByOrderId(1L) } returns payment
                 every { timeProvider.now() } returns now
                 every { pgClient.refund(any(), any()) } just Runs
+                every { orderPaymentService.getOrderProducts(1L) } returns listOf()
 
                 // when
                 paymentService.cancelPayment(userId, orderNumber)
@@ -335,6 +336,7 @@ class PaymentServiceTest : FunSpec(
                 verify(exactly = 1) { orderPaymentService.getOrderByOrderNumber(orderNumber) }
                 verify(exactly = 1) { paymentReader.getByOrderId(1L) }
                 verify(exactly = 1) { timeProvider.now() }
+                verify(exactly = 1) { orderPaymentService.getOrderProducts(1L) }
             }
 
             test("다른 사용자가 주문을 취소하려고 하면 예외가 발생한다") {
@@ -437,6 +439,7 @@ class PaymentServiceTest : FunSpec(
                 every { paymentReader.getByOrderId(1L) } returns payment
                 every { timeProvider.now() } returns now
                 every { pgClient.refund(any(), any()) } just Runs
+                every { orderPaymentService.getOrderProducts(1L) } returns listOf()
 
                 // when
                 paymentService.cancelPayment(userId, orderNumber)
@@ -449,6 +452,7 @@ class PaymentServiceTest : FunSpec(
                 verify(exactly = 1) { orderPaymentService.getOrderByOrderNumber(orderNumber) }
                 verify(exactly = 1) { paymentReader.getByOrderId(1L) }
                 verify(exactly = 1) { timeProvider.now() }
+                verify(exactly = 1) { orderPaymentService.getOrderProducts(1L) }
             }
         }
 

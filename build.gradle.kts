@@ -1,3 +1,6 @@
+import groovy.lang.Closure
+import io.swagger.v3.oas.models.servers.Server
+
 val javaVersion: String by project
 val springBootVersion: String by project
 val kotestVersion: String by project
@@ -120,7 +123,7 @@ val querydslDir = "build/generated"
 sourceSets["main"].java.srcDirs(querydslDir)
 
 configure<com.epages.restdocs.apispec.gradle.OpenApi3Extension> {
-    setServer("http://13.124.152.6:8080")
+    setServer("https://api2.801base.com")
     title = "801base API docs"
     description = "801base의 API 문서입니다."
     version = "0.0.1"
