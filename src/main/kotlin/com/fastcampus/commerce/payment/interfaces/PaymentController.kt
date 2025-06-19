@@ -4,6 +4,7 @@ import com.fastcampus.commerce.auth.interfaces.web.security.model.LoginUser
 import com.fastcampus.commerce.auth.interfaces.web.security.model.WithRoles
 import com.fastcampus.commerce.payment.application.PaymentService
 import com.fastcampus.commerce.payment.interfaces.request.PaymentApiRequest
+import com.fastcampus.commerce.payment.interfaces.request.PaymentCommandRequest
 import com.fastcampus.commerce.payment.interfaces.response.CancelPaymentApiResponse
 import com.fastcampus.commerce.payment.interfaces.response.PaymentApiResponse
 import com.fastcampus.commerce.user.domain.enums.UserRole
@@ -29,18 +30,18 @@ class PaymentController(
     @PostMapping("/cancel")
     fun cancelPayment(
         @WithRoles([UserRole.USER]) user: LoginUser,
-        @RequestBody orderNumber: String,
+        @RequestBody request: PaymentCommandRequest,
     ): CancelPaymentApiResponse {
-        paymentService.cancelPayment(user.id, orderNumber)
+        paymentService.cancelPayment(user.id, request.orderNumber)
         return CancelPaymentApiResponse()
     }
 
     @PostMapping("/refund")
     fun refundPayment(
         @WithRoles([UserRole.USER]) user: LoginUser,
-        @RequestBody orderNumber: String,
+        @RequestBody request: PaymentCommandRequest,
     ): CancelPaymentApiResponse {
-        paymentService.refundRequestPayment(user.id, orderNumber)
+        paymentService.refundRequestPayment(user.id, request.orderNumber)
         return CancelPaymentApiResponse()
     }
 }
