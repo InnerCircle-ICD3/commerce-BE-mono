@@ -54,10 +54,12 @@ class PaymentService(
         if (payment.transactionId == null) {
             throw CoreException(PaymentErrorCode.TRANSACTION_ID_EMPTY)
         }
-        pgClient.refund(payment.transactionId!!, payment.amount)
         val cancelledAt = timeProvider.now()
         payment.cancel(cancelledAt)
+        val orderProducts = orderPaymentService.getOrderProducts(order.id!!)
+        orderProducts.forEach { productStore.increaseQuantityByProductId(it.productId, it.quantity) }
         order.cancel(cancelledAt)
+        pgClient.refund(payment.transactionId!!, payment.amount)
     }
 
     @Transactional(readOnly = false)

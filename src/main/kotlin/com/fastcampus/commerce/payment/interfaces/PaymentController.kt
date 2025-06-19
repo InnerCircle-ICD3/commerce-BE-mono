@@ -2,8 +2,10 @@ package com.fastcampus.commerce.payment.interfaces
 
 import com.fastcampus.commerce.payment.application.PaymentService
 import com.fastcampus.commerce.payment.interfaces.request.PaymentApiRequest
+import com.fastcampus.commerce.payment.interfaces.request.PaymentCommandRequest
 import com.fastcampus.commerce.payment.interfaces.response.CancelPaymentApiResponse
 import com.fastcampus.commerce.payment.interfaces.response.PaymentApiResponse
+import com.fastcampus.commerce.user.domain.enums.UserRole
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -24,19 +26,17 @@ class PaymentController(
 
     @PostMapping("/cancel")
     fun cancelPayment(
-        @RequestBody orderNumber: String,
+        @RequestBody request: PaymentCommandRequest,
     ): CancelPaymentApiResponse {
-        val userId = 1L
-        paymentService.cancelPayment(userId, orderNumber)
+        paymentService.cancelPayment(1L, request.orderNumber)
         return CancelPaymentApiResponse()
     }
 
     @PostMapping("/refund")
     fun refundPayment(
-        @RequestBody orderNumber: String,
+        @RequestBody request: PaymentCommandRequest,
     ): CancelPaymentApiResponse {
-        val userId = 1L
-        paymentService.refundRequestPayment(userId, orderNumber)
+        paymentService.refundRequestPayment(1L, request.orderNumber)
         return CancelPaymentApiResponse()
     }
 }

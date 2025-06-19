@@ -51,4 +51,9 @@ class Inventory(
         this.quantity -= quantity
         validate()
     }
+
+    fun increaseQuantity(quantity: Int) {
+        this.quantity += quantity
+        validate()
+    }
 }

@@ -47,4 +47,9 @@ class ProductStore(
         val inventory = productReader.getInventoryByProductId(productId)
         inventory.decreaseQuantity(quantity)
     }
+
+    fun increaseQuantityByProductId(productId: Long, quantity: Int) {
+        val inventory = productReader.getInventoryByProductId(productId)
+        inventory.increaseQuantity(quantity)
+    }
 }
