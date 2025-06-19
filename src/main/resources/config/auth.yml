@@ -9,6 +9,7 @@ auth:
       - https://www.801base.com
       - https://801base.com
       - https://api.801base.com
+      - https://admin.801base.com
   jwt:
     issuer: fastcampus-commerce
     #    secret: ${SECRET_KEY}
