@@ -668,6 +668,120 @@ paths:
                 관리자_리뷰답글_삭제_성공:
                   value: "{\r\n  \"data\" : {\r\n    \"message\" : \"OK\"\r\n  },\r\
                     \n  \"error\" : null\r\n}"
+  /admin/orders/{orderId}/status/delivered:
+    patch:
+      tags:
+      - Admin-Order
+      summary: 배송완료 상태 변경
+      operationId: 배송완료_상태변경_성공
+      parameters:
+      - name: orderId
+        in: path
+        description: 주문 아이디
+        required: true
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/orders-orderNumber-cancel486549215"
+            examples:
+              배송완료_상태변경_성공:
+                value: "{ }"
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/orders-orderNumber-cancel486549215"
+              examples:
+                배송완료_상태변경_성공:
+                  value: "{\r\n  \"data\" : null,\r\n  \"error\" : null\r\n}"
+  /admin/orders/{orderId}/status/preparing-shipment:
+    patch:
+      tags:
+      - Admin-Order
+      summary: 배송준비중 상태 변경
+      operationId: 배송준비중_상태변경_성공
+      parameters:
+      - name: orderId
+        in: path
+        description: 주문 아이디
+        required: true
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/admin-orders-orderId-status-preparing-shipment-431535271"
+            examples:
+              배송준비중_상태변경_성공:
+                value: "{\r\n  \"trackingNumber\" : \"123981389\"\r\n}"
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/orders-orderNumber-cancel486549215"
+              examples:
+                배송준비중_상태변경_성공:
+                  value: "{\r\n  \"data\" : null,\r\n  \"error\" : null\r\n}"
+  /admin/orders/{orderId}/status/shipped:
+    patch:
+      tags:
+      - Admin-Order
+      summary: 배송중 상태 변경
+      operationId: 배송중_상태변경_성공
+      parameters:
+      - name: orderId
+        in: path
+        description: 주문 아이디
+        required: true
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/orders-orderNumber-cancel486549215"
+            examples:
+              배송중_상태변경_성공:
+                value: "{ }"
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/orders-orderNumber-cancel486549215"
+              examples:
+                배송중_상태변경_성공:
+                  value: "{\r\n  \"data\" : null,\r\n  \"error\" : null\r\n}"
   /cart-items:
     get:
       tags:
@@ -838,8 +952,8 @@ paths:
                   value: "{\r\n  \"data\" : [ {\r\n    \"id\" : 1,\r\n    \"guestId\"\
                     \ : null,\r\n    \"userId\" : 123,\r\n    \"adminId\" : 1,\r\n\
                     \    \"productId\" : 1,\r\n    \"status\" : \"ON_CHAT\",\r\n \
-                    \   \"createdAt\" : \"2025-06-18T07:14\",\r\n    \"lastMessage\"\
-                    \ : \"네, 재고 있습니다\",\r\n    \"lastMessageAt\" : \"2025-06-19T05:14\"\
+                    \   \"createdAt\" : \"2025-06-18T08:13\",\r\n    \"lastMessage\"\
+                    \ : \"네, 재고 있습니다\",\r\n    \"lastMessageAt\" : \"2025-06-19T06:13\"\
                     \r\n  } ],\r\n  \"error\" : null\r\n}"
     post:
       tags:
@@ -880,15 +994,15 @@ paths:
                   value: "{\r\n  \"data\" : {\r\n    \"id\" : 1,\r\n    \"guestId\"\
                     \ : \"guest-123\",\r\n    \"userId\" : null,\r\n    \"adminId\"\
                     \ : null,\r\n    \"productId\" : 1,\r\n    \"status\" : \"REQUESTED\"\
-                    ,\r\n    \"createdAt\" : \"2025-06-19T07:14\",\r\n    \"lastMessage\"\
-                    \ : \"이 상품 재고 있나요?\",\r\n    \"lastMessageAt\" : \"2025-06-19T07:14\"\
+                    ,\r\n    \"createdAt\" : \"2025-06-19T08:13\",\r\n    \"lastMessage\"\
+                    \ : \"이 상품 재고 있나요?\",\r\n    \"lastMessageAt\" : \"2025-06-19T08:13\"\
                     \r\n  },\r\n  \"error\" : null\r\n}"
                 채팅방_생성_회원_성공:
                   value: "{\r\n  \"data\" : {\r\n    \"id\" : 2,\r\n    \"guestId\"\
                     \ : null,\r\n    \"userId\" : 123,\r\n    \"adminId\" : null,\r\
                     \n    \"productId\" : 1,\r\n    \"status\" : \"REQUESTED\",\r\n\
-                    \    \"createdAt\" : \"2025-06-19T07:14\",\r\n    \"lastMessage\"\
-                    \ : \"상품 구매 문의드립니다\",\r\n    \"lastMessageAt\" : \"2025-06-19T07:14\"\
+                    \    \"createdAt\" : \"2025-06-19T08:13\",\r\n    \"lastMessage\"\
+                    \ : \"상품 구매 문의드립니다\",\r\n    \"lastMessageAt\" : \"2025-06-19T08:13\"\
                     \r\n  },\r\n  \"error\" : null\r\n}"
   /chat/rooms/{roomId}:
     get:
@@ -915,8 +1029,8 @@ paths:
                   value: "{\r\n  \"data\" : {\r\n    \"id\" : 1,\r\n    \"guestId\"\
                     \ : \"guest-123\",\r\n    \"userId\" : null,\r\n    \"adminId\"\
                     \ : 1,\r\n    \"productId\" : 1,\r\n    \"status\" : \"ON_CHAT\"\
-                    ,\r\n    \"createdAt\" : \"2025-06-18T07:14\",\r\n    \"lastMessage\"\
-                    \ : \"감사합니다\",\r\n    \"lastMessageAt\" : \"2025-06-19T06:44\"\
+                    ,\r\n    \"createdAt\" : \"2025-06-18T08:13\",\r\n    \"lastMessage\"\
+                    \ : \"감사합니다\",\r\n    \"lastMessageAt\" : \"2025-06-19T07:43\"\
                     \r\n  },\r\n  \"error\" : null\r\n}"
   /chat/rooms/{roomId}/admin-join:
     post:
@@ -1001,16 +1115,16 @@ paths:
                     id\" : 1,\r\n      \"chatRoomId\" : 1,\r\n      \"content\" :\
                     \ \"안녕하세요\",\r\n      \"senderType\" : \"GUEST\",\r\n      \"\
                     senderId\" : \"guest-123\",\r\n      \"senderName\" : \"Guest\"\
-                    ,\r\n      \"createdAt\" : \"2025-06-19T07:04\",\r\n      \"productInfo\"\
+                    ,\r\n      \"createdAt\" : \"2025-06-19T08:03\",\r\n      \"productInfo\"\
                     \ : null\r\n    } ],\r\n    \"pageable\" : {\r\n      \"pageNumber\"\
                     \ : 0,\r\n      \"pageSize\" : 20,\r\n      \"sort\" : {\r\n \
-                    \       \"empty\" : true,\r\n        \"unsorted\" : true,\r\n\
-                    \        \"sorted\" : false\r\n      },\r\n      \"offset\" :\
-                    \ 0,\r\n      \"unpaged\" : false,\r\n      \"paged\" : true\r\
+                    \       \"empty\" : true,\r\n        \"sorted\" : false,\r\n \
+                    \       \"unsorted\" : true\r\n      },\r\n      \"offset\" :\
+                    \ 0,\r\n      \"paged\" : true,\r\n      \"unpaged\" : false\r\
                     \n    },\r\n    \"last\" : true,\r\n    \"totalElements\" : 1,\r\
                     \n    \"totalPages\" : 1,\r\n    \"size\" : 20,\r\n    \"number\"\
                     \ : 0,\r\n    \"sort\" : {\r\n      \"empty\" : true,\r\n    \
-                    \  \"unsorted\" : true,\r\n      \"sorted\" : false\r\n    },\r\
+                    \  \"sorted\" : false,\r\n      \"unsorted\" : true\r\n    },\r\
                     \n    \"first\" : true,\r\n    \"numberOfElements\" : 1,\r\n \
                     \   \"empty\" : false\r\n  },\r\n  \"error\" : null\r\n}"
   /chat/rooms/{roomId}/status:
@@ -1053,8 +1167,8 @@ paths:
                   value: "{\r\n  \"data\" : {\r\n    \"id\" : 1,\r\n    \"guestId\"\
                     \ : \"guest-123\",\r\n    \"userId\" : null,\r\n    \"adminId\"\
                     \ : 1,\r\n    \"productId\" : 1,\r\n    \"status\" : \"END\",\r\
-                    \n    \"createdAt\" : \"2025-06-18T07:14\",\r\n    \"lastMessage\"\
-                    \ : \"상담이 종료되었습니다\",\r\n    \"lastMessageAt\" : \"2025-06-19T07:14\"\
+                    \n    \"createdAt\" : \"2025-06-18T08:13\",\r\n    \"lastMessage\"\
+                    \ : \"상담이 종료되었습니다\",\r\n    \"lastMessageAt\" : \"2025-06-19T08:13\"\
                     \r\n  },\r\n  \"error\" : null\r\n}"
   /files/presigned-url:
     post:
@@ -2314,6 +2428,14 @@ components:
             detailImage:
               type: string
               description: 상세 이미지 URL
+    admin-orders-orderId-status-preparing-shipment-431535271:
+      required:
+      - trackingNumber
+      type: object
+      properties:
+        trackingNumber:
+          type: string
+          description: 운송장번호
     products-main-996164674:
       type: object
       properties:

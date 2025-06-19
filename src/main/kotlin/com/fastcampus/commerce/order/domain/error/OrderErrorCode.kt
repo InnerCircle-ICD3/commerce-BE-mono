@@ -20,6 +20,8 @@ enum class OrderErrorCode(
     NOT_REFUND_REQUESTED_APPROVE("ORD-104", "환불요청한 주문만 환불가능합니다.", LogLevel.WARN),
     NOT_REFUND_REQUESTED_REJECT("ORD-105", "환불요청한 주문만 환불거절 가능합니다.", LogLevel.WARN),
     ORDER_CANNOT_BE_CANCELLED("ORD-106", "해당 주문은 관리자에 의해 취소할 수 없는 상태입니다.", LogLevel.WARN),
-
+    CANNOT_PREPARING_SHIPMENT("ORD-107", "결제완료 상태인 주문만 배송준비중으로 변경할 수 있습니다.", LogLevel.WARN),
+    CANNOT_SHIPPED("ORD-108", "배송준비중 상태인 주문만 배송중으로 변경할 수 있습니다.", LogLevel.WARN),
+    CANNOT_DELIVERED("ORD-109", "배송중 상태인 주문만 배송완료로 변경할 수 있습니다.", LogLevel.WARN),
 
 }

@@ -46,7 +46,10 @@ class Order(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
+    var trackingNumber: String? = null
+
     var paidAt: LocalDateTime? = null
+    var preparingShipmentAt: LocalDateTime? = null
     var shippedAt: LocalDateTime? = null
     var deliveredAt: LocalDateTime? = null
     var cancelledAt: LocalDateTime? = null
@@ -114,5 +117,30 @@ class Order(
     fun fail(failedAt: LocalDateTime) {
         this.cancelledAt = failedAt
         this.status = OrderStatus.CANCELLED
+    }
+
+    fun preparingShipment(trackingNumber: String, preparingShipmentAt: LocalDateTime) {
+        if (this.status != OrderStatus.PAID) {
+            throw CoreException(OrderErrorCode.CANNOT_PREPARING_SHIPMENT)
+        }
+        this.preparingShipmentAt = preparingShipmentAt
+        this.status = OrderStatus.PREPARING_SHIPMENT
+        this.trackingNumber = trackingNumber
+    }
+
+    fun shipping(shippedAt: LocalDateTime) {
+        if (this.status != OrderStatus.PREPARING_SHIPMENT) {
+            throw CoreException(OrderErrorCode.CANNOT_SHIPPED)
+        }
+        this.shippedAt = shippedAt
+        this.status = OrderStatus.SHIPPED
+    }
+
+    fun delivered(deliveredAt: LocalDateTime) {
+        if (this.status != OrderStatus.SHIPPED) {
+            throw CoreException(OrderErrorCode.CANNOT_DELIVERED)
+        }
+        this.deliveredAt = deliveredAt
+        this.status = OrderStatus.DELIVERED
     }
 }

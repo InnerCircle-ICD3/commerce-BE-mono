@@ -9,6 +9,7 @@ import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderDet
 import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderListResponse
 import com.fastcampus.commerce.admin.order.interfaces.AdminOrderQuery
 import com.fastcampus.commerce.common.error.CoreException
+import com.fastcampus.commerce.common.util.TimeProvider
 import com.fastcampus.commerce.order.application.query.ProductSnapshotReader
 import com.fastcampus.commerce.order.domain.entity.Order
 import com.fastcampus.commerce.order.domain.entity.OrderItem
@@ -36,6 +37,7 @@ class AdminOrderService(
     private val userRepository: UserRepository,
     private val productSnapshotRepository: ProductSnapshotRepository,
     private val paymentReader: PaymentReader,
+    private val timeProvider: TimeProvider,
 ) {
     // 주문 조회
     fun getOrders(request: AdminOrderSearchRequest, pageable: Pageable): Page<AdminOrderListResponse> {
@@ -153,5 +155,32 @@ class AdminOrderService(
         request.deliveryMessage?.let { order.deliveryMessage = it }
 
         // 업데이트는 엔티티 dirty checking + @Transactional로 자동 반영
+    }
+
+    @Transactional
+    fun preparingShipment(orderId: Long, trackingNumber: String) {
+        val order = orderRepository.findById(orderId)
+            .orElseThrow { CoreException(OrderErrorCode.ORDER_NOT_FOUND) }
+
+        val preparingShipmentAt = timeProvider.now()
+        order.preparingShipment(trackingNumber,preparingShipmentAt)
+    }
+
+    @Transactional
+    fun shippedOrder(orderId: Long) {
+        val order = orderRepository.findById(orderId)
+            .orElseThrow { CoreException(OrderErrorCode.ORDER_NOT_FOUND) }
+
+        val shippedAt = timeProvider.now()
+        order.shipping(shippedAt)
+    }
+
+    @Transactional
+    fun deliveredOrder(orderId: Long) {
+        val order = orderRepository.findById(orderId)
+            .orElseThrow { CoreException(OrderErrorCode.ORDER_NOT_FOUND) }
+
+        val deliveredAt = timeProvider.now()
+        order.delivered(deliveredAt)
     }
 }

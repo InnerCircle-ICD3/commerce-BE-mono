@@ -4,14 +4,12 @@ import com.fastcampus.commerce.admin.order.application.AdminOrderService
 import com.fastcampus.commerce.admin.order.infrastructure.request.AdminOrderCreateRequest
 import com.fastcampus.commerce.admin.order.infrastructure.request.AdminOrderSearchRequest
 import com.fastcampus.commerce.admin.order.infrastructure.request.AdminOrderUpdateRequest
+import com.fastcampus.commerce.admin.order.infrastructure.request.PreparingShipmentRequest
 import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderCreateResponse
 import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderDetailResponse
 import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderListResponse
 import com.fastcampus.commerce.common.response.PagedData
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Sort
-import org.springframework.data.web.PageableDefault
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
@@ -21,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import jakarta.validation.Valid
 
 @RestController
 @RequestMapping("/admin/orders")
@@ -67,5 +66,27 @@ class AdminOrderController(
         @RequestBody request: AdminOrderUpdateRequest,
     ) {
         adminOrderService.updateOrder(orderId, request)
+    }
+
+    @PatchMapping("/{orderId}/status/preparing-shipment")
+    fun preparingShipmentOrder(
+        @PathVariable orderId: Long,
+        @Valid @RequestBody request: PreparingShipmentRequest,
+    ) {
+        adminOrderService.preparingShipment(orderId, request.trackingNumber)
+    }
+
+    @PatchMapping("/{orderId}/status/shipped")
+    fun shippedOrder(
+        @PathVariable orderId: Long,
+    ) {
+        adminOrderService.shippedOrder(orderId)
+    }
+
+    @PatchMapping("/{orderId}/status/delivered")
+    fun deliveredOrder(
+        @PathVariable orderId: Long,
+    ) {
+        adminOrderService.deliveredOrder(orderId)
     }
 }

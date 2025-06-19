@@ -202,5 +202,87 @@ class AdminOrderControllerRestDocTest : DescribeSpec() {
                 }
             }
         }
+
+        describe("PATCH /admin/orders/{orderId}/status/preparing-shipment - 배송준비중 상태 변경") {
+            it("배송준비중 상태로 변경할 수 있다.") {
+                val summary = "배송준비중 상태 변경"
+                every { adminOrderService.preparingShipment(any(), any()) } returns Unit
+                documentation(
+                    identifier = "배송준비중_상태변경_성공",
+                    tag = tag,
+                    summary = summary,
+                    privateResource = privateResource,
+                ) {
+                    requestLine(HttpMethod.PATCH, "/admin/orders/{orderId}/status/preparing-shipment") {
+                        pathVariable("orderId", "주문 아이디", 1)
+                    }
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                    }
+
+                    requestBody {
+                        field("trackingNumber", "운송장번호", "123981389")
+                    }
+
+                    responseBody {
+                        ignoredField("data")
+                        ignoredField("error")
+                    }
+                }
+            }
+        }
+
+        describe("PATCH /admin/orders/{orderId}/status/shipped - 배송중 상태 변경") {
+            it("배송중 상태로 변경할 수 있다.") {
+                val summary = "배송중 상태 변경"
+                every { adminOrderService.shippedOrder(any()) } returns Unit
+                documentation(
+                    identifier = "배송중_상태변경_성공",
+                    tag = tag,
+                    summary = summary,
+                    privateResource = privateResource,
+                ) {
+                    requestLine(HttpMethod.PATCH, "/admin/orders/{orderId}/status/shipped") {
+                        pathVariable("orderId", "주문 아이디", 1)
+                    }
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                    }
+
+                    responseBody {
+                        ignoredField("data")
+                        ignoredField("error")
+                    }
+                }
+            }
+        }
+
+        describe("PATCH /admin/orders/{orderId}/status/delivered - 배송완료 상태 변경") {
+            it("배송완료 상태로 변경할 수 있다.") {
+                val summary = "배송완료 상태 변경"
+                every { adminOrderService.deliveredOrder(any()) } returns Unit
+                documentation(
+                    identifier = "배송완료_상태변경_성공",
+                    tag = tag,
+                    summary = summary,
+                    privateResource = privateResource,
+                ) {
+                    requestLine(HttpMethod.PATCH, "/admin/orders/{orderId}/status/delivered") {
+                        pathVariable("orderId", "주문 아이디", 1)
+                    }
+
+                    requestHeaders {
+                        header(HttpHeaders.AUTHORIZATION, "Authorization", "Bearer sample-token")
+                    }
+
+                    responseBody {
+                        ignoredField("data")
+                        ignoredField("error")
+                    }
+                }
+            }
+        }
     }
 }
