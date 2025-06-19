@@ -6,6 +6,9 @@ auth:
       - http://localhost:5173
       - https://commerce-fe-shop-delta.vercel.app
       - https://commerce-fe-admin.vercel.app
+      - https://www.801base.com
+      - https://801base.com
+      - https://api.801base.com
   jwt:
     issuer: fastcampus-commerce
     #    secret: ${SECRET_KEY}
