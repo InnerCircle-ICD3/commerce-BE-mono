@@ -20,4 +20,6 @@ interface CartItemRepository : JpaRepository<CartItem, Long> {
     fun findAllByUserId(userId: Long): List<CartItem>?
 
     fun findByUserIdAndId(userId: Long, cartItemId: Long): CartItem?
+
+    fun getAllByUserIdAndIdIn(userId: Long, cartItemIds: Set<Long>): List<CartItem>
 }

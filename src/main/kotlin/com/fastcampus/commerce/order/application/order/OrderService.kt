@@ -68,10 +68,8 @@ class OrderService(
     @Transactional
     fun prepareOrder(user: User, cartItemIds: Set<Long>): PrepareOrderApiResponse {
         // 1. 장바구니 아이템 정보 조회 (CartItemReader를 통해)
-        // TODO: 인증된 사용자 ID 값 넘길 수 있도록 수정 필요 (userId <- 이 부분 제거후 수정 필요)
         val userId = user.id!!
         val cartItems = cartItemReader.readCartItems(userId, cartItemIds)
-
         val items = cartItems.map { cartItem ->
             val product = productReader.getProductById(cartItem.productId)
             val inventory = productReader.getInventoryByProductId(cartItem.productId)
@@ -90,16 +88,19 @@ class OrderService(
         val finalTotalPrice = itemsSubtotal + shippingFee
 
         // 4. 배송지/결제수단 정보
-        val defaultAddress = userAddressService.findDefaultUserAddress(userId)!!
-
-        val shippingInfo = PrepareOrderShippingInfoApiResponse(
-            recipientName = defaultAddress.recipientName,
-            recipientPhone = defaultAddress.recipientPhone,
-            zipCode = defaultAddress.zipCode,
-            addressId = defaultAddress.addressId,
-            address1 = defaultAddress.address1,
-            address2 = defaultAddress.address2,
-        )
+        val defaultAddress = userAddressService.findDefaultUserAddress(userId)
+        val shippingInfo = if(defaultAddress == null) {
+            null
+        } else {
+            PrepareOrderShippingInfoApiResponse(
+                recipientName = defaultAddress.recipientName,
+                recipientPhone = defaultAddress.recipientPhone,
+                zipCode = defaultAddress.zipCode,
+                addressId = defaultAddress.addressId,
+                address1 = defaultAddress.address1,
+                address2 = defaultAddress.address2,
+            )
+        }
 
         // TODO: 추후 수정 필요 (현재는 주문전 받을 수 있는 값이 없음)
         val paymentMethods = listOf(EnumResponse(PaymentMethod.TOSS_PAY.toString(), PaymentMethod.TOSS_PAY.label))
@@ -122,9 +123,6 @@ class OrderService(
 
         // 1. 장바구니 아이템 정보 조회 (상품ID, 수량, 가격)
         val cartItems = cartItemReader.readCartItems(userId, request.cartItemIds)
-        if (cartItems.isEmpty()) {
-            throw CoreException(OrderErrorCode.CART_ITEM_NOT_MATCH)
-        }
         val items = cartItems.map { cartItem ->
             val product = productReader.getProductById(cartItem.productId)
             val inventory = productReader.getInventoryByProductId(cartItem.productId)
