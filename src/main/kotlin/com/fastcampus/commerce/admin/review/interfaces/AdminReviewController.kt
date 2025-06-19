@@ -7,8 +7,11 @@ import com.fastcampus.commerce.admin.review.interfaces.request.UpdateReviewReply
 import com.fastcampus.commerce.admin.review.interfaces.response.RegisterReviewReplyApiResponse
 import com.fastcampus.commerce.admin.review.interfaces.response.SearchReviewAdminApiResponse
 import com.fastcampus.commerce.admin.review.interfaces.response.UpdateReviewReplyApiResponse
+import com.fastcampus.commerce.auth.interfaces.web.security.model.LoginUser
+import com.fastcampus.commerce.auth.interfaces.web.security.model.WithRoles
 import com.fastcampus.commerce.common.response.PagedData
 import com.fastcampus.commerce.review.interfaces.response.DeleteReviewReplyApiResponse
+import com.fastcampus.commerce.user.domain.enums.UserRole
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -27,6 +30,7 @@ class AdminReviewController(
 ) {
     @GetMapping
     fun getReviews(
+        @WithRoles([UserRole.ADMIN]) admin: LoginUser,
         @ModelAttribute request: SearchReviewAdminApiRequest,
         pageable: Pageable,
     ): PagedData<SearchReviewAdminApiResponse> {
@@ -36,30 +40,30 @@ class AdminReviewController(
 
     @PostMapping("/{reviewId}/reply")
     fun registerReply(
+        @WithRoles([UserRole.ADMIN]) admin: LoginUser,
         @PathVariable reviewId: Long,
         @RequestBody request: RegisterReviewReplyApiRequest,
     ): RegisterReviewReplyApiResponse {
-        val adminId = 1L
-        val replyId: Long = adminReviewService.registerReply(adminId, reviewId, request.content)
+        val replyId: Long = adminReviewService.registerReply(admin.id, reviewId, request.content)
         return RegisterReviewReplyApiResponse(replyId)
     }
 
     @PutMapping("/{reviewId}/reply")
     fun updateReply(
+        @WithRoles([UserRole.ADMIN]) admin: LoginUser,
         @PathVariable reviewId: Long,
         @RequestBody request: UpdateReviewReplyApiRequest,
     ): UpdateReviewReplyApiResponse {
-        val adminId = 1L
-        adminReviewService.updateReply(adminId, reviewId, request.content)
+        adminReviewService.updateReply(admin.id, reviewId, request.content)
         return UpdateReviewReplyApiResponse(reviewId)
     }
 
     @DeleteMapping("/{reviewId}/reply")
     fun deleteReply(
+        @WithRoles([UserRole.ADMIN]) admin: LoginUser,
         @PathVariable reviewId: Long,
     ): DeleteReviewReplyApiResponse {
-        val adminId = 1L
-        adminReviewService.deleteReply(adminId, reviewId)
+        adminReviewService.deleteReply(admin.id, reviewId)
         return DeleteReviewReplyApiResponse()
     }
 }

@@ -1,21 +1,21 @@
 package com.fastcampus.commerce.admin.order.infrastructure.controller
 
 import com.fastcampus.commerce.admin.order.application.AdminOrderService
-import com.fastcampus.commerce.admin.order.infrastructure.request.AdminOrderCreateRequest
 import com.fastcampus.commerce.admin.order.infrastructure.request.AdminOrderSearchRequest
 import com.fastcampus.commerce.admin.order.infrastructure.request.AdminOrderUpdateRequest
 import com.fastcampus.commerce.admin.order.infrastructure.request.PreparingShipmentRequest
-import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderCreateResponse
 import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderDetailResponse
 import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderListResponse
+import com.fastcampus.commerce.auth.interfaces.web.security.model.LoginUser
+import com.fastcampus.commerce.auth.interfaces.web.security.model.WithRoles
 import com.fastcampus.commerce.common.response.PagedData
+import com.fastcampus.commerce.user.domain.enums.UserRole
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -29,6 +29,7 @@ class AdminOrderController(
     // 주문 조회
     @GetMapping
     fun getOrders(
+        @WithRoles([UserRole.ADMIN]) admin: LoginUser,
         @ModelAttribute search: AdminOrderSearchRequest,
         pageable: Pageable,
     ): PagedData<AdminOrderListResponse> {
@@ -38,22 +39,16 @@ class AdminOrderController(
     // 주문 상세 조회
     @GetMapping("/{orderId}")
     fun getOrderDetail(
+        @WithRoles([UserRole.ADMIN]) admin: LoginUser,
         @PathVariable orderId: Long,
     ): AdminOrderDetailResponse {
         return adminOrderService.getOrderDetail(orderId)
     }
 
-    // 주문 생성
-    @PostMapping
-    fun createOrder(
-        @RequestBody request: AdminOrderCreateRequest,
-    ): AdminOrderCreateResponse {
-        return adminOrderService.createOrder(request)
-    }
-
     // 주문 취소
     @DeleteMapping("/{orderId}/cancel")
     fun cancelOrder(
+        @WithRoles([UserRole.ADMIN]) admin: LoginUser,
         @PathVariable orderId: Long,
     ) {
         adminOrderService.cancelOrder(orderId)
@@ -62,6 +57,7 @@ class AdminOrderController(
     // 주문 수정
     @PatchMapping("/{orderId}")
     fun updateOrder(
+        @WithRoles([UserRole.ADMIN]) admin: LoginUser,
         @PathVariable orderId: Long,
         @RequestBody request: AdminOrderUpdateRequest,
     ) {
@@ -70,6 +66,7 @@ class AdminOrderController(
 
     @PatchMapping("/{orderId}/status/preparing-shipment")
     fun preparingShipmentOrder(
+        @WithRoles([UserRole.ADMIN]) admin: LoginUser,
         @PathVariable orderId: Long,
         @Valid @RequestBody request: PreparingShipmentRequest,
     ) {
@@ -78,6 +75,7 @@ class AdminOrderController(
 
     @PatchMapping("/{orderId}/status/shipped")
     fun shippedOrder(
+        @WithRoles([UserRole.ADMIN]) admin: LoginUser,
         @PathVariable orderId: Long,
     ) {
         adminOrderService.shippedOrder(orderId)
@@ -85,6 +83,7 @@ class AdminOrderController(
 
     @PatchMapping("/{orderId}/status/delivered")
     fun deliveredOrder(
+        @WithRoles([UserRole.ADMIN]) admin: LoginUser,
         @PathVariable orderId: Long,
     ) {
         adminOrderService.deliveredOrder(orderId)
