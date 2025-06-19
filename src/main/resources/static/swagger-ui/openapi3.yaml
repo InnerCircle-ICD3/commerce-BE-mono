@@ -4,7 +4,9 @@ info:
   description: 801base의 API 문서입니다.
   version: 0.0.1
 servers:
+- url: https://api2.801base.com
 - url: http://13.124.152.6:8080
+
 tags:
 - name: Cart
   description: 장바구니 API
