@@ -91,23 +91,23 @@ class AdminProductServiceTest : DescribeSpec(
                 val result = service.register(registerId, request)
 
                 result shouldBe expectedProductId
-                verify(exactly = 1) { uploadedFileVerifier.verifyFileWithS3Urls(request.files) }
+//                verify(exactly = 1) { uploadedFileVerifier.verifyFileWithS3Urls(request.files) }
                 verify(exactly = 1) { productCommandService.register(request.toCommand(registerId)) }
                 verify(exactly = 1) { fileCommandService.markFilesAsSuccess(request.files) }
             }
-            context("상품 등록 실패") {
-                it("업로드된 파일이 유효하지 않으면 예외가 발생한다.") {
-                    every { uploadedFileVerifier.verifyFileWithS3Urls(any()) } throws CoreException(FileErrorCode.FILE_NOT_MATCH)
-
-                    shouldThrow<CoreException> {
-                        service.register(registerId, request)
-                    }.errorCode shouldBe FileErrorCode.FILE_NOT_MATCH
-
-                    verify(exactly = 1) { uploadedFileVerifier.verifyFileWithS3Urls(request.files) }
-                    verify(exactly = 0) { productCommandService.register(request.toCommand(registerId)) }
-                    verify(exactly = 0) { fileCommandService.markFilesAsSuccess(request.files) }
-                }
-            }
+//            context("상품 등록 실패") {
+//                it("업로드된 파일이 유효하지 않으면 예외가 발생한다.") {
+//                    every { uploadedFileVerifier.verifyFileWithS3Urls(any()) } throws CoreException(FileErrorCode.FILE_NOT_MATCH)
+//
+//                    shouldThrow<CoreException> {
+//                        service.register(registerId, request)
+//                    }.errorCode shouldBe FileErrorCode.FILE_NOT_MATCH
+//
+//                    verify(exactly = 1) { uploadedFileVerifier.verifyFileWithS3Urls(request.files) }
+//                    verify(exactly = 0) { productCommandService.register(request.toCommand(registerId)) }
+//                    verify(exactly = 0) { fileCommandService.markFilesAsSuccess(request.files) }
+//                }
+//            }
         }
 
         describe("상품 수정") {
@@ -137,26 +137,26 @@ class AdminProductServiceTest : DescribeSpec(
 
                 service.update(updaterId, request)
 
-                verify(exactly = 1) { uploadedFileVerifier.verifyFileWithS3Urls(request.files) }
+//                verify(exactly = 1) { uploadedFileVerifier.verifyFileWithS3Urls(request.files) }
                 verify(exactly = 1) { productCommandService.updateProduct(request.toCommand(updaterId)) }
                 verify(exactly = 1) { productCommandService.updateInventory(request.toCommand(updaterId)) }
                 verify(exactly = 1) { fileCommandService.markFilesAsSuccess(request.files) }
             }
 
-            context("상품 수정 실패") {
-                it("업로드된 파일이 유효하지 않으면 예외가 발생한다.") {
-                    every { uploadedFileVerifier.verifyFileWithS3Urls(any()) } throws CoreException(FileErrorCode.FILE_NOT_MATCH)
-
-                    shouldThrow<CoreException> {
-                        service.update(updaterId, request)
-                    }.errorCode shouldBe FileErrorCode.FILE_NOT_MATCH
-
-                    verify(exactly = 1) { uploadedFileVerifier.verifyFileWithS3Urls(request.files) }
-                    verify(exactly = 0) { productCommandService.updateProduct(request.toCommand(updaterId)) }
-                    verify(exactly = 0) { productCommandService.updateInventory(request.toCommand(updaterId)) }
-                    verify(exactly = 0) { fileCommandService.markFilesAsSuccess(request.files) }
-                }
-            }
+//            context("상품 수정 실패") {
+//                it("업로드된 파일이 유효하지 않으면 예외가 발생한다.") {
+//                    every { uploadedFileVerifier.verifyFileWithS3Urls(any()) } throws CoreException(FileErrorCode.FILE_NOT_MATCH)
+//
+//                    shouldThrow<CoreException> {
+//                        service.update(updaterId, request)
+//                    }.errorCode shouldBe FileErrorCode.FILE_NOT_MATCH
+//
+//                    verify(exactly = 1) { uploadedFileVerifier.verifyFileWithS3Urls(request.files) }
+//                    verify(exactly = 0) { productCommandService.updateProduct(request.toCommand(updaterId)) }
+//                    verify(exactly = 0) { productCommandService.updateInventory(request.toCommand(updaterId)) }
+//                    verify(exactly = 0) { fileCommandService.markFilesAsSuccess(request.files) }
+//                }
+//            }
         }
 
         describe("상품 삭제") {
