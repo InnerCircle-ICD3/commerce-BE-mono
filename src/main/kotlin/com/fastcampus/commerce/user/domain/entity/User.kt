@@ -25,8 +25,6 @@ class User(
     var email: String,
     @Column(nullable = false)
     var nickname: String,
-    /*@Column(nullable = false)
-    var profileImage: String,*/
     @Column(nullable = true)
     var profileImage: String? = null,
 ) : BaseEntity() {
@@ -43,4 +41,8 @@ class User(
 
     @Column
     var deletedAt: LocalDateTime? = null
+
+    fun updateNickname(nickname: String) {
+        this.nickname = nickname
+    }
 }

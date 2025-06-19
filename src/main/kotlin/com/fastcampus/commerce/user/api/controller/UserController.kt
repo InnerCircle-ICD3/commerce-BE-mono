@@ -1,9 +1,13 @@
 package com.fastcampus.commerce.user.api.controller
 
 import com.fastcampus.commerce.auth.api.dto.LoginRequest
+import com.fastcampus.commerce.user.api.controller.request.MyInfoResponse
+import com.fastcampus.commerce.user.api.controller.request.UpdateMyInfoRequest
 import com.fastcampus.commerce.user.api.dto.UserDto
 import com.fastcampus.commerce.user.api.service.UserService
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -27,6 +31,20 @@ class UserController(
         @RequestBody loginRequest: LoginRequest,
     ): UserDto {
         return userService.loginUser(loginRequest)
+    }
+
+    @GetMapping("/me")
+    fun me(): MyInfoResponse {
+        val userId = 1L
+        return userService.getMyInfo(userId)
+    }
+
+    @PatchMapping("/me")
+    fun updateMyInfo(
+        @RequestBody request: UpdateMyInfoRequest,
+    ) {
+        val userId = 1L
+        userService.updateMyInfo(userId, request)
     }
 
     /**

@@ -1152,9 +1152,9 @@ paths:
                         "adminId" : 1,
                         "productId" : 1,
                         "status" : "ON_CHAT",
-                        "createdAt" : "2025-06-18T11:11",
+                        "createdAt" : "2025-06-18T14:11",
                         "lastMessage" : "네, 재고 있습니다",
-                        "lastMessageAt" : "2025-06-19T09:11"
+                        "lastMessageAt" : "2025-06-19T12:11"
                       } ],
                       "error" : null
                     }
@@ -1211,9 +1211,9 @@ paths:
                         "adminId" : null,
                         "productId" : 1,
                         "status" : "REQUESTED",
-                        "createdAt" : "2025-06-19T11:11",
+                        "createdAt" : "2025-06-19T14:11",
                         "lastMessage" : "이 상품 재고 있나요?",
-                        "lastMessageAt" : "2025-06-19T11:11"
+                        "lastMessageAt" : "2025-06-19T14:11"
                       },
                       "error" : null
                     }
@@ -1227,9 +1227,9 @@ paths:
                         "adminId" : null,
                         "productId" : 1,
                         "status" : "REQUESTED",
-                        "createdAt" : "2025-06-19T11:11",
+                        "createdAt" : "2025-06-19T14:11",
                         "lastMessage" : "상품 구매 문의드립니다",
-                        "lastMessageAt" : "2025-06-19T11:11"
+                        "lastMessageAt" : "2025-06-19T14:11"
                       },
                       "error" : null
                     }
@@ -1252,7 +1252,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/chat-rooms-roomId-status-1530925551"
+                $ref: "#/components/schemas/chat-rooms-roomId-1530925551"
               examples:
                 채팅방_상세_조회_성공:
                   value: |-
@@ -1264,9 +1264,9 @@ paths:
                         "adminId" : 1,
                         "productId" : 1,
                         "status" : "ON_CHAT",
-                        "createdAt" : "2025-06-18T11:11",
+                        "createdAt" : "2025-06-18T14:11",
                         "lastMessage" : "감사합니다",
-                        "lastMessageAt" : "2025-06-19T10:41"
+                        "lastMessageAt" : "2025-06-19T13:41"
                       },
                       "error" : null
                     }
@@ -1367,7 +1367,7 @@ paths:
                           "senderType" : "GUEST",
                           "senderId" : "guest-123",
                           "senderName" : "Guest",
-                          "createdAt" : "2025-06-19T11:01",
+                          "createdAt" : "2025-06-19T14:01",
                           "productInfo" : null
                         } ],
                         "pageable" : {
@@ -1383,8 +1383,8 @@ paths:
                           "unpaged" : false
                         },
                         "last" : true,
-                        "totalElements" : 1,
                         "totalPages" : 1,
+                        "totalElements" : 1,
                         "first" : true,
                         "size" : 20,
                         "number" : 0,
@@ -1435,7 +1435,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/chat-rooms-roomId-status-1530925551"
+                $ref: "#/components/schemas/chat-rooms-roomId-1530925551"
               examples:
                 채팅방_상태_변경_성공:
                   value: |-
@@ -1447,9 +1447,9 @@ paths:
                         "adminId" : 1,
                         "productId" : 1,
                         "status" : "END",
-                        "createdAt" : "2025-06-18T11:11",
+                        "createdAt" : "2025-06-18T14:11",
                         "lastMessage" : "상담이 종료되었습니다",
-                        "lastMessageAt" : "2025-06-19T11:11"
+                        "lastMessageAt" : "2025-06-19T14:11"
                       },
                       "error" : null
                     }
@@ -2464,6 +2464,76 @@ paths:
                       },
                       "error" : null
                     }
+  /user/me:
+    get:
+      tags:
+      - User
+      summary: 내 정보조회
+      operationId: 내_정보조회_성공
+      parameters:
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user-me-1207955323"
+              examples:
+                내_정보조회_성공:
+                  value: |-
+                    {
+                      "data" : {
+                        "name" : "홍길동",
+                        "email" : "길동@닷.컴",
+                        "nickname" : "동길홍ㅋㅋ"
+                      },
+                      "error" : null
+                    }
+    patch:
+      tags:
+      - User
+      summary: 내 정보수정
+      operationId: 내_정보수정_성공
+      parameters:
+      - name: Authorization
+        in: header
+        description: Authorization
+        required: true
+        schema:
+          type: string
+        example: Bearer sample-token
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/user-me1642029314"
+            examples:
+              내_정보수정_성공:
+                value: |-
+                  {
+                    "nickname" : "하하하"
+                  }
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/admin-orders-orderId-cancel486549215"
+              examples:
+                내_정보수정_성공:
+                  value: |-
+                    {
+                      "data" : null,
+                      "error" : null
+                    }
   /users/addresses:
     get:
       tags:
@@ -2746,6 +2816,25 @@ components:
             reviewId:
               type: number
               description: 생성된 리뷰 아이디
+    user-me-1207955323:
+      type: object
+      properties:
+        data:
+          required:
+          - email
+          - name
+          - nickname
+          type: object
+          properties:
+            nickname:
+              type: string
+              description: 닉네임
+            name:
+              type: string
+              description: 이름
+            email:
+              type: string
+              description: 이메일
     chat-rooms-roomId-admin-join1389647186:
       type: object
       properties:
@@ -3195,18 +3284,7 @@ components:
             orderNumber:
               type: string
               description: 주문 번호
-    reviews-reviewId-215377401:
-      type: object
-      properties:
-        data:
-          required:
-          - reviewId
-          type: object
-          properties:
-            reviewId:
-              type: number
-              description: 수정된 리뷰 아이디
-    chat-rooms-roomId-status-1530925551:
+    chat-rooms-roomId-1530925551:
       type: object
       properties:
         data:
@@ -3245,6 +3323,17 @@ components:
             status:
               type: string
               description: 채팅방 상태
+    reviews-reviewId-215377401:
+      type: object
+      properties:
+        data:
+          required:
+          - reviewId
+          type: object
+          properties:
+            reviewId:
+              type: number
+              description: 수정된 리뷰 아이디
     admin-orders-1558507851:
       type: object
       properties:
@@ -3682,6 +3771,14 @@ components:
         alias:
           type: string
           description: 배송지 별칭
+    chat-rooms-roomId-status1571194345:
+      required:
+      - status
+      type: object
+      properties:
+        status:
+          type: string
+          description: "변경할 상태 (REQUESTED, ON_CHAT, AWAITING, END)"
     cart-items-cartItemId838557620:
       type: object
       properties:
@@ -3709,14 +3806,6 @@ components:
             userId:
               type: number
               description: 유저 아이디
-    chat-rooms-roomId-status1571194345:
-      required:
-      - status
-      type: object
-      properties:
-        status:
-          type: string
-          description: "변경할 상태 (REQUESTED, ON_CHAT, AWAITING, END)"
     orders-prepare-1852172854:
       type: object
       properties:
@@ -3892,6 +3981,14 @@ components:
             message:
               type: string
               description: 응답 메시지
+    user-me1642029314:
+      required:
+      - nickname
+      type: object
+      properties:
+        nickname:
+          type: string
+          description: 닉네임
     admin-orders-orderId1238496271:
       type: object
       properties:

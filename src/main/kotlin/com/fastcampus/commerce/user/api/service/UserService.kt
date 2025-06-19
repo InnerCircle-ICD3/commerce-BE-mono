@@ -5,12 +5,15 @@ import com.fastcampus.commerce.common.error.AuthErrorCode
 import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.common.id.UniqueIdGenerator
 import com.fastcampus.commerce.common.util.TimeProvider
+import com.fastcampus.commerce.user.api.controller.request.MyInfoResponse
+import com.fastcampus.commerce.user.api.controller.request.UpdateMyInfoRequest
 import com.fastcampus.commerce.user.api.dto.UserDto
 import com.fastcampus.commerce.user.domain.entity.Oauth2Provider
 import com.fastcampus.commerce.user.domain.entity.User
 import com.fastcampus.commerce.user.domain.entity.UserOauth2Connection
 import com.fastcampus.commerce.user.domain.entity.UserRoleConnection
 import com.fastcampus.commerce.user.domain.enums.UserRole
+import com.fastcampus.commerce.user.domain.error.UserErrorCode
 import com.fastcampus.commerce.user.domain.repository.Oauth2ProviderRepository
 import com.fastcampus.commerce.user.domain.repository.UserOauth2ConnectionRepository
 import com.fastcampus.commerce.user.domain.repository.UserRepository
@@ -137,5 +140,19 @@ class UserService(
             }
         }.toSet()
         return requiredRoles.any { it in userRoleSet }
+    }
+
+    @Transactional(readOnly = true)
+    fun getMyInfo(userId: Long): MyInfoResponse {
+        val user = userRepository.findById(userId)
+            .orElseThrow { CoreException(UserErrorCode.USER_NOT_FOUND) }
+        return MyInfoResponse.of(user)
+    }
+
+    @Transactional
+    fun updateMyInfo(userId: Long, request: UpdateMyInfoRequest) {
+        val user = userRepository.findById(userId)
+            .orElseThrow { CoreException(UserErrorCode.USER_NOT_FOUND) }
+        user.updateNickname(request.nickname)
     }
 }
