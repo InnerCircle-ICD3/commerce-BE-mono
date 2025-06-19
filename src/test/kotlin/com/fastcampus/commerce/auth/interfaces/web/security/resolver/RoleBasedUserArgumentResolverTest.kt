@@ -34,7 +34,7 @@ class RoleBasedUserArgumentResolverTest {
             email = "test@naver.com",
             nickname = "testNickName",
         )
-        every { userService.findById(userId) } returns user
+        every { userService.getUser(userId) } returns user
         every { userService.hasRole(userId, arrayOf(UserRole.ADMIN)) } returns true
 
         // SecurityContext 세팅 (Spring Security Mock)
