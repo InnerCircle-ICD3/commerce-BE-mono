@@ -1,7 +1,5 @@
 package com.fastcampus.commerce.order.infrastructure
 
-import com.fastcampus.commerce.common.error.CommonErrorCode
-import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.order.domain.entity.Order
 import com.fastcampus.commerce.order.domain.entity.OrderStatus
 import com.fastcampus.commerce.order.domain.entity.QOrder.order

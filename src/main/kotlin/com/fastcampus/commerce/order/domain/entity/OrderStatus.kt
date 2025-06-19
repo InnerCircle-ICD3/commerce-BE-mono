@@ -1,7 +1,7 @@
 package com.fastcampus.commerce.order.domain.entity
 
 enum class OrderStatus(
-    val label: String
+    val label: String,
 ) {
     WAITING_FOR_PAYMENT("결제 대기중"),
     PAID("결제완료"),

@@ -48,7 +48,7 @@ class ProductReviewRepositoryImpl(
 
         return PageableExecutionUtils.getPage(
             pagingQuery.fetch(),
-            pageable
+            pageable,
         ) {
             queryFactory
                 .select(review.id.count())

@@ -2,7 +2,6 @@ package com.fastcampus.commerce.order.interfaces.request
 
 import com.fastcampus.commerce.order.domain.entity.OrderStatus
 import com.fastcampus.commerce.order.domain.model.MyOrderCondition
-import com.fastcampus.commerce.user.domain.entity.QUser.user
 import java.time.LocalDateTime
 
 data class SearchOrderApiRequest(

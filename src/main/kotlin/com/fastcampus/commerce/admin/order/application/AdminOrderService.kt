@@ -90,7 +90,7 @@ class AdminOrderService(
         val orderItems = request.orderItems.map { itemReq ->
             val productSnapshot = productSnapshotReader.getById(itemReq.productSnapshotId)
             OrderItem(
-                orderId = 0L, // 나중에 갱신
+                orderId = 0L,
                 productSnapshotId = itemReq.productSnapshotId,
                 quantity = itemReq.quantity,
                 unitPrice = productSnapshot.price,
@@ -164,7 +164,7 @@ class AdminOrderService(
             .orElseThrow { CoreException(OrderErrorCode.ORDER_NOT_FOUND) }
 
         val preparingShipmentAt = timeProvider.now()
-        order.preparingShipment(trackingNumber,preparingShipmentAt)
+        order.preparingShipment(trackingNumber, preparingShipmentAt)
     }
 
     @Transactional

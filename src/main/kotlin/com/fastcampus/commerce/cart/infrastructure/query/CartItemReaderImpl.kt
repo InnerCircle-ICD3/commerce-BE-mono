@@ -4,9 +4,7 @@ import com.fastcampus.commerce.cart.application.query.CartItemReader
 import com.fastcampus.commerce.cart.application.query.dto.CartItemDto
 import com.fastcampus.commerce.cart.infrastructure.repository.CartItemRepository
 import com.fastcampus.commerce.common.error.CoreException
-import com.fastcampus.commerce.order.application.query.ProductSnapshotReader
 import com.fastcampus.commerce.order.domain.error.OrderErrorCode
-import com.fastcampus.commerce.product.domain.service.ProductReader
 import org.springframework.stereotype.Component
 
 @Component

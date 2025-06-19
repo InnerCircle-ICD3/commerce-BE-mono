@@ -23,5 +23,4 @@ enum class OrderErrorCode(
     CANNOT_PREPARING_SHIPMENT("ORD-107", "결제완료 상태인 주문만 배송준비중으로 변경할 수 있습니다.", LogLevel.WARN),
     CANNOT_SHIPPED("ORD-108", "배송준비중 상태인 주문만 배송중으로 변경할 수 있습니다.", LogLevel.WARN),
     CANNOT_DELIVERED("ORD-109", "배송중 상태인 주문만 배송완료로 변경할 수 있습니다.", LogLevel.WARN),
-
 }

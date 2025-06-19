@@ -58,7 +58,7 @@ class OrderControllerRestDocTest : DescribeSpec() {
                     EnumResponse(
                         OrderStatus.WAITING_FOR_PAYMENT.name,
                         OrderStatus.WAITING_FOR_PAYMENT.label,
-                        )
+                    ),
                 )
                 every { orderService.getOrderStatus() } returns response
                 documentation(
@@ -79,7 +79,6 @@ class OrderControllerRestDocTest : DescribeSpec() {
                     }
                 }
             }
-
         }
 
         describe("GET /orders/prepare - 주문서") {

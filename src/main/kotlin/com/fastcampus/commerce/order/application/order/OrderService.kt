@@ -89,7 +89,7 @@ class OrderService(
 
         // 4. 배송지/결제수단 정보
         val defaultAddress = userAddressService.findDefaultUserAddress(userId)
-        val shippingInfo = if(defaultAddress == null) {
+        val shippingInfo = if (defaultAddress == null) {
             null
         } else {
             PrepareOrderShippingInfoApiResponse(
@@ -158,7 +158,12 @@ class OrderService(
         // 5. OrderItem Entity 생성 및 저장
         val orderItems = items.map { cartItem ->
             var snapshot = productSnapshotReader.findLatestByProductId(cartItem.productId)
-            if (snapshot == null || snapshot.name != cartItem.name || snapshot.price != cartItem.unitPrice || snapshot.thumbnail != cartItem.thumbnail) {
+            if (
+                snapshot == null ||
+                snapshot.name != cartItem.name ||
+                snapshot.price != cartItem.unitPrice ||
+                snapshot.thumbnail != cartItem.thumbnail
+            ) {
                 snapshot = productSnapshotRepository.save(
                     ProductSnapshot(
                         productId = cartItem.productId,
@@ -181,7 +186,7 @@ class OrderService(
         val paymentMethod = (
             PaymentMethod.fromCode(request.paymentMethod)
                 ?: throw CoreException(PaymentErrorCode.INVALID_PAYMENT_METHOD)
-            )
+        )
 
         paymentRepository.save(
             Payment(

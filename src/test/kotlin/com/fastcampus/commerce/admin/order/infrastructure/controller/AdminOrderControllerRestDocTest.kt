@@ -4,16 +4,11 @@ import com.fastcampus.commerce.admin.order.application.AdminOrderService
 import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderDetailItemResponse
 import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderDetailResponse
 import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderListResponse
-import com.fastcampus.commerce.admin.payment.application.AdminPaymentService
-import com.fastcampus.commerce.admin.payment.interfaces.AdminPaymentController
 import com.fastcampus.commerce.config.TestConfig
-import com.fastcampus.commerce.product.domain.entity.SellingStatus
 import com.fastcampus.commerce.restdoc.documentation
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.spring.SpringExtension
-import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.restassured.module.mockmvc.RestAssuredMockMvc
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,9 +21,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.test.web.servlet.MockMvc
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
@@ -67,8 +60,8 @@ class AdminOrderControllerRestDocTest : DescribeSpec() {
                         customerName = "홍길동",
                         totalAmount = 10000,
                         paymentDate = orderDate,
-                        status = "배송중"
-                    )
+                        status = "배송중",
+                    ),
                 )
                 val response = PageImpl(searchResponse, PageRequest.of(0, 10), 1L)
                 every { adminOrderService.getOrders(any(), any()) } returns response
@@ -137,7 +130,7 @@ class AdminOrderControllerRestDocTest : DescribeSpec() {
                             price = 1000,
                             total = 1000,
                             thumbnail = "http://asdf.com?thumb.jpg",
-                        )
+                        ),
                     ),
                     subtotal = 1000,
                     total = 1000,

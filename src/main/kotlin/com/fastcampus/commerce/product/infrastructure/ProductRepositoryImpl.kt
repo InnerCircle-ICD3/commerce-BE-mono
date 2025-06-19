@@ -1,7 +1,7 @@
 package com.fastcampus.commerce.product.infrastructure
 
 import com.fastcampus.commerce.order.domain.entity.OrderStatus
-import com.fastcampus.commerce.order.domain.entity.QOrder.*
+import com.fastcampus.commerce.order.domain.entity.QOrder.order
 import com.fastcampus.commerce.order.domain.entity.QOrderItem.orderItem
 import com.fastcampus.commerce.order.domain.entity.QProductSnapshot.productSnapshot
 import com.fastcampus.commerce.product.domain.entity.Product

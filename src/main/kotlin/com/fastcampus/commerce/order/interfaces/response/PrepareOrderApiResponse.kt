@@ -2,7 +2,6 @@ package com.fastcampus.commerce.order.interfaces.response
 
 import com.fastcampus.commerce.cart.application.query.dto.CartItemDto
 import com.fastcampus.commerce.common.response.EnumResponse
-import com.fastcampus.commerce.product.domain.entity.Inventory
 import com.fastcampus.commerce.product.domain.entity.Product
 
 data class PrepareOrderApiResponse(
@@ -26,7 +25,7 @@ data class PrepareOrderItemApiResponse(
 ) {
     companion object {
         fun of(cartItem: CartItemDto, product: Product) =
-            PrepareOrderItemApiResponse (
+            PrepareOrderItemApiResponse(
                 cartItemId = cartItem.cartItemId,
                 productId = product.id!!,
                 name = product.name,

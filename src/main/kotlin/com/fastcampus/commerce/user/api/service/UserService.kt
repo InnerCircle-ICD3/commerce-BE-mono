@@ -3,7 +3,6 @@ package com.fastcampus.commerce.user.api.service
 import com.fastcampus.commerce.auth.api.dto.LoginRequest
 import com.fastcampus.commerce.common.error.AuthErrorCode
 import com.fastcampus.commerce.common.error.CoreException
-import com.fastcampus.commerce.common.id.IdGenerator
 import com.fastcampus.commerce.common.id.UniqueIdGenerator
 import com.fastcampus.commerce.common.util.TimeProvider
 import com.fastcampus.commerce.user.api.dto.UserDto

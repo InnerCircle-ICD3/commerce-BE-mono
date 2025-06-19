@@ -4,7 +4,6 @@ import com.fastcampus.commerce.order.application.query.ProductSnapshotReader
 import com.fastcampus.commerce.order.domain.entity.ProductSnapshot
 import com.fastcampus.commerce.order.infrastructure.repository.ProductSnapshotRepository
 import org.springframework.stereotype.Component
-import java.util.Optional
 
 @Component
 class ProductSnapshotReaderImpl(
@@ -21,6 +20,5 @@ class ProductSnapshotReaderImpl(
             return findByProductId.get()
         }
         return null
-
     }
 }
