@@ -5,6 +5,7 @@ import java.time.LocalDateTime
 data class AdminOrderDetailResponse(
     val orderNumber: String,
     val status: String,
+    val trackingNumber: String? = null,
     val createdAt: LocalDateTime,
     val paymentMethod: String,
     val address: String,

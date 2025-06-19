@@ -69,6 +69,7 @@ class AdminOrderService(
         return AdminOrderDetailResponse(
             orderNumber = order.orderNumber,
             status = order.status.name,
+            trackingNumber = order.trackingNumber,
             createdAt = order.createdAt,
             paymentMethod = payment.paymentMethod.label,
             address = listOfNotNull(order.address1, order.address2).joinToString(" "),

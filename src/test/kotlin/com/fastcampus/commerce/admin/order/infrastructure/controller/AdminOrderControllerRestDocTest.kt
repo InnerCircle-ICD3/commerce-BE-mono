@@ -59,6 +59,7 @@ class AdminOrderControllerRestDocTest : DescribeSpec() {
                     AdminOrderListResponse(
                         orderId = 1L,
                         orderNumber = "ORD123",
+                        trackingNumber = "4231908234098",
                         productName = "상품",
                         productQuantity = 10,
                         productUnitPrice = 1000,
@@ -95,6 +96,7 @@ class AdminOrderControllerRestDocTest : DescribeSpec() {
                     responseBody {
                         field("data.content[0].orderId", "주문 ID", searchResponse[0].orderId.toInt())
                         field("data.content[0].orderNumber", "주문번호", searchResponse[0].orderNumber)
+                        optionalField("data.content[0].trackingNumber", "송장번호", "4231908234098")
                         field("data.content[0].productName", "대표 상품명", searchResponse[0].productName)
                         field("data.content[0].productQuantity", "", searchResponse[0].productQuantity)
                         field("data.content[0].productUnitPrice", "판매상태", searchResponse[0].productUnitPrice)
@@ -120,6 +122,7 @@ class AdminOrderControllerRestDocTest : DescribeSpec() {
                 val response = AdminOrderDetailResponse(
                     orderNumber = "ORD123",
                     status = "배송중",
+                    trackingNumber = "234980234",
                     createdAt = orderDate,
                     paymentMethod = "MOCK",
                     address = "서울시 관악구",
@@ -157,6 +160,7 @@ class AdminOrderControllerRestDocTest : DescribeSpec() {
                     responseBody {
                         field("data.orderNumber", "주문번호", response.orderNumber)
                         field("data.status", "주문번호", response.status)
+                        optionalField("data.trackingNumber", "송장번호", "234980234")
                         field("data.createdAt", "주문번호", "2025-06-10T12:00")
                         field("data.paymentMethod", "주문번호", response.paymentMethod)
                         field("data.address", "주문번호", response.address)

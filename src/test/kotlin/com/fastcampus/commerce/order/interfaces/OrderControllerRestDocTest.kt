@@ -219,6 +219,7 @@ class OrderControllerRestDocTest : DescribeSpec() {
                     orderStatus = OrderStatus.DELIVERED,
                     finalTotalPrice = 13000,
                     orderedAt = LocalDateTime.of(2025, 6, 8, 12, 34),
+                    trackingNumber = "4231908234098",
                     cancellable = true,
                     refundable = false,
                 )
@@ -248,6 +249,7 @@ class OrderControllerRestDocTest : DescribeSpec() {
                         field("data.content[0].orderStatus", "주문 상태", OrderStatus.DELIVERED.name)
                         field("data.content[0].finalTotalPrice", "최종 결제 금액", 13000)
                         field("data.content[0].orderedAt", "주문 날짜", LocalDateTime.of(2025, 6, 8, 12, 34).toString())
+                        optionalField("data.content[0].trackingNumber", "송장번호", "4231908234098")
                         field("data.content[0].cancellable", "취소 가능 여부", true)
                         field("data.content[0].refundable", "환불 가능 여부", false)
                         field("data.page", "현재 페이지 (기본값 1)", 2)
@@ -270,6 +272,7 @@ class OrderControllerRestDocTest : DescribeSpec() {
                     orderNumber = orderNumber,
                     orderName = "홍길동님의 주문",
                     orderStatus = "배송 준비중",
+                    trackingNumber = "234980234",
                     paymentNumber = "PAY1231414124",
                     paymentMethod = "토스페이",
                     itemsSubTotal = 10000,
@@ -326,6 +329,7 @@ class OrderControllerRestDocTest : DescribeSpec() {
                         field("data.orderNumber", "주문 번호", orderNumber)
                         field("data.orderName", "주문명", "홍길동님의 주문")
                         field("data.orderStatus", "주문 상태", "배송 준비중")
+                        optionalField("data.trackingNumber", "송장번호", "234980234")
                         field("data.paymentNumber", "결제 번호", "PAY1231414124")
                         field("data.paymentMethod", "결제 수단", "토스페이")
                         field("data.itemsSubTotal", "상품 금액 합계", 10000)

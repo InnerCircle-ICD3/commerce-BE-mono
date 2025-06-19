@@ -7,6 +7,7 @@ data class GetOrderApiResponse(
     val orderNumber: String,
     val orderName: String,
     val orderStatus: String,
+    val trackingNumber: String? = null,
     val paymentNumber: String,
     val paymentMethod: String,
     val itemsSubTotal: Int,

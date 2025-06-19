@@ -35,6 +35,7 @@ class AdminOrderQueryImpl(
                     AdminOrderListResponse::class.java,
                     qOrder.id,
                     qOrder.orderNumber,
+                    qOrder.trackingNumber,
                     qProductSnapshot.name,
                     qOrderItem.quantity,
                     qOrderItem.unitPrice,

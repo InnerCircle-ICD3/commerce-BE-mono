@@ -214,9 +214,10 @@ class OrderService(
                 orderNumber = order.orderNumber,
                 orderName = orderName,
                 mainProductThumbnail = mainProductThumbnail,
-                orderStatus = order.status, // enum → 한글 등 매핑 필요
+                orderStatus = order.status,
                 finalTotalPrice = order.totalAmount,
                 orderedAt = order.createdAt,
+                trackingNumber = order.trackingNumber,
                 cancellable = order.status.isCancellable(),
                 refundable = order.status.isRefundable(),
             )
@@ -275,6 +276,7 @@ class OrderService(
             orderNumber = order.orderNumber,
             orderName = order.recipientName + "님의 주문", // 실무에서는 별도 가공 필요
             orderStatus = order.status.name, // 예: "배송 준비중"
+            trackingNumber = order.trackingNumber,
             paymentNumber = paymentNumber,
             paymentMethod = paymentMethodLabel,
             itemsSubTotal = order.totalAmount - shippingFee, // 필요에 따라 계산
