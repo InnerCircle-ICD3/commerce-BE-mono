@@ -2,6 +2,7 @@ package com.fastcampus.commerce.auth
 
 import com.fastcampus.commerce.common.error.AuthErrorCode
 import com.fastcampus.commerce.common.error.CoreException
+import com.fastcampus.commerce.user.domain.enums.UserRole
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.JwtBuilder
@@ -11,6 +12,7 @@ import io.jsonwebtoken.io.Decoders
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
 import java.sql.Date
 import java.time.Instant
@@ -164,12 +166,7 @@ class TokenProvider(
 
     fun getAuthentication(token: String): Authentication {
         val userId = extractUserIdFromToken(token)
-        val externalId = extractExternalIdFromToken(token)
-        val principal = org.springframework.security.core.userdetails.User(
-            userId.toString(),
-            "",
-            listOf(SimpleGrantedAuthority("ROLE_USER")),
-        )
+        val principal = User(userId.toString(), "", listOf(SimpleGrantedAuthority(UserRole.USER.label)))
         return UsernamePasswordAuthenticationToken(principal, token, principal.authorities)
     }
 
