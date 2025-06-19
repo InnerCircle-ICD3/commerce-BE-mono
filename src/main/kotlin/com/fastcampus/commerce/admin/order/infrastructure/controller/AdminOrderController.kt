@@ -7,6 +7,7 @@ import com.fastcampus.commerce.admin.order.infrastructure.request.AdminOrderUpda
 import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderCreateResponse
 import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderDetailResponse
 import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderListResponse
+import com.fastcampus.commerce.common.response.PagedData
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -30,9 +31,9 @@ class AdminOrderController(
     @GetMapping
     fun getOrders(
         @ModelAttribute search: AdminOrderSearchRequest,
-        @PageableDefault(size = 20, sort = ["orderDate"], direction = Sort.Direction.DESC) pageable: Pageable,
-    ): Page<AdminOrderListResponse> {
-        return adminOrderService.getOrders(search, pageable)
+        pageable: Pageable,
+    ): PagedData<AdminOrderListResponse> {
+        return PagedData.of(adminOrderService.getOrders(search, pageable))
     }
 
     // 주문 상세 조회

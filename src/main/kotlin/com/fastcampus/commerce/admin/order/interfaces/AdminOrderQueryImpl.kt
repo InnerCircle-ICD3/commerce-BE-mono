@@ -10,11 +10,14 @@ import com.fastcampus.commerce.user.domain.entity.QUser
 import com.querydsl.core.types.Projections
 import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.jpa.impl.JPAQueryFactory
+import org.springframework.cglib.core.Local
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Repository
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Repository
 class AdminOrderQueryImpl(
@@ -61,10 +64,12 @@ class AdminOrderQueryImpl(
             conditions.add(qOrder.status.eq(OrderStatus.valueOf(status)))
         }
         search.dateFrom?.let { from ->
-            conditions.add(qOrder.createdAt.goe(from.atStartOfDay()))
+            val parse = LocalDate.parse(from, DateTimeFormatter.ofPattern("yyyy.MM.dd"))
+            conditions.add(qOrder.createdAt.goe(parse.atStartOfDay()))
         }
         search.dateTo?.let { to ->
-            conditions.add(qOrder.createdAt.lt(to.plusDays(1).atStartOfDay()))
+            val parse = LocalDate.parse(to, DateTimeFormatter.ofPattern("yyyy.MM.dd"))
+            conditions.add(qOrder.createdAt.lt(parse.plusDays(1).atStartOfDay()))
         }
 
         if (conditions.isNotEmpty()) {

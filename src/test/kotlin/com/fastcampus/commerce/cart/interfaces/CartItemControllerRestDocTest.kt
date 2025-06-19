@@ -259,7 +259,7 @@ class CartItemControllerRestDocTest : DescribeSpec() {
                     requestLine(HttpMethod.DELETE, "/cart-items")
 
                     queryParameters {
-                        optionalField("cartItems", "상품 아이디", listOf(2))
+                        optionalField("cartItemIds", "상품 아이디", listOf(2))
                     }
 
                     responseBody {
