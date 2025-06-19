@@ -10,7 +10,6 @@ data class SearchOrderApiResponse(
     val mainProductThumbnail: String,
     val orderStatus: OrderStatus,
     val finalTotalPrice: Int,
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     val orderedAt: LocalDateTime,
     val trackingNumber: String? = null,
     val cancellable: Boolean,
