@@ -242,7 +242,7 @@ class OrderService(
             val productSnapshot = productSnapshotReader.getById(it.productSnapshotId)
             GetOrderItemApiResponse(
                 orderItemId = it.id!!,
-                productSnapshotId = it.productSnapshotId,
+                productId = productSnapshot.productId,
                 name = productSnapshot.name,
                 thumbnail = productSnapshot.thumbnail,
                 unitPrice = it.unitPrice,

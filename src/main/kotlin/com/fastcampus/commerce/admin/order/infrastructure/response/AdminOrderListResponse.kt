@@ -5,13 +5,11 @@ import java.time.LocalDateTime
 data class AdminOrderListResponse(
     val orderId: Long,
     val orderNumber: String,
+    val orderName: String,
+    val orderStatus: String,
+    val finalTotalPrice: Int,
+    val orderedAt: LocalDateTime,
     val trackingNumber: String? = null,
-    val productName: String,
-    val productQuantity: Int,
-    val productUnitPrice: Int,
-    val orderDate: LocalDateTime,
+    val customerId: Long,
     val customerName: String,
-    val totalAmount: Int,
-    val paymentDate: LocalDateTime? = null,
-    val status: String,
 )

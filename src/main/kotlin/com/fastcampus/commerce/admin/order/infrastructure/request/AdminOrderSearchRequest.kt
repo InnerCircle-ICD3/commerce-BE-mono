@@ -1,8 +1,17 @@
 package com.fastcampus.commerce.admin.order.infrastructure.request
 
+import com.fastcampus.commerce.order.domain.entity.OrderStatus
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 data class AdminOrderSearchRequest(
-    val keyword: String? = null, // 주문번호, 고객명, 상품명 등 검색
-    val status: String? = null, // 주문 상태 필터링
-    val dateFrom: String? = null, // 시작일
-    val dateTo: String? = null, // 종료일
-)
+    val orderNumber: String? = null,
+    val nickname: String? = null,
+    val productName: String? = null,
+    val status: OrderStatus? = null,
+    val dateFrom: String? = null,
+    val dateTo: String? = null,
+) {
+    val from = dateFrom?.let { LocalDate.parse(it, DateTimeFormatter.ofPattern("yyyy.MM.dd")) }
+    val to = dateTo?.let { LocalDate.parse(it, DateTimeFormatter.ofPattern("yyyy.MM.dd")) }
+}

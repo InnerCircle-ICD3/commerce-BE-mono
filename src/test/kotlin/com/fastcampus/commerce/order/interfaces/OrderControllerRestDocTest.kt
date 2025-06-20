@@ -280,7 +280,7 @@ class OrderControllerRestDocTest : DescribeSpec() {
                     items = listOf(
                         GetOrderItemApiResponse(
                             orderItemId = 1L,
-                            productSnapshotId = 1L,
+                            productId = 1L,
                             name = "상품명",
                             thumbnail = "https://example.com/thumbnail.jpg",
                             unitPrice = 1000,
@@ -335,7 +335,7 @@ class OrderControllerRestDocTest : DescribeSpec() {
                         field("data.shippingFee", "배송비", 3000)
                         field("data.finalTotalPrice", "최종 결제 금액", 13000)
                         field("data.items[0].orderItemId", "주문 아이템 ID", 1)
-                        field("data.items[0].productSnapshotId", "상품 스냅샷 ID", 1)
+                        field("data.items[0].productId", "상품 ID", 1)
                         field("data.items[0].name", "상품명", "상품명")
                         field("data.items[0].thumbnail", "상품 썸네일 URL", "https://example.com/thumbnail.jpg")
                         field("data.items[0].unitPrice", "상품 단가", 1000)
