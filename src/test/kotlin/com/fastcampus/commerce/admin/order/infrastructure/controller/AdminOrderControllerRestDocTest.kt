@@ -3,6 +3,7 @@ package com.fastcampus.commerce.admin.order.infrastructure.controller
 import com.fastcampus.commerce.admin.order.application.AdminOrderService
 import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderDetailItemResponse
 import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderDetailResponse
+import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderDetailShippingInfoResponse
 import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderListResponse
 import com.fastcampus.commerce.config.TestConfig
 import com.fastcampus.commerce.restdoc.documentation
@@ -52,18 +53,20 @@ class AdminOrderControllerRestDocTest : DescribeSpec() {
                     AdminOrderListResponse(
                         orderId = 1L,
                         orderNumber = "ORD123",
+                        orderName = "ㅁㄴㅇㄹ 외 1건",
+                        orderStatus = "결제완료",
+                        finalTotalPrice = 1000,
+                        orderedAt = orderDate,
                         trackingNumber = "4231908234098",
-                        productName = "상품",
-                        productQuantity = 10,
-                        productUnitPrice = 1000,
-                        orderDate = orderDate,
+                        customerId = 1L,
                         customerName = "홍길동",
-                        totalAmount = 10000,
-                        paymentDate = orderDate,
-                        status = "배송중",
                     ),
                 )
-                val response = PageImpl(searchResponse, PageRequest.of(0, 10), 1L)
+                val response = PageImpl(
+                    searchResponse,
+                    PageRequest.of(0, 10),
+                    1L,
+                )
                 every { adminOrderService.getOrders(any(), any()) } returns response
 
                 documentation(
@@ -79,25 +82,37 @@ class AdminOrderControllerRestDocTest : DescribeSpec() {
                     }
 
                     queryParameters {
-                        optionalField("keyword", "주문번호, 고객명, 상품명 등 검색키워드", "콜드")
-                        optionalField("status", "주문상태", "배송중")
-                        optionalField("dateFrom", "주문날짜 From", "2025.01.01")
-                        optionalField("dateTo", "주문날짜 To", "2025.03.01")
+                        optionalField("orderNumber", "주문번호(eq 검색)", "ORD1234")
+                        optionalField("nickname", "주문자 닉네임(eq 검색)", "홍길동")
+                        optionalField("productName", "상품명(like 검색)", "콜드")
+                        optionalField("status", "주문상태 코드", "PAID")
+                        optionalField("dateFrom", "주문날짜 From(yyyy.MM.dd)", "2025.01.01")
+                        optionalField("dateTo", "주문날짜 To(yyyy.MM.dd)", "2025.03.01")
                         optionalField("page", "페이지 번호 (1부터 시작, 기본값: 1)", 1)
                     }
 
                     responseBody {
                         field("data.content[0].orderId", "주문 ID", searchResponse[0].orderId.toInt())
                         field("data.content[0].orderNumber", "주문번호", searchResponse[0].orderNumber)
-                        optionalField("data.content[0].trackingNumber", "송장번호", "4231908234098")
-                        field("data.content[0].productName", "대표 상품명", searchResponse[0].productName)
-                        field("data.content[0].productQuantity", "", searchResponse[0].productQuantity)
-                        field("data.content[0].productUnitPrice", "판매상태", searchResponse[0].productUnitPrice)
-                        field("data.content[0].orderDate", "재고", "2025-06-10T12:00")
-                        field("data.content[0].customerName", "원두 강도", searchResponse[0].customerName)
-                        field("data.content[0].totalAmount", "컵 사이즈", searchResponse[0].totalAmount)
-                        field("data.content[0].paymentDate", "컵 사이즈", "2025-06-10T12:00")
-                        field("data.content[0].status", "컵 사이즈", searchResponse[0].status)
+                        field("data.content[0].orderName", "주문명", searchResponse[0].orderName)
+                        field("data.content[0].orderStatus", "주문 상태 라벨", searchResponse[0].orderStatus)
+                        field(
+                            "data.content[0].finalTotalPrice",
+                            "최종결제 금액(상품금액 + 배송비)",
+                            searchResponse[0].finalTotalPrice,
+                        )
+                        field("data.content[0].orderedAt", "주문날짜", searchResponse[0].orderedAt.toString())
+                        optionalField(
+                            "data.content[0].trackingNumber",
+                            "송장번호",
+                            searchResponse[0].trackingNumber,
+                        )
+                        field(
+                            "data.content[0].customerId",
+                            "주문자 아이디",
+                            searchResponse[0].customerId.toInt(),
+                        )
+                        field("data.content[0].customerName", "주문자 닉네임", searchResponse[0].customerName)
                         field("data.page", "현재 페이지 번호", response.number + 1)
                         field("data.size", "페이지 크기", response.size)
                         field("data.totalPages", "전체 페이지 수", response.totalPages)
@@ -113,27 +128,44 @@ class AdminOrderControllerRestDocTest : DescribeSpec() {
             it("주문 상세조회를 할 수 있다.") {
                 val orderDate = LocalDateTime.of(2025, 6, 10, 12, 0)
                 val response = AdminOrderDetailResponse(
-                    orderNumber = "ORD123",
-                    status = "배송중",
+                    orderId = 1L,
+                    orderNumber = "ORD20250620258727916",
+                    orderStatus = "배송중",
                     trackingNumber = "234980234",
-                    createdAt = orderDate,
+                    paymentNumber = "PAY20250620347436652",
                     paymentMethod = "MOCK",
-                    address = "서울시 관악구",
-                    recipientName = "홍길동",
-                    recipientPhone = "0101234",
-                    customerName = "커피매니아",
-                    customerEmail = "커피매니아@mail.com",
+                    itemsSubTotal = 1834200,
+                    shippingFee = 0,
+                    finalTotalPrice = 1834200,
                     items = listOf(
                         AdminOrderDetailItemResponse(
-                            productName = "스타벅스 캡슐",
-                            quantity = 1,
-                            price = 1000,
-                            total = 1000,
-                            thumbnail = "http://asdf.com?thumb.jpg",
+                            orderItemId = 20391,
+                            productId = 21,
+                            name = "돌체구스토 라떼 마키아토 16캡슐",
+                            thumbnail = "https://801base.s3.ap-northeast-2.amazonaws.com/products/thumbnail-f9864097.jpg",
+                            unitPrice = 10900,
+                            quantity = 5,
+                            itemSubTotal = 54500,
                         ),
                     ),
-                    subtotal = 1000,
-                    total = 1000,
+                    shippingInfo = AdminOrderDetailShippingInfoResponse(
+                        recipientName = "홍길동",
+                        recipientPhone = "010-1234-1234",
+                        zipCode = "08123",
+                        address1 = "서울특별시 관악구",
+                        address2 = "123동 123호",
+                        deliveryMessage = "문앞에 두고가주세요",
+                    ),
+                    orderedAt = orderDate,
+                    paidAt = orderDate,
+                    cancellable = true,
+                    cancelRequested = false,
+                    cancelledAt = orderDate,
+                    refundable = false,
+                    refundRequested = false,
+                    refundRequestedAt = orderDate,
+                    refunded = true,
+                    refundedAt = orderDate,
                 )
                 every { adminOrderService.getOrderDetail(any()) } returns response
                 documentation(
@@ -151,23 +183,38 @@ class AdminOrderControllerRestDocTest : DescribeSpec() {
                     }
 
                     responseBody {
+                        field("data.orderId", "주문 아이디", response.orderId.toInt())
                         field("data.orderNumber", "주문번호", response.orderNumber)
-                        field("data.status", "주문번호", response.status)
-                        optionalField("data.trackingNumber", "송장번호", "234980234")
-                        field("data.createdAt", "주문번호", "2025-06-10T12:00")
-                        field("data.paymentMethod", "주문번호", response.paymentMethod)
-                        field("data.address", "주문번호", response.address)
-                        field("data.recipientName", "주문번호", response.recipientName)
-                        field("data.recipientPhone", "주문번호", response.recipientPhone)
-                        field("data.customerName", "주문번호", response.customerName)
-                        field("data.customerEmail", "주문번호", response.customerEmail)
-                        field("data.items[0].productName", "주문번호", response.items[0].productName)
-                        field("data.items[0].quantity", "주문번호", response.items[0].quantity)
-                        field("data.items[0].price", "주문번호", response.items[0].price)
-                        field("data.items[0].total", "주문번호", response.items[0].total)
-                        optionalField("data.items[0].thumbnail", "주문번호", response.items[0].thumbnail)
-                        field("data.subtotal", "주문번호", response.subtotal)
-                        field("data.total", "주문번호", response.total)
+                        field("data.orderStatus", "주문상태 라벨", response.orderStatus)
+                        optionalField("data.trackingNumber", "송장번호", response.trackingNumber)
+                        field("data.paymentNumber", "결제번호", response.paymentNumber)
+                        field("data.paymentMethod", "결제방법", response.paymentMethod)
+                        field("data.itemsSubTotal", "주문항목 총액", response.itemsSubTotal)
+                        field("data.shippingFee", "배송비", response.shippingFee)
+                        field("data.finalTotalPrice", "최종 결제금액", response.finalTotalPrice)
+                        field("data.items[0].orderItemId", "주문항목 아이디", response.items[0].orderItemId.toInt())
+                        field("data.items[0].productId", "주문항목 상품 아이디", response.items[0].productId.toInt())
+                        field("data.items[0].name", "주문항목 상품명", response.items[0].name)
+                        field("data.items[0].thumbnail", "주문항목 상품썸네일", response.items[0].thumbnail)
+                        field("data.items[0].unitPrice", "주문항목 상품가격", response.items[0].unitPrice)
+                        field("data.items[0].quantity", "주문항목 주문수량", response.items[0].quantity)
+                        field("data.items[0].itemSubTotal", "주문항목 총액(항목 가격 * 주문수량)", response.items[0].itemSubTotal)
+                        field("data.shippingInfo.recipientName", "받는사람 이름", response.shippingInfo.recipientName)
+                        field("data.shippingInfo.recipientPhone", "받는사람 연락처", response.shippingInfo.recipientPhone)
+                        field("data.shippingInfo.zipCode", "우편번호", response.shippingInfo.zipCode)
+                        field("data.shippingInfo.address1", "주소", response.shippingInfo.address1)
+                        optionalField("data.shippingInfo.address2", "상세주소", response.shippingInfo.address2)
+                        optionalField("data.shippingInfo.deliveryMessage", "배송메시지", response.shippingInfo.deliveryMessage)
+                        field("data.orderedAt", "주문 날짜", response.orderedAt.toString())
+                        optionalField("data.paidAt", "결제 날짜", response.paidAt.toString())
+                        field("data.cancellable", "주문취소 가능여부", response.cancellable)
+                        field("data.cancelRequested", "주문취소 여부", response.cancelRequested)
+                        optionalField("data.cancelledAt", "주문취소 날짜", response.cancelledAt.toString())
+                        field("data.refundable", "환불신청 가능여부", response.refundable)
+                        field("data.refundRequested", "환불신청 여부", response.refundRequested)
+                        optionalField("data.refundRequestedAt", "환불신청 날짜", response.refundRequestedAt.toString())
+                        field("data.refunded", "환불승인 여부", response.refunded)
+                        optionalField("data.refundedAt", "환불승인 날짜", response.refundedAt.toString())
                         ignoredField("error")
                     }
                 }

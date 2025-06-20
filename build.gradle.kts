@@ -1,6 +1,3 @@
-import groovy.lang.Closure
-import io.swagger.v3.oas.models.servers.Server
-
 val javaVersion: String by project
 val springBootVersion: String by project
 val kotestVersion: String by project

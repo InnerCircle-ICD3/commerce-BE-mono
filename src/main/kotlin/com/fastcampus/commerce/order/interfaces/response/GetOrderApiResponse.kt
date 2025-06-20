@@ -1,6 +1,5 @@
 package com.fastcampus.commerce.order.interfaces.response
 
-import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.LocalDateTime
 
 data class GetOrderApiResponse(
@@ -15,20 +14,15 @@ data class GetOrderApiResponse(
     val finalTotalPrice: Int,
     val items: List<GetOrderItemApiResponse>,
     val shippingInfo: GetOrderShippingInfoApiResponse,
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     val orderedAt: LocalDateTime,
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     val paidAt: LocalDateTime?,
     val cancellable: Boolean,
     val cancelRequested: Boolean,
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     val cancelledAt: LocalDateTime?,
     val refundable: Boolean,
     val refundRequested: Boolean,
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     val refundRequestedAt: LocalDateTime?,
     val refunded: Boolean,
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     val refundedAt: LocalDateTime?,
     val reviewable: Boolean,
     val reviewWritten: Boolean,
@@ -36,7 +30,7 @@ data class GetOrderApiResponse(
 
 data class GetOrderItemApiResponse(
     val orderItemId: Long,
-    val productSnapshotId: Long,
+    val productId: Long,
     val name: String,
     val thumbnail: String,
     val unitPrice: Int,
