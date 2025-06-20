@@ -1,4 +1,4 @@
-package com.fastcampus.commerce.order.infrastructure.repository
+package com.fastcampus.commerce.order.infrastructure
 
 import com.fastcampus.commerce.order.domain.entity.ProductSnapshot
 import org.springframework.data.jpa.repository.JpaRepository

@@ -1,11 +1,11 @@
-package com.fastcampus.commerce.admin.order.infrastructure.controller
+package com.fastcampus.commerce.admin.order.interfaces
 
 import com.fastcampus.commerce.admin.order.application.AdminOrderService
-import com.fastcampus.commerce.admin.order.infrastructure.request.AdminOrderSearchRequest
-import com.fastcampus.commerce.admin.order.infrastructure.request.AdminOrderUpdateRequest
-import com.fastcampus.commerce.admin.order.infrastructure.request.PreparingShipmentRequest
-import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderDetailResponse
-import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderListResponse
+import com.fastcampus.commerce.admin.order.interfaces.request.AdminOrderSearchRequest
+import com.fastcampus.commerce.admin.order.interfaces.request.AdminOrderUpdateRequest
+import com.fastcampus.commerce.admin.order.interfaces.request.PreparingShipmentRequest
+import com.fastcampus.commerce.admin.order.interfaces.response.AdminOrderDetailResponse
+import com.fastcampus.commerce.admin.order.interfaces.response.AdminOrderListResponse
 import com.fastcampus.commerce.auth.interfaces.web.security.model.LoginUser
 import com.fastcampus.commerce.auth.interfaces.web.security.model.WithRoles
 import com.fastcampus.commerce.common.response.PagedData
@@ -33,7 +33,7 @@ class AdminOrderController(
         @ModelAttribute search: AdminOrderSearchRequest,
         pageable: Pageable,
     ): PagedData<AdminOrderListResponse> {
-        return PagedData.of(adminOrderService.getOrders(search, pageable))
+        return PagedData.Companion.of(adminOrderService.getOrders(search, pageable))
     }
 
     // 주문 상세 조회

@@ -1,4 +1,4 @@
-package com.fastcampus.commerce.admin.order.infrastructure.request
+package com.fastcampus.commerce.admin.order.interfaces.request
 
 import com.fastcampus.commerce.order.domain.entity.OrderStatus
 import java.time.LocalDate

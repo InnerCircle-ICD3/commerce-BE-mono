@@ -1,7 +1,7 @@
 package com.fastcampus.commerce.admin.payment.application
 
 import com.fastcampus.commerce.common.util.TimeProvider
-import com.fastcampus.commerce.order.application.OrderPaymentService
+import com.fastcampus.commerce.order.application.payment.OrderPaymentService
 import com.fastcampus.commerce.payment.domain.service.PaymentReader
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

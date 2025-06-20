@@ -1,6 +1,7 @@
 package com.fastcampus.commerce.order.application
 
 import com.fastcampus.commerce.common.error.CoreException
+import com.fastcampus.commerce.order.application.payment.OrderPaymentService
 import com.fastcampus.commerce.order.domain.entity.Order
 import com.fastcampus.commerce.order.domain.entity.OrderStatus
 import com.fastcampus.commerce.order.domain.error.OrderErrorCode

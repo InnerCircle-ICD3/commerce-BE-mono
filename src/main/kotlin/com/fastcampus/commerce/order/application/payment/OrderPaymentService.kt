@@ -1,4 +1,4 @@
-package com.fastcampus.commerce.order.application
+package com.fastcampus.commerce.order.application.payment
 
 import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.order.domain.entity.Order

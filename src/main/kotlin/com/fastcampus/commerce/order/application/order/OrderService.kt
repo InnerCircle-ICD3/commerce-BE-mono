@@ -7,7 +7,6 @@ import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.common.id.UniqueIdGenerator
 import com.fastcampus.commerce.common.response.EnumResponse
 import com.fastcampus.commerce.common.util.TimeProvider
-import com.fastcampus.commerce.order.application.query.ProductSnapshotReader
 import com.fastcampus.commerce.order.domain.entity.Order
 import com.fastcampus.commerce.order.domain.entity.OrderItem
 import com.fastcampus.commerce.order.domain.entity.OrderStatus
@@ -15,8 +14,9 @@ import com.fastcampus.commerce.order.domain.entity.ProductSnapshot
 import com.fastcampus.commerce.order.domain.error.OrderErrorCode
 import com.fastcampus.commerce.order.domain.repository.OrderItemRepository
 import com.fastcampus.commerce.order.domain.repository.OrderRepository
+import com.fastcampus.commerce.order.domain.service.ProductSnapshotReader
 import com.fastcampus.commerce.order.infrastructure.OrderQueryRepository
-import com.fastcampus.commerce.order.infrastructure.repository.ProductSnapshotRepository
+import com.fastcampus.commerce.order.infrastructure.ProductSnapshotRepository
 import com.fastcampus.commerce.order.interfaces.request.OrderApiRequest
 import com.fastcampus.commerce.order.interfaces.request.SearchOrderApiRequest
 import com.fastcampus.commerce.order.interfaces.response.GetOrderApiResponse

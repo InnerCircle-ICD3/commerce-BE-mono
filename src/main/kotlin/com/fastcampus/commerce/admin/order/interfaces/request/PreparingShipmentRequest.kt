@@ -1,4 +1,4 @@
-package com.fastcampus.commerce.admin.order.infrastructure.request
+package com.fastcampus.commerce.admin.order.interfaces.request
 
 import jakarta.validation.constraints.NotBlank
 
