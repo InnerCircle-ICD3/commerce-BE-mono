@@ -62,6 +62,7 @@ class AdminOrderService(
         val order = orderRepository.findById(orderId)
             .orElseThrow { CoreException(OrderErrorCode.ORDER_NOT_FOUND) }
         val payment = paymentReader.getByOrderId(orderId)
+        val user = userService.getUser(order.userId)
 
         val items = orderItemRepository.findByOrderId(order.id!!).map { orderItem ->
             val productSnapshot = productSnapshotRepository.findById(orderItem.productSnapshotId!!).get()
@@ -98,6 +99,8 @@ class AdminOrderService(
                 address2 = order.address2,
                 deliveryMessage = order.deliveryMessage,
             ),
+            customerId = order.userId,
+            customerName = user.nickname,
             orderedAt = order.createdAt,
             paidAt = order.paidAt,
             cancellable = order.status.isCancellable(),

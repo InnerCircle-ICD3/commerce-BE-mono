@@ -15,6 +15,8 @@ data class AdminOrderDetailResponse(
     val finalTotalPrice: Int,
     val items: List<AdminOrderDetailItemResponse>,
     val shippingInfo: AdminOrderDetailShippingInfoResponse,
+    val customerId: Long,
+    val customerName: String,
     val orderedAt: LocalDateTime,
     val paidAt: LocalDateTime?,
     val cancellable: Boolean,
