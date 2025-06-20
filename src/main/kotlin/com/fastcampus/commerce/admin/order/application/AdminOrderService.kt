@@ -85,6 +85,7 @@ class AdminOrderService(
             trackingNumber = order.trackingNumber,
             paymentNumber = payment.paymentNumber,
             paymentMethod = payment.paymentMethod.label,
+            paymentStatus = payment.status.label,
             itemsSubTotal = subtotal,
             shippingFee = order.totalAmount - subtotal,
             finalTotalPrice = order.totalAmount,

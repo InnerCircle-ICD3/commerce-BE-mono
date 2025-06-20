@@ -134,6 +134,7 @@ class AdminOrderControllerRestDocTest : DescribeSpec() {
                     trackingNumber = "234980234",
                     paymentNumber = "PAY20250620347436652",
                     paymentMethod = "MOCK",
+                    paymentStatus = "결제 완료",
                     itemsSubTotal = 1834200,
                     shippingFee = 0,
                     finalTotalPrice = 1834200,
@@ -189,6 +190,7 @@ class AdminOrderControllerRestDocTest : DescribeSpec() {
                         optionalField("data.trackingNumber", "송장번호", response.trackingNumber)
                         field("data.paymentNumber", "결제번호", response.paymentNumber)
                         field("data.paymentMethod", "결제방법", response.paymentMethod)
+                        field("data.paymentStatus", "결제상태", response.paymentStatus)
                         field("data.itemsSubTotal", "주문항목 총액", response.itemsSubTotal)
                         field("data.shippingFee", "배송비", response.shippingFee)
                         field("data.finalTotalPrice", "최종 결제금액", response.finalTotalPrice)

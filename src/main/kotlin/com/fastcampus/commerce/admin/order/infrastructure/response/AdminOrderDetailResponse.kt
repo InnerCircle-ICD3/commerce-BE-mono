@@ -9,6 +9,7 @@ data class AdminOrderDetailResponse(
     val trackingNumber: String? = null,
     val paymentNumber: String,
     val paymentMethod: String,
+    val paymentStatus: String,
     val itemsSubTotal: Int,
     val shippingFee: Int,
     val finalTotalPrice: Int,
