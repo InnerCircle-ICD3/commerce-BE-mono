@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query
 import java.util.Optional
 
 interface PaymentJpaRepository : JpaRepository<Payment, Long> {
-    @Query("SELECT p FROM Payment p WHERE p.orderId = :orderId and p.status in ('WAITING', 'PAID')")
+    @Query("SELECT p FROM Payment p WHERE p.orderId = :orderId and p.status in ('WAITING', 'COMPLETED')")
     fun findByOrderId(orderId: Long): Optional<Payment>
 
     fun findByPaymentNumber(paymentNumber: String): Optional<Payment>
