@@ -1,7 +1,6 @@
 package com.fastcampus.commerce.order.interfaces.response
 
 import com.fastcampus.commerce.order.domain.entity.OrderStatus
-import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.LocalDateTime
 
 data class SearchOrderApiResponse(

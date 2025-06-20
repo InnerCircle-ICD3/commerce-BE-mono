@@ -1,26 +1,21 @@
 package com.fastcampus.commerce.admin.order.application
 
-import com.fastcampus.commerce.admin.order.infrastructure.request.AdminOrderCreateRequest
 import com.fastcampus.commerce.admin.order.infrastructure.request.AdminOrderSearchRequest
 import com.fastcampus.commerce.admin.order.infrastructure.request.AdminOrderUpdateRequest
-import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderCreateResponse
 import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderDetailItemResponse
 import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderDetailResponse
+import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderDetailShippingInfoResponse
 import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderListResponse
-import com.fastcampus.commerce.admin.order.interfaces.AdminOrderQuery
+import com.fastcampus.commerce.admin.order.interfaces.AdminOrderQueryRepository
 import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.common.util.TimeProvider
 import com.fastcampus.commerce.order.application.query.ProductSnapshotReader
-import com.fastcampus.commerce.order.domain.entity.Order
-import com.fastcampus.commerce.order.domain.entity.OrderItem
-import com.fastcampus.commerce.order.domain.entity.OrderStatus
 import com.fastcampus.commerce.order.domain.error.OrderErrorCode
 import com.fastcampus.commerce.order.domain.repository.OrderItemRepository
 import com.fastcampus.commerce.order.domain.repository.OrderRepository
-import com.fastcampus.commerce.order.domain.service.OrderNumberGenerator
 import com.fastcampus.commerce.order.infrastructure.repository.ProductSnapshotRepository
 import com.fastcampus.commerce.payment.domain.service.PaymentReader
-import com.fastcampus.commerce.user.domain.repository.UserRepository
+import com.fastcampus.commerce.user.api.service.UserService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -29,101 +24,89 @@ import java.time.LocalDateTime
 
 @Service
 class AdminOrderService(
-    private val adminOrderQuery: AdminOrderQuery,
+    private val adminOrderQueryRepository: AdminOrderQueryRepository,
     private val productSnapshotReader: ProductSnapshotReader,
-    private val orderNumberGenerator: OrderNumberGenerator,
     private val orderRepository: OrderRepository,
     private val orderItemRepository: OrderItemRepository,
-    private val userRepository: UserRepository,
+    private val userService: UserService,
     private val productSnapshotRepository: ProductSnapshotRepository,
     private val paymentReader: PaymentReader,
     private val timeProvider: TimeProvider,
 ) {
-    // 주문 조회
+    @Transactional(readOnly = true)
     fun getOrders(request: AdminOrderSearchRequest, pageable: Pageable): Page<AdminOrderListResponse> {
-        return adminOrderQuery.searchOrders(request, pageable, pageable.sort)
+        val orders = adminOrderQueryRepository.searchOrders(request, pageable)
+        val responses = orders.map { order ->
+            val orderItems = orderItemRepository.findByOrderId(order.id!!)
+            val productSnapshot = productSnapshotReader.getById(orderItems.first().productSnapshotId)
+            val orderName = let { "${productSnapshot.name} 외 ${orderItems.size - 1}건" }
+            val user = userService.getUser(order.userId)
+
+            AdminOrderListResponse(
+                orderId = order.id!!,
+                orderNumber = order.orderNumber,
+                orderName = orderName,
+                orderStatus = order.status.label,
+                finalTotalPrice = order.totalAmount,
+                orderedAt = order.createdAt,
+                trackingNumber = order.trackingNumber,
+                customerId = order.userId,
+                customerName = user.nickname,
+            )
+        }
+        return responses
     }
 
-    // 주문 상세 조회
     @Transactional(readOnly = true)
     fun getOrderDetail(orderId: Long): AdminOrderDetailResponse {
         val order = orderRepository.findById(orderId)
             .orElseThrow { CoreException(OrderErrorCode.ORDER_NOT_FOUND) }
-        val user = userRepository.findById(order.userId)
-            .orElse(null)
-        val payment = paymentReader.getByOrderId(order.id!!)
+        val payment = paymentReader.getByOrderId(orderId)
 
         val items = orderItemRepository.findByOrderId(order.id!!).map { orderItem ->
             val productSnapshot = productSnapshotRepository.findById(orderItem.productSnapshotId!!).get()
             AdminOrderDetailItemResponse(
-                productName = productSnapshot.name,
-                quantity = orderItem.quantity,
-                price = orderItem.unitPrice,
-                total = orderItem.unitPrice * orderItem.quantity,
+                orderItemId = orderItem.id!!,
+                productId = productSnapshot.productId,
+                name = productSnapshot.name,
                 thumbnail = productSnapshot.thumbnail,
+                unitPrice = productSnapshot.price,
+                quantity = orderItem.quantity,
+                itemSubTotal = orderItem.unitPrice * orderItem.quantity,
             )
         }
 
-        val subtotal = items.sumOf { it.total }
+        val subtotal = items.sumOf { it.itemSubTotal }
 
         return AdminOrderDetailResponse(
+            orderId = orderId,
             orderNumber = order.orderNumber,
-            status = order.status.name,
+            orderStatus = order.status.label,
             trackingNumber = order.trackingNumber,
-            createdAt = order.createdAt,
+            paymentNumber = payment.paymentNumber,
             paymentMethod = payment.paymentMethod.label,
-            address = listOfNotNull(order.address1, order.address2).joinToString(" "),
-            recipientName = order.recipientName,
-            recipientPhone = order.recipientPhone,
-            customerName = user?.name ?: "",
-            customerEmail = user?.email ?: "",
+            itemsSubTotal = subtotal,
+            shippingFee = order.totalAmount - subtotal,
+            finalTotalPrice = order.totalAmount,
             items = items,
-            subtotal = subtotal,
-            total = order.totalAmount,
-        )
-    }
-
-    // 주문 생성
-    @Transactional
-    fun createOrder(request: AdminOrderCreateRequest): AdminOrderCreateResponse {
-        // 1. 주문상품 정보/가격 검증
-        val orderItems = request.orderItems.map { itemReq ->
-            val productSnapshot = productSnapshotReader.getById(itemReq.productSnapshotId)
-            OrderItem(
-                orderId = 0L,
-                productSnapshotId = itemReq.productSnapshotId,
-                quantity = itemReq.quantity,
-                unitPrice = productSnapshot.price,
-            )
-        }
-        val totalAmount = orderItems.sumOf { it.unitPrice * it.quantity }
-
-        // 2. 주문 엔티티 생성/저장
-        val order = Order(
-            orderNumber = orderNumberGenerator.generate(1L),
-            userId = request.userId,
-            totalAmount = totalAmount,
-            recipientName = request.recipientName,
-            recipientPhone = request.recipientPhone,
-            zipCode = request.zipCode,
-            address1 = request.address1,
-            address2 = request.address2,
-            deliveryMessage = request.deliveryMessage,
-            status = OrderStatus.WAITING_FOR_PAYMENT,
-        )
-        orderRepository.save(order)
-
-        // 3. 주문상품(OrderItem) 저장
-        orderItems.forEach { it.orderId = order.id!! }
-        orderItemRepository.saveAll(orderItems)
-
-        // 4. 응답 반환
-        return AdminOrderCreateResponse(
-            orderId = order.id!!,
-            orderNumber = order.orderNumber,
-            totalAmount = order.totalAmount,
-            orderStatus = order.status.name,
+            shippingInfo = AdminOrderDetailShippingInfoResponse(
+                recipientName = order.recipientName,
+                recipientPhone = order.recipientPhone,
+                zipCode = order.zipCode,
+                address1 = order.address1,
+                address2 = order.address2,
+                deliveryMessage = order.deliveryMessage,
+            ),
             orderedAt = order.createdAt,
+            paidAt = order.paidAt,
+            cancellable = order.status.isCancellable(),
+            cancelRequested = order.cancelledAt != null,
+            cancelledAt = order.cancelledAt,
+            refundable = order.status.isRefundable(),
+            refundRequested = order.refundRequestedAt != null,
+            refundRequestedAt = order.refundRequestedAt,
+            refunded = order.refundedAt != null,
+            refundedAt = order.refundedAt,
         )
     }
 
