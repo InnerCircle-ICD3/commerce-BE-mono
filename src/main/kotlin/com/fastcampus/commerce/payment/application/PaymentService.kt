@@ -2,7 +2,7 @@ package com.fastcampus.commerce.payment.application
 
 import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.common.util.TimeProvider
-import com.fastcampus.commerce.order.application.OrderPaymentService
+import com.fastcampus.commerce.order.application.payment.OrderPaymentService
 import com.fastcampus.commerce.payment.application.request.PaymentProcessRequest
 import com.fastcampus.commerce.payment.application.response.PaymentProcessResponse
 import com.fastcampus.commerce.payment.domain.error.PaymentErrorCode

@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import jakarta.validation.Valid
 
 @RequestMapping("/admin/products")
 @RestController
@@ -59,7 +60,7 @@ class AdminProductController(
     @PostMapping
     fun registerProduct(
         @WithRoles([UserRole.ADMIN]) admin: LoginUser,
-        @RequestBody request: RegisterProductApiRequest,
+        @Valid @RequestBody request: RegisterProductApiRequest,
     ): RegisterProductApiResponse {
         val productId: Long = adminProductService.register(admin.id, request.toServiceRequest())
         return RegisterProductApiResponse(productId)
@@ -69,7 +70,7 @@ class AdminProductController(
     fun updateProduct(
         @WithRoles([UserRole.ADMIN]) admin: LoginUser,
         @PathVariable productId: Long,
-        @RequestBody request: UpdateProductApiRequest,
+        @Valid @RequestBody request: UpdateProductApiRequest,
     ): UpdateProductApiResponse {
         adminProductService.update(admin.id, request.toServiceRequest(productId))
         return UpdateProductApiResponse(productId)

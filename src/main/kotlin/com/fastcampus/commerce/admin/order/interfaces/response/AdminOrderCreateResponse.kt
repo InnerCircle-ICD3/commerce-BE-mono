@@ -1,4 +1,4 @@
-package com.fastcampus.commerce.admin.order.infrastructure.response
+package com.fastcampus.commerce.admin.order.interfaces.response
 
 import java.time.LocalDateTime
 

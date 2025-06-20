@@ -1,19 +1,19 @@
 package com.fastcampus.commerce.admin.order.application
 
-import com.fastcampus.commerce.admin.order.infrastructure.request.AdminOrderSearchRequest
-import com.fastcampus.commerce.admin.order.infrastructure.request.AdminOrderUpdateRequest
-import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderDetailItemResponse
-import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderDetailResponse
-import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderDetailShippingInfoResponse
-import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderListResponse
-import com.fastcampus.commerce.admin.order.interfaces.AdminOrderQueryRepository
+import com.fastcampus.commerce.admin.order.interfaces.request.AdminOrderSearchRequest
+import com.fastcampus.commerce.admin.order.interfaces.request.AdminOrderUpdateRequest
+import com.fastcampus.commerce.admin.order.interfaces.response.AdminOrderDetailItemResponse
+import com.fastcampus.commerce.admin.order.interfaces.response.AdminOrderDetailResponse
+import com.fastcampus.commerce.admin.order.interfaces.response.AdminOrderDetailShippingInfoResponse
+import com.fastcampus.commerce.admin.order.interfaces.response.AdminOrderListResponse
 import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.common.util.TimeProvider
-import com.fastcampus.commerce.order.application.query.ProductSnapshotReader
 import com.fastcampus.commerce.order.domain.error.OrderErrorCode
 import com.fastcampus.commerce.order.domain.repository.OrderItemRepository
 import com.fastcampus.commerce.order.domain.repository.OrderRepository
-import com.fastcampus.commerce.order.infrastructure.repository.ProductSnapshotRepository
+import com.fastcampus.commerce.order.domain.service.ProductSnapshotReader
+import com.fastcampus.commerce.order.infrastructure.AdminOrderQueryRepository
+import com.fastcampus.commerce.order.infrastructure.ProductSnapshotRepository
 import com.fastcampus.commerce.payment.domain.service.PaymentReader
 import com.fastcampus.commerce.user.api.service.UserService
 import org.springframework.data.domain.Page
@@ -39,7 +39,7 @@ class AdminOrderService(
         val responses = orders.map { order ->
             val orderItems = orderItemRepository.findByOrderId(order.id!!)
             val productSnapshot = productSnapshotReader.getById(orderItems.first().productSnapshotId)
-            val orderName = let { "${productSnapshot.name} 외 ${orderItems.size - 1}건" }
+            val orderName = if (orderItems.size == 1) productSnapshot.name else "${productSnapshot.name} 외 ${orderItems.size - 1}건"
             val user = userService.getUser(order.userId)
 
             AdminOrderListResponse(

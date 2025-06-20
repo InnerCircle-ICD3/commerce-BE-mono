@@ -6,6 +6,7 @@ import com.fastcampus.commerce.cart.application.CartItemService
 import com.fastcampus.commerce.user.domain.enums.UserRole
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -47,9 +48,9 @@ class CartItemController(
     @DeleteMapping("/cart-items")
     fun deleteCartItems(
         @WithRoles([UserRole.USER]) user: LoginUser,
-        @RequestParam(value = "cartItemIds", required = true) cartItemIds: List<Long>,
+        @Valid @ModelAttribute request: CartDeleteRequest,
     ): CartDeleteResponse {
-        val deletedCount = cartItemService.deleteCartItems(cartItemIds)
+        val deletedCount = cartItemService.deleteCartItems(request.cartItemIds)
         val response = CartDeleteResponse("Successfully deleted $deletedCount cart items")
         return response
     }

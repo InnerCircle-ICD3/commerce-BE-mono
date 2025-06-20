@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import jakarta.validation.Valid
 
 @RequestMapping("/reviews")
 @RestController
@@ -25,7 +26,7 @@ class ReviewController(
     @PostMapping
     fun registerReview(
         @WithRoles([UserRole.USER]) user: LoginUser,
-        @RequestBody request: RegisterReviewApiRequest,
+        @Valid @RequestBody request: RegisterReviewApiRequest,
     ): RegisterReviewApiResponse {
         val reviewId = reviewCommandService.registerReview(user.id, request.toServiceRequest())
         return RegisterReviewApiResponse(reviewId)
@@ -35,7 +36,7 @@ class ReviewController(
     fun updateReview(
         @WithRoles([UserRole.USER]) user: LoginUser,
         @PathVariable reviewId: Long,
-        @RequestBody request: UpdateReviewApiRequest,
+        @Valid @RequestBody request: UpdateReviewApiRequest,
     ): UpdateReviewApiResponse {
         reviewCommandService.updateReview(user.id, reviewId, request.toServiceRequest())
         return UpdateReviewApiResponse(reviewId)

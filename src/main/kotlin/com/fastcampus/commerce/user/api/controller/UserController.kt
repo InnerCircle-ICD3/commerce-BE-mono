@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
+import jakarta.validation.Valid
 
 @RestController
 @RequestMapping("/user")
@@ -33,6 +34,9 @@ class UserController(
     fun loginUser(
         @RequestBody loginRequest: LoginRequest,
     ): UserDto {
+        print("${loginRequest.authInfo.provider} ${loginRequest.authInfo.token}")
+        print("${loginRequest.userProfile.email} ${loginRequest.userProfile.name}")
+        print("${loginRequest.userProfile.nickname} ${loginRequest.userProfile.profileImage}")
         return userService.loginUser(loginRequest)
     }
 
@@ -46,7 +50,7 @@ class UserController(
     @PatchMapping("/me")
     fun updateMyInfo(
         @WithRoles([UserRole.USER]) user: LoginUser,
-        @RequestBody request: UpdateMyInfoRequest,
+        @Valid @RequestBody request: UpdateMyInfoRequest,
     ) {
         userService.updateMyInfo(user.id, request)
     }

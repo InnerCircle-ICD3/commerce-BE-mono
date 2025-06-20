@@ -1,15 +1,12 @@
 package com.fastcampus.commerce.cart.interfaces
 
-import jakarta.validation.constraints.Min
-import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.Positive
 
 data class CartCreateRequest(
-    @field:NotNull(message = "상품 ID는 필수입니다.")
     @field:Positive(message = "상품 ID는 양수여야 합니다.")
     val productId: Long,
-    @field:NotNull(message = "수량은 필수입니다. ")
-    @field:Min(value = 1, message = "수량은 최소 1개 이상이어야 합니다.")
+    @field:Positive(message = "수량은 최소 1개 이상이어야 합니다.")
     val quantity: Int,
 )
 
@@ -20,8 +17,7 @@ data class CartCreateResponse(
 )
 
 data class CartUpdateRequest(
-    @field:NotNull(message = "수량은 필수입니다.")
-    @field:Min(value = 1, message = "수량은 최소 1개 이상이어야 합니다.")
+    @field:Positive(message = "수량은 최소 1개 이상이어야 합니다.")
     val quantity: Int,
 )
 
@@ -31,6 +27,11 @@ data class CartUpdateResponse(
     val quantity: Int,
     val stockQuantity: Int,
     val requiresQuantityAdjustment: Boolean,
+)
+
+data class CartDeleteRequest(
+    @field:NotEmpty(message = "삭제할 장바구니 아이디가 누락되었습니다.")
+    val cartItemIds: List<Long>,
 )
 
 data class CartDeleteResponse(

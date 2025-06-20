@@ -1,10 +1,11 @@
-package com.fastcampus.commerce.admin.order.infrastructure.controller
+package com.fastcampus.commerce.admin.order.interfaces.controller
 
 import com.fastcampus.commerce.admin.order.application.AdminOrderService
-import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderDetailItemResponse
-import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderDetailResponse
-import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderDetailShippingInfoResponse
-import com.fastcampus.commerce.admin.order.infrastructure.response.AdminOrderListResponse
+import com.fastcampus.commerce.admin.order.interfaces.AdminOrderController
+import com.fastcampus.commerce.admin.order.interfaces.response.AdminOrderDetailItemResponse
+import com.fastcampus.commerce.admin.order.interfaces.response.AdminOrderDetailResponse
+import com.fastcampus.commerce.admin.order.interfaces.response.AdminOrderDetailShippingInfoResponse
+import com.fastcampus.commerce.admin.order.interfaces.response.AdminOrderListResponse
 import com.fastcampus.commerce.config.TestConfig
 import com.fastcampus.commerce.restdoc.documentation
 import com.ninjasquad.springmockk.MockkBean

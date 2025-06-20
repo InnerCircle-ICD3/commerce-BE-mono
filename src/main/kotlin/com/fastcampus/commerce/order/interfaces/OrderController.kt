@@ -6,6 +6,7 @@ import com.fastcampus.commerce.common.response.EnumResponse
 import com.fastcampus.commerce.common.response.PagedData
 import com.fastcampus.commerce.order.application.order.OrderService
 import com.fastcampus.commerce.order.interfaces.request.OrderApiRequest
+import com.fastcampus.commerce.order.interfaces.request.PrepareOrderApiRequest
 import com.fastcampus.commerce.order.interfaces.request.SearchOrderApiRequest
 import com.fastcampus.commerce.order.interfaces.response.CancelOrderApiResponse
 import com.fastcampus.commerce.order.interfaces.response.GetOrderApiResponse
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import jakarta.validation.Valid
 
 @RequestMapping("/orders")
 @RestController
@@ -36,18 +38,15 @@ class OrderController(
     @GetMapping("/prepare")
     fun prepareOrders(
         @WithRoles([UserRole.USER]) user: LoginUser,
-        @RequestParam cartItemIds: String,
+        @Valid @ModelAttribute request: PrepareOrderApiRequest,
     ): PrepareOrderApiResponse {
-        val cartItemIdList: Set<Long> = cartItemIds.split(",")
-            .map { it.trim().toLong() }
-            .toSet()
-        return orderService.prepareOrder(user, cartItemIdList)
+        return orderService.prepareOrder(user, request.cartItemIds)
     }
 
     @PostMapping
     fun orders(
         @WithRoles([UserRole.USER]) user: LoginUser,
-        @RequestBody request: OrderApiRequest,
+        @Valid @RequestBody request: OrderApiRequest,
     ): OrderApiResponse {
         return orderService.createOrder(user, request)
     }
