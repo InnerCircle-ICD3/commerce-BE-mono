@@ -2,6 +2,8 @@ package com.fastcampus.commerce.auth.interfaces.web.security.resolver
 
 import com.fastcampus.commerce.auth.interfaces.web.security.model.LoginUser
 import com.fastcampus.commerce.auth.interfaces.web.security.model.WithRoles
+import com.fastcampus.commerce.common.error.AuthErrorCode
+import com.fastcampus.commerce.common.error.CoreException
 import com.fastcampus.commerce.user.api.service.UserService
 import org.springframework.core.MethodParameter
 import org.springframework.security.access.AccessDeniedException
@@ -27,7 +29,7 @@ class RoleBasedUserArgumentResolver(
         binderFactory: WebDataBinderFactory?,
     ): LoginUser {
         val userId = SecurityContextHolder.getContext().authentication?.name?.toLongOrNull()
-            ?: 1L // throw CoreException(AuthErrorCode.UNAUTHENTICATED)
+            ?: throw CoreException(AuthErrorCode.UNAUTHENTICATED)
 
         val withRole = parameter.getParameterAnnotation(WithRoles::class.java)!!
         val requiredRoles = withRole.value
