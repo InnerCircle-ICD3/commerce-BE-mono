@@ -10,12 +10,8 @@ spring:
 spring.config.activate.on-profile: dev
 spring:
   jpa:
-    show-sql: true
     hibernate:
       ddl-auto: validate
-    properties:
-      hibernate:
-        format_sql: true
   flyway:
     # TODO: ERD가 1차 완성되면 설정
     enabled: false

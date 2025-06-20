@@ -1,6 +1,3 @@
-import groovy.lang.Closure
-import io.swagger.v3.oas.models.servers.Server
-
 val javaVersion: String by project
 val springBootVersion: String by project
 val kotestVersion: String by project
@@ -68,6 +65,9 @@ dependencies {
 
     runtimeOnly("org.postgresql:postgresql")
     testRuntimeOnly("com.h2database:h2")
+
+    // log
+    implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.11.0")
 
     // S3
     implementation(platform("software.amazon.awssdk:bom:2.24.0"))
