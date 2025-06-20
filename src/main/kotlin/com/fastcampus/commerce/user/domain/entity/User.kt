@@ -45,4 +45,9 @@ class User(
     fun updateNickname(nickname: String) {
         this.nickname = nickname
     }
+
+    fun delete(deletedAt: LocalDateTime) {
+        this.isDeleted = true
+        this.deletedAt = deletedAt
+    }
 }

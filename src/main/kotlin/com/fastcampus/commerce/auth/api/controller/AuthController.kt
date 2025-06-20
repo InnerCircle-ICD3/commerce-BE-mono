@@ -38,16 +38,4 @@ class AuthController(
     ): ApiResponse<AuthResponse> {
         return ApiResponse.success(authService.login(request))
     }
-
-    /**
-     * 회원 탈퇴
-     */
-    @DeleteMapping("/account")
-    fun deleteAccount(
-        @AuthenticationPrincipal principal: User,
-    ): ApiResponse<Unit> {
-        val userId = principal.username.toLong()
-        authService.deleteAccount(userId)
-        return ApiResponse.success(Unit)
-    }
 }

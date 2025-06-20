@@ -23,14 +23,7 @@ import jakarta.validation.Valid
 class UserController(
     private val userService: UserService,
 ) {
-    /**
-     * Logs in a user.
-     *
-     * @param loginRequest the login request containing credentials
-     * @return the logged-in user data
-     */
     @PostMapping("/login")
-    @ResponseBody
     fun loginUser(
         @RequestBody loginRequest: LoginRequest,
     ): UserDto {
@@ -55,15 +48,10 @@ class UserController(
         userService.updateMyInfo(user.id, request)
     }
 
-    /**
-     * Deletes a user by user ID.
-     *
-     * @param userId the ID of the user to delete
-     */
-    @DeleteMapping("/delete")
+    @DeleteMapping
     fun deleteUser(
-        @RequestBody userId: Long,
+        @WithRoles([UserRole.USER]) user: LoginUser,
     ) {
-        userService.deleteUser(userId)
+        userService.deleteUser(user.id)
     }
 }

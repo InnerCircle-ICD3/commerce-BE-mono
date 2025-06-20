@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface UserRoleConnectionRepository : JpaRepository<UserRoleConnection, Long> {
     fun findAllByUserId(userId: Long): List<UserRoleConnection>
+
+    fun deleteByUserId(userId: Long)
 }

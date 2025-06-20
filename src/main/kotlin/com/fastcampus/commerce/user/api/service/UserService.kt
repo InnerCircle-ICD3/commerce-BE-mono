@@ -87,14 +87,13 @@ class UserService(
         )
     }
 
-    @Transactional(rollbackFor = [Exception::class])
+    @Transactional
     fun deleteUser(userId: Long) {
         val user = userRepository.findById(userId)
             .orElseThrow { throw CoreException(AuthErrorCode.USER_NOT_FOUND) }
-
-        user.isDeleted = true
-        user.deletedAt = java.time.LocalDateTime.now()
-        userRepository.save(user)
+        userRoleConnectionRepository.deleteByUserId(userId)
+        userOauth2ConnectionRepository.deleteByUserId(userId)
+        user.delete(timeProvider.now())
     }
 
     @Transactional(readOnly = true)

@@ -6,4 +6,6 @@ import java.util.Optional
 
 interface UserOauth2ConnectionRepository : JpaRepository<UserOauth2Connection, Long> {
     fun findByProviderIdAndOauth2Id(providerId: Long, token: String): Optional<UserOauth2Connection>
+
+    fun deleteByUserId(userId: Long)
 }

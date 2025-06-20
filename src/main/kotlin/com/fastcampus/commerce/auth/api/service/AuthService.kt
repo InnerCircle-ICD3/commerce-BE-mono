@@ -53,13 +53,4 @@ class AuthService(
             nickname = userDto.nickname,
         )
     }
-
-    /**
-     * 사용자 계정을 삭제합니다. (회원 탈퇴(정지))
-     *
-     * @param userId 삭제할 사용자 ID
-     */
-    fun deleteAccount(userId: Long) {
-        userController.deleteUser(userId)
-    }
 }
