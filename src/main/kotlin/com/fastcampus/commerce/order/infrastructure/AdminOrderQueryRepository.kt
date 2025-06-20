@@ -25,7 +25,7 @@ class AdminOrderQueryRepository(
             .and(orderStatusEq(search.status))
             .and(orderNumberEq(search.orderNumber))
             .and(userNicknameEq(search.nickname))
-            //.and(orderedAtBetween(search.from, search.to))
+            .and(orderedAtBetween(search.from, search.to))
             .and(
                 JPAExpressions
                     .selectOne()
