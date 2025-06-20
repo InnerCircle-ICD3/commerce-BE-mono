@@ -1,9 +1,11 @@
 package com.fastcampus.commerce.auth.interfaces.web.security.resolver
 
-import com.fastcampus.commerce.auth.interfaces.web.security.annotation.WithRoles
+import com.fastcampus.commerce.auth.interfaces.web.security.model.LoginUser
+import com.fastcampus.commerce.auth.interfaces.web.security.model.WithRoles
 import com.fastcampus.commerce.user.api.service.UserService
-import com.fastcampus.commerce.user.domain.entity.User
 import org.springframework.core.MethodParameter
+import org.springframework.security.access.AccessDeniedException
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.support.WebDataBinderFactory
 import org.springframework.web.context.request.NativeWebRequest
@@ -23,19 +25,17 @@ class RoleBasedUserArgumentResolver(
         mavContainer: ModelAndViewContainer?,
         webRequest: NativeWebRequest,
         binderFactory: WebDataBinderFactory?,
-    ): Any? {
-//        val userId = SecurityContextHolder.getContext().authentication?.name?.toLongOrNull()
-//            ?: throw CoreException(AuthErrorCode.UNAUTHENTICATED)
-//
-//        val withRole = parameter.getParameterAnnotation(WithRoles::class.java)!!
-//        val requiredRoles = withRole.value // Array<UserRole>
-//
-//        val user = userService.findById(userId)
-//
-//        if (!userService.hasRole(userId, requiredRoles)) {
-//            throw AccessDeniedException("Required role: ${requiredRoles.joinToString()}")
-//        }
+    ): LoginUser {
+        val userId = SecurityContextHolder.getContext().authentication?.name?.toLongOrNull()
+            ?: 1L // throw CoreException(AuthErrorCode.UNAUTHENTICATED)
 
-        return User("USR1234123", "김철수", "as@asd.com", "철수짱").apply { id = 1L }
+        val withRole = parameter.getParameterAnnotation(WithRoles::class.java)!!
+        val requiredRoles = withRole.value
+
+        val user = userService.getUser(userId)
+        if (!userService.hasRole(userId, requiredRoles)) {
+            throw AccessDeniedException("Required role: ${requiredRoles.joinToString()}")
+        }
+        return LoginUser(userId, user.externalId)
     }
 }

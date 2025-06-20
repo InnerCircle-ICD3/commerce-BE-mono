@@ -5,8 +5,6 @@ info:
   version: 0.0.1
 servers:
 - url: https://api2.801base.com
-- url: http://13.124.152.6:8080
-
 tags:
 - name: Cart
   description: 장바구니 API
@@ -1154,9 +1152,9 @@ paths:
                         "adminId" : 1,
                         "productId" : 1,
                         "status" : "ON_CHAT",
-                        "createdAt" : "2025-06-18T14:11",
+                        "createdAt" : "2025-06-18T17:02",
                         "lastMessage" : "네, 재고 있습니다",
-                        "lastMessageAt" : "2025-06-19T12:11"
+                        "lastMessageAt" : "2025-06-19T15:02"
                       } ],
                       "error" : null
                     }
@@ -1213,9 +1211,9 @@ paths:
                         "adminId" : null,
                         "productId" : 1,
                         "status" : "REQUESTED",
-                        "createdAt" : "2025-06-19T14:11",
+                        "createdAt" : "2025-06-19T17:02",
                         "lastMessage" : "이 상품 재고 있나요?",
-                        "lastMessageAt" : "2025-06-19T14:11"
+                        "lastMessageAt" : "2025-06-19T17:02"
                       },
                       "error" : null
                     }
@@ -1229,9 +1227,9 @@ paths:
                         "adminId" : null,
                         "productId" : 1,
                         "status" : "REQUESTED",
-                        "createdAt" : "2025-06-19T14:11",
+                        "createdAt" : "2025-06-19T17:02",
                         "lastMessage" : "상품 구매 문의드립니다",
-                        "lastMessageAt" : "2025-06-19T14:11"
+                        "lastMessageAt" : "2025-06-19T17:02"
                       },
                       "error" : null
                     }
@@ -1254,7 +1252,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/chat-rooms-roomId-1530925551"
+                $ref: "#/components/schemas/chat-rooms-roomId-status-1530925551"
               examples:
                 채팅방_상세_조회_성공:
                   value: |-
@@ -1266,9 +1264,9 @@ paths:
                         "adminId" : 1,
                         "productId" : 1,
                         "status" : "ON_CHAT",
-                        "createdAt" : "2025-06-18T14:11",
+                        "createdAt" : "2025-06-18T17:02",
                         "lastMessage" : "감사합니다",
-                        "lastMessageAt" : "2025-06-19T13:41"
+                        "lastMessageAt" : "2025-06-19T16:32"
                       },
                       "error" : null
                     }
@@ -1369,7 +1367,7 @@ paths:
                           "senderType" : "GUEST",
                           "senderId" : "guest-123",
                           "senderName" : "Guest",
-                          "createdAt" : "2025-06-19T14:01",
+                          "createdAt" : "2025-06-19T16:52",
                           "productInfo" : null
                         } ],
                         "pageable" : {
@@ -1377,23 +1375,23 @@ paths:
                           "pageSize" : 20,
                           "sort" : {
                             "empty" : true,
-                            "unsorted" : true,
-                            "sorted" : false
+                            "sorted" : false,
+                            "unsorted" : true
                           },
                           "offset" : 0,
                           "paged" : true,
                           "unpaged" : false
                         },
                         "last" : true,
-                        "totalPages" : 1,
                         "totalElements" : 1,
+                        "totalPages" : 1,
                         "first" : true,
                         "size" : 20,
                         "number" : 0,
                         "sort" : {
                           "empty" : true,
-                          "unsorted" : true,
-                          "sorted" : false
+                          "sorted" : false,
+                          "unsorted" : true
                         },
                         "numberOfElements" : 1,
                         "empty" : false
@@ -1437,7 +1435,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/chat-rooms-roomId-1530925551"
+                $ref: "#/components/schemas/chat-rooms-roomId-status-1530925551"
               examples:
                 채팅방_상태_변경_성공:
                   value: |-
@@ -1449,9 +1447,9 @@ paths:
                         "adminId" : 1,
                         "productId" : 1,
                         "status" : "END",
-                        "createdAt" : "2025-06-18T14:11",
+                        "createdAt" : "2025-06-18T17:02",
                         "lastMessage" : "상담이 종료되었습니다",
-                        "lastMessageAt" : "2025-06-19T14:11"
+                        "lastMessageAt" : "2025-06-19T17:02"
                       },
                       "error" : null
                     }
@@ -3286,7 +3284,7 @@ components:
             orderNumber:
               type: string
               description: 주문 번호
-    chat-rooms-roomId-1530925551:
+    chat-rooms-roomId-status-1530925551:
       type: object
       properties:
         data:
@@ -4072,20 +4070,6 @@ components:
             status:
               type: string
               description: 주문번호
-    admin-orders-orderId-cancel486549215:
-      type: object
-    cart-items-cartItemId-2049702389:
-      required:
-      - cartItemId
-      - quantity
-      type: object
-      properties:
-        quantity:
-          type: number
-          description: 수량
-        cartItemId:
-          type: number
-          description: 카트 아이디
     chat-rooms-roomId-messages-335568352:
       type: object
       properties:
@@ -4159,6 +4143,20 @@ components:
             totalElements:
               type: number
               description: 전체 메시지 수
+    admin-orders-orderId-cancel486549215:
+      type: object
+    cart-items-cartItemId-2049702389:
+      required:
+      - cartItemId
+      - quantity
+      type: object
+      properties:
+        quantity:
+          type: number
+          description: 수량
+        cartItemId:
+          type: number
+          description: 카트 아이디
     files-presigned-url-2064193514:
       type: object
       properties:

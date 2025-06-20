@@ -1,6 +1,9 @@
 package com.fastcampus.commerce.cart.interfaces
 
+import com.fastcampus.commerce.auth.interfaces.web.security.model.LoginUser
+import com.fastcampus.commerce.auth.interfaces.web.security.model.WithRoles
 import com.fastcampus.commerce.cart.application.CartItemService
+import com.fastcampus.commerce.user.domain.enums.UserRole
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -16,32 +19,34 @@ class CartItemController(
     private val cartItemService: CartItemService,
 ) {
     @GetMapping("/cart-items")
-    fun getCarts(): CartRetrievesResponse {
-        val userId = 1L
-        return cartItemService.getCarts(userId)
+    fun getCarts(
+        @WithRoles([UserRole.USER]) user: LoginUser,
+    ): CartRetrievesResponse {
+        return cartItemService.getCarts(user.id)
     }
 
     @PostMapping("/cart-items")
     fun addToCart(
+        @WithRoles([UserRole.USER]) user: LoginUser,
         @RequestBody @Valid request: CartCreateRequest,
     ): CartCreateResponse {
-        val userId = 1L
-        val response = cartItemService.addToCart(userId, request.productId, request.quantity)
+        val response = cartItemService.addToCart(user.id, request.productId, request.quantity)
         return response
     }
 
     @PatchMapping("/cart-items/{cartItemId}")
     fun updateCartItem(
+        @WithRoles([UserRole.USER]) user: LoginUser,
         @PathVariable cartItemId: Long,
         @RequestBody @Valid request: CartUpdateRequest,
     ): CartUpdateResponse {
-        val userId = 1L
-        val cartResponse = cartItemService.updateCartItem(userId, cartItemId, request)
+        val cartResponse = cartItemService.updateCartItem(user.id, cartItemId, request)
         return cartResponse
     }
 
     @DeleteMapping("/cart-items")
     fun deleteCartItems(
+        @WithRoles([UserRole.USER]) user: LoginUser,
         @RequestParam(value = "cartItemIds", required = true) cartItemIds: List<Long>,
     ): CartDeleteResponse {
         val deletedCount = cartItemService.deleteCartItems(cartItemIds)

@@ -2,6 +2,9 @@ package com.fastcampus.commerce.admin.payment.interfaces
 
 import com.fastcampus.commerce.admin.payment.application.AdminPaymentService
 import com.fastcampus.commerce.admin.payment.interfaces.response.AdminPaymentApiResponse
+import com.fastcampus.commerce.auth.interfaces.web.security.model.LoginUser
+import com.fastcampus.commerce.auth.interfaces.web.security.model.WithRoles
+import com.fastcampus.commerce.user.domain.enums.UserRole
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -12,19 +15,19 @@ class AdminPaymentController(
 ) {
     @PostMapping("/admin/payments/refund/approve")
     fun refundApprove(
+        @WithRoles([UserRole.ADMIN]) admin: LoginUser,
         @RequestBody paymentNumber: String,
     ): AdminPaymentApiResponse {
-        val adminId = 1L
-        adminPaymentService.refundApprove(adminId, paymentNumber)
+        adminPaymentService.refundApprove(admin.id, paymentNumber)
         return AdminPaymentApiResponse()
     }
 
     @PostMapping("/admin/payments/refund/reject")
     fun refundReject(
+        @WithRoles([UserRole.ADMIN]) admin: LoginUser,
         @RequestBody paymentNumber: String,
     ): AdminPaymentApiResponse {
-        val adminId = 1L
-        adminPaymentService.refundReject(adminId, paymentNumber)
+        adminPaymentService.refundReject(admin.id, paymentNumber)
         return AdminPaymentApiResponse()
     }
 }

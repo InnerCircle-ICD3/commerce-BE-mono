@@ -123,22 +123,27 @@ class UserService(
         userRepository.save(user)
     }
 
-    fun findById(userId: Long): User {
+    @Transactional(readOnly = true)
+    fun getUser(userId: Long): User {
         return userRepository.findById(userId)
             .orElseThrow { throw CoreException(AuthErrorCode.USER_NOT_FOUND) }
     }
 
+    @Transactional(readOnly = true)
     fun hasRole(userId: Long, requiredRoles: Array<UserRole>): Boolean {
         val userRoleConnections = userRoleConnectionRepository.findAllByUserId(userId)
         val userRoleIds = userRoleConnections.map { it.roleId }
         val userRoles = userRoleRepository.findAllById(userRoleIds)
-        val userRoleSet = userRoles.mapNotNull { role ->
-            try {
-                UserRole.valueOf(role.code)
-            } catch (e: IllegalArgumentException) {
-                null
-            }
-        }.toSet()
+        val userRoleSet = userRoles.mapNotNull { UserRole.from(it.code) }.toSet()
+
+        if (userRoleSet.contains(UserRole.SUPER_ADMIN)) {
+            return true
+        }
+        if (userRoleSet.contains(UserRole.ADMIN) &&
+            requiredRoles.any { it == UserRole.ADMIN || it == UserRole.USER }
+        ) {
+            return true
+        }
         return requiredRoles.any { it in userRoleSet }
     }
 

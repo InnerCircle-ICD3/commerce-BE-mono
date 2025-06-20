@@ -1,11 +1,14 @@
 package com.fastcampus.commerce.review.interfaces
 
+import com.fastcampus.commerce.auth.interfaces.web.security.model.LoginUser
+import com.fastcampus.commerce.auth.interfaces.web.security.model.WithRoles
 import com.fastcampus.commerce.review.application.ReviewCommandService
 import com.fastcampus.commerce.review.interfaces.request.RegisterReviewApiRequest
 import com.fastcampus.commerce.review.interfaces.request.UpdateReviewApiRequest
 import com.fastcampus.commerce.review.interfaces.response.DeleteReviewApiResponse
 import com.fastcampus.commerce.review.interfaces.response.RegisterReviewApiResponse
 import com.fastcampus.commerce.review.interfaces.response.UpdateReviewApiResponse
+import com.fastcampus.commerce.user.domain.enums.UserRole
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -21,29 +24,29 @@ class ReviewController(
 ) {
     @PostMapping
     fun registerReview(
+        @WithRoles([UserRole.USER]) user: LoginUser,
         @RequestBody request: RegisterReviewApiRequest,
     ): RegisterReviewApiResponse {
-        val userId = 1L
-        val reviewId = reviewCommandService.registerReview(userId, request.toServiceRequest())
+        val reviewId = reviewCommandService.registerReview(user.id, request.toServiceRequest())
         return RegisterReviewApiResponse(reviewId)
     }
 
     @PutMapping("/{reviewId}")
     fun updateReview(
+        @WithRoles([UserRole.USER]) user: LoginUser,
         @PathVariable reviewId: Long,
         @RequestBody request: UpdateReviewApiRequest,
     ): UpdateReviewApiResponse {
-        val userId = 1L
-        reviewCommandService.updateReview(userId, reviewId, request.toServiceRequest())
+        reviewCommandService.updateReview(user.id, reviewId, request.toServiceRequest())
         return UpdateReviewApiResponse(reviewId)
     }
 
     @DeleteMapping("/{reviewId}")
     fun deleteReview(
+        @WithRoles([UserRole.USER]) user: LoginUser,
         @PathVariable reviewId: Long,
     ): DeleteReviewApiResponse {
-        val userId = 1L
-        reviewCommandService.deleteReview(userId, reviewId)
+        reviewCommandService.deleteReview(user.id, reviewId)
         return DeleteReviewApiResponse()
     }
 }

@@ -1,6 +1,7 @@
 package com.fastcampus.commerce.order.interfaces
 
-import com.fastcampus.commerce.auth.interfaces.web.security.annotation.WithRoles
+import com.fastcampus.commerce.auth.interfaces.web.security.model.LoginUser
+import com.fastcampus.commerce.auth.interfaces.web.security.model.WithRoles
 import com.fastcampus.commerce.common.response.EnumResponse
 import com.fastcampus.commerce.common.response.PagedData
 import com.fastcampus.commerce.order.application.order.OrderService
@@ -11,7 +12,6 @@ import com.fastcampus.commerce.order.interfaces.response.GetOrderApiResponse
 import com.fastcampus.commerce.order.interfaces.response.OrderApiResponse
 import com.fastcampus.commerce.order.interfaces.response.PrepareOrderApiResponse
 import com.fastcampus.commerce.order.interfaces.response.SearchOrderApiResponse
-import com.fastcampus.commerce.user.domain.entity.User
 import com.fastcampus.commerce.user.domain.enums.UserRole
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.GetMapping
@@ -35,7 +35,7 @@ class OrderController(
 
     @GetMapping("/prepare")
     fun prepareOrders(
-        @WithRoles([UserRole.USER]) user: User,
+        @WithRoles([UserRole.USER]) user: LoginUser,
         @RequestParam cartItemIds: String,
     ): PrepareOrderApiResponse {
         val cartItemIdList: Set<Long> = cartItemIds.split(",")
@@ -46,7 +46,7 @@ class OrderController(
 
     @PostMapping
     fun orders(
-        @WithRoles([UserRole.USER]) user: User,
+        @WithRoles([UserRole.USER]) user: LoginUser,
         @RequestBody request: OrderApiRequest,
     ): OrderApiResponse {
         return orderService.createOrder(user, request)
@@ -54,7 +54,7 @@ class OrderController(
 
     @GetMapping
     fun getOrders(
-        @WithRoles([UserRole.USER]) user: User,
+        @WithRoles([UserRole.USER]) user: LoginUser,
         @ModelAttribute request: SearchOrderApiRequest,
         pageable: Pageable,
     ): PagedData<SearchOrderApiResponse> {

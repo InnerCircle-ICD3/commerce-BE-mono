@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
@@ -50,19 +51,10 @@ class SecurityConfig(
         http
             .cors { it.configurationSource(corsConfigurationSource) }
             .csrf { it.disable() }
-            .authorizeHttpRequests {
-                it
-                    .requestMatchers(
-                        "/auth/login",
-                        // "/auth/account",
-                        "/auth/reissue",
-                        // 필요하다면 다른 public 엔드포인트
-                    ).permitAll()
-                    .anyRequest().permitAll()
-            }
+            .authorizeHttpRequests { it.anyRequest().permitAll() }
             .addFilterBefore(
                 jwtAuthenticationFilter(),
-                org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter::class.java,
+                UsernamePasswordAuthenticationFilter::class.java,
             )
         return http.build()
     }

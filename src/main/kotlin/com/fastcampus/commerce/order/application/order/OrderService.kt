@@ -1,5 +1,6 @@
 package com.fastcampus.commerce.order.application.order
 
+import com.fastcampus.commerce.auth.interfaces.web.security.model.LoginUser
 import com.fastcampus.commerce.cart.application.query.CartItemReader
 import com.fastcampus.commerce.cart.infrastructure.repository.CartItemRepository
 import com.fastcampus.commerce.common.error.CoreException
@@ -34,7 +35,6 @@ import com.fastcampus.commerce.payment.domain.service.PaymentReader
 import com.fastcampus.commerce.product.domain.service.ProductReader
 import com.fastcampus.commerce.review.domain.repository.ReviewRepository
 import com.fastcampus.commerce.user.api.service.UserAddressService
-import com.fastcampus.commerce.user.domain.entity.User
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -66,9 +66,9 @@ class OrderService(
     }
 
     @Transactional
-    fun prepareOrder(user: User, cartItemIds: Set<Long>): PrepareOrderApiResponse {
+    fun prepareOrder(user: LoginUser, cartItemIds: Set<Long>): PrepareOrderApiResponse {
         // 1. 장바구니 아이템 정보 조회 (CartItemReader를 통해)
-        val userId = user.id!!
+        val userId = user.id
         val cartItems = cartItemReader.readCartItems(userId, cartItemIds)
         val items = cartItems.map { cartItem ->
             val product = productReader.getProductById(cartItem.productId)
@@ -118,8 +118,8 @@ class OrderService(
     }
 
     @Transactional
-    fun createOrder(user: User, request: OrderApiRequest): OrderApiResponse {
-        val userId = user.id!!
+    fun createOrder(user: LoginUser, request: OrderApiRequest): OrderApiResponse {
+        val userId = user.id
 
         // 1. 장바구니 아이템 정보 조회 (상품ID, 수량, 가격)
         val cartItems = cartItemReader.readCartItems(userId, request.cartItemIds)
@@ -204,15 +204,15 @@ class OrderService(
     }
 
     @Transactional(readOnly = true)
-    fun getOrders(user: User, request: SearchOrderApiRequest, pageable: Pageable): Page<SearchOrderApiResponse> {
+    fun getOrders(user: LoginUser, request: SearchOrderApiRequest, pageable: Pageable): Page<SearchOrderApiResponse> {
         // 1. 조건에 맞는 주문 페이지 조회 (ex: 유저ID 기준)
-        val orders = orderQueryRepository.getUserOrders(request.toCondition(user.id!!, timeProvider.now()), pageable)
+        val orders = orderQueryRepository.getUserOrders(request.toCondition(user.id, timeProvider.now()), pageable)
 
         // 2. 주문별 대표 상품, 가격, 썸네일 등 요약 정보 가공
         val responses = orders.map { order ->
             val orderItems = orderItemRepository.findByOrderId(order.id!!)
             val productSnapshot = productSnapshotReader.getById(orderItems.first().productSnapshotId)
-            val orderName = let { "${productSnapshot.name} 외 ${orderItems.size - 1}건" } ?: "주문상품 없음"
+            val orderName = let { "${productSnapshot.name} 외 ${orderItems.size - 1}건" }
             val mainProductThumbnail = productSnapshot.thumbnail
 
             SearchOrderApiResponse(
