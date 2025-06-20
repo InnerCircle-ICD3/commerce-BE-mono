@@ -64,7 +64,7 @@ class UserService(
         // 3. UserRoleConnection 저장
         val userRoleConnection = UserRoleConnection(
             userId = savedUser.id!!,
-            roleId = UserRole.USER.roleId,
+            roleId = 1L,
         )
         userRoleConnectionRepository.save(userRoleConnection)
 
