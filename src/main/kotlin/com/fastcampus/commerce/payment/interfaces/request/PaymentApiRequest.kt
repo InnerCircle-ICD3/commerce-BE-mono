@@ -5,13 +5,13 @@ import jakarta.validation.constraints.NotBlank
 
 data class PaymentApiRequest(
     @field:NotBlank(message = "주문 번호가 누락되었습니다.")
-    val orderNumber: String,
+    val orderNumber: String? = null,
     @field:NotBlank(message = "결제 ID가 누락되었습니다.")
-    val transactionId: String,
+    val transactionId: String? = null,
 ) {
     fun toServiceRequest() =
         PaymentProcessRequest(
-            orderNumber = orderNumber,
-            transactionId = transactionId,
+            orderNumber = orderNumber!!,
+            transactionId = transactionId!!,
         )
 }

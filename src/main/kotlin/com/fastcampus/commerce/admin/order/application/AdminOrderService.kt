@@ -39,7 +39,7 @@ class AdminOrderService(
         val responses = orders.map { order ->
             val orderItems = orderItemRepository.findByOrderId(order.id!!)
             val productSnapshot = productSnapshotReader.getById(orderItems.first().productSnapshotId)
-            val orderName = let { "${productSnapshot.name} 외 ${orderItems.size - 1}건" }
+            val orderName = if (orderItems.size == 1) productSnapshot.name else "${productSnapshot.name} 외 ${orderItems.size - 1}건"
             val user = userService.getUser(order.userId)
 
             AdminOrderListResponse(

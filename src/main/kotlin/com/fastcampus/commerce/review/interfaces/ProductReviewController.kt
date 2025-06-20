@@ -20,7 +20,7 @@ class ProductReviewController(
     @GetMapping("/reviews:byProduct")
     fun getProductReviews(
         @RequestParam productId: Long,
-        @PageableDefault pageable: Pageable,
+        pageable: Pageable,
     ): PagedData<ProductReviewApiResponse> {
         val productReviews: Page<ProductReviewResponse> = productReviewService.getProductReviews(productId, pageable)
         return PagedData.of(productReviews.map(ProductReviewApiResponse::from))

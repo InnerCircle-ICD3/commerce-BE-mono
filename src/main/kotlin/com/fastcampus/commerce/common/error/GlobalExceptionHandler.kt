@@ -25,7 +25,7 @@ class GlobalExceptionHandler(
     @ExceptionHandler(BindException::class)
     fun handleBindException(e: BindException): ApiResponse<Nothing?> {
         log.error("BindException: {}", e.message, e)
-        val message = e.bindingResult.fieldErrors.first().defaultMessage
+        val message = e.bindingResult.allErrors.first().defaultMessage
         return ApiResponse.error(ErrorMessage(CommonErrorCode.FIELD_ERROR, message))
     }
 

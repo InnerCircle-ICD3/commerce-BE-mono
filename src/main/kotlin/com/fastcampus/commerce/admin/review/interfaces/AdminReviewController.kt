@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import jakarta.validation.Valid
 
 @RequestMapping("/admin/reviews")
 @RestController
@@ -42,7 +43,7 @@ class AdminReviewController(
     fun registerReply(
         @WithRoles([UserRole.ADMIN]) admin: LoginUser,
         @PathVariable reviewId: Long,
-        @RequestBody request: RegisterReviewReplyApiRequest,
+        @Valid @RequestBody request: RegisterReviewReplyApiRequest,
     ): RegisterReviewReplyApiResponse {
         val replyId: Long = adminReviewService.registerReply(admin.id, reviewId, request.content)
         return RegisterReviewReplyApiResponse(replyId)
@@ -52,7 +53,7 @@ class AdminReviewController(
     fun updateReply(
         @WithRoles([UserRole.ADMIN]) admin: LoginUser,
         @PathVariable reviewId: Long,
-        @RequestBody request: UpdateReviewReplyApiRequest,
+        @Valid @RequestBody request: UpdateReviewReplyApiRequest,
     ): UpdateReviewReplyApiResponse {
         adminReviewService.updateReply(admin.id, reviewId, request.content)
         return UpdateReviewReplyApiResponse(reviewId)

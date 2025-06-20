@@ -31,7 +31,7 @@ class ProductController(
     @GetMapping
     fun searchProducts(
         @ModelAttribute request: SearchProductApiRequest,
-        @PageableDefault pageable: Pageable,
+        pageable: Pageable,
     ): PagedData<SearchProductApiResponse> {
         val products = productQueryService.getProducts(request.toServiceRequest(), pageable)
         return PagedData.of(products.map(SearchProductApiResponse::from))
