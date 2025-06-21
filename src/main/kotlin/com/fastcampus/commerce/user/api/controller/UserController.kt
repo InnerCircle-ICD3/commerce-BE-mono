@@ -8,6 +8,7 @@ import com.fastcampus.commerce.user.api.controller.request.UpdateMyInfoRequest
 import com.fastcampus.commerce.user.api.dto.UserDto
 import com.fastcampus.commerce.user.api.service.UserService
 import com.fastcampus.commerce.user.domain.enums.UserRole
+import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -23,10 +24,12 @@ import jakarta.validation.Valid
 class UserController(
     private val userService: UserService,
 ) {
+    val log = LoggerFactory.getLogger(javaClass)
     @PostMapping("/login")
     fun loginUser(
         @RequestBody loginRequest: LoginRequest,
     ): UserDto {
+        log.info("loginUser: {}", loginRequest)
         return userService.loginUser(loginRequest)
     }
 

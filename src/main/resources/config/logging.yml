@@ -1,1 +1,5 @@
 logging.config: classpath:logback/logback-${spring.profiles.active}.xml
+decorator:
+  datasource:
+    p6spy:
+      log-format: "%(currentTime)|%(executionTime)|%(category)|%(sqlSingleLine)"
