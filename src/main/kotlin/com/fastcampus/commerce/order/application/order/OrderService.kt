@@ -299,7 +299,7 @@ class OrderService(
             refundRequestedAt = order.refundRequestedAt,
             refunded = order.refundRequestedAt != null,
             refundedAt = order.refundedAt,
-            reviewable = hasReview,
+            reviewable = !hasReview,
             reviewWritten = hasReview,
         )
     }
