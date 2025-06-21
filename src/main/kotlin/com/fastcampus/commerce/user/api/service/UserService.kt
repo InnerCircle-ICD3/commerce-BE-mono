@@ -8,11 +8,13 @@ import com.fastcampus.commerce.common.util.TimeProvider
 import com.fastcampus.commerce.user.api.controller.request.MyInfoResponse
 import com.fastcampus.commerce.user.api.controller.request.UpdateMyInfoRequest
 import com.fastcampus.commerce.user.api.dto.UserDto
+import com.fastcampus.commerce.user.domain.entity.Oauth2Provider
 import com.fastcampus.commerce.user.domain.entity.User
 import com.fastcampus.commerce.user.domain.entity.UserOauth2Connection
 import com.fastcampus.commerce.user.domain.entity.UserRoleConnection
 import com.fastcampus.commerce.user.domain.enums.UserRole
 import com.fastcampus.commerce.user.domain.error.UserErrorCode
+import com.fastcampus.commerce.user.domain.repository.Oauth2ProviderRepository
 import com.fastcampus.commerce.user.domain.repository.UserOauth2ConnectionRepository
 import com.fastcampus.commerce.user.domain.repository.UserRepository
 import com.fastcampus.commerce.user.domain.repository.UserRoleConnectionRepository
@@ -25,18 +27,26 @@ class UserService(
     private val userRepository: UserRepository,
     private val userRoleConnectionRepository: UserRoleConnectionRepository,
     private val userRoleRepository: UserRoleRepository,
+    private val oauth2ProviderRepository: Oauth2ProviderRepository,
     private val userOauth2ConnectionRepository: UserOauth2ConnectionRepository,
     private val timeProvider: TimeProvider,
 ) {
     @Transactional(rollbackFor = [Exception::class])
     fun loginUser(request: LoginRequest): UserDto {
-        val token = request.authInfo.token
-        val connection = userOauth2ConnectionRepository.findByProviderIdAndOauth2Id(1L, token)
-        if (connection.isPresent) {
-            val userId = connection.get().userId
-            val existingUser = userRepository.findById(userId)
-                .orElseThrow { throw CoreException(AuthErrorCode.USER_NOT_FOUND) }
-            val roleConnections = userRoleConnectionRepository.findAllByUserId(userId)
+        // 1. 입력값 필수 체크 (email, name 등)
+        val provider = request.authInfo.provider
+        val email = request.userProfile.email
+            ?: throw CoreException(AuthErrorCode.INVALID_USER_PROFILE)
+        val name = request.userProfile.name ?: ""
+        val nickname = request.userProfile.nickname ?: ""
+        val profileImage = request.userProfile.profileImage ?: ""
+
+        // [NOTE] 현재는 providerId 없이 이메일로만 유저를 식별합니다.
+        val existingUser = userRepository.findByEmail(email)
+        // 기존 유저 return
+        if (existingUser != null) {
+            // roles 가져오기
+            val roleConnections = userRoleConnectionRepository.findAllByUserId(existingUser.id!!)
             val roleIds = roleConnections.map { it.roleId }
             val userRoles = userRoleRepository.findAllById(roleIds)
                 .mapNotNull { UserRole.values().find { ur -> ur.name == it.code } }
@@ -54,24 +64,34 @@ class UserService(
         // 2. User 저장 (snowflake externalId는 별도 생성 함수로)
         val newUser = User(
             externalId = UniqueIdGenerator.generateUserId(timeProvider.now().toLocalDate()),
-            name = request.userProfile.name ?: "",
-            email = request.userProfile.email ?: "",
-            nickname = request.userProfile.nickname ?: "",
-            profileImage = request.userProfile.profileImage,
+            name = name,
+            email = email,
+            nickname = nickname,
+            profileImage = profileImage,
         )
         val savedUser = userRepository.save(newUser)
 
         // 3. UserRoleConnection 저장
         val userRoleConnection = UserRoleConnection(
             userId = savedUser.id!!,
-            roleId = 3L,
+            roleId = 3L
         )
         userRoleConnectionRepository.save(userRoleConnection)
 
+        // 4. Oauth2Provider 저장 or 조회 (provider가 "naver"라면, 없으면 신규 등록)
+        val oauth2Provider = oauth2ProviderRepository.findByName(provider)
+            ?: oauth2ProviderRepository.save(
+                Oauth2Provider(
+                    name = provider,
+                    isActive = true,
+                ),
+            )
+
+        // 5. UserOauth2Connection 저장 (여기서는 email을 oauth2Id로 사용, 향후 네이버 id로 확장 가능)
         val userOauth2Connection = UserOauth2Connection(
             userId = savedUser.id!!,
-            providerId = 1,
-            oauth2Id = token,
+            providerId = oauth2Provider.id!!,
+            oauth2Id = email, // 지금은 email, 추후 네이버/카카오 id로 확장 가능
         )
         userOauth2ConnectionRepository.save(userOauth2Connection)
 
@@ -87,13 +107,14 @@ class UserService(
         )
     }
 
-    @Transactional
+    @Transactional(rollbackFor = [Exception::class])
     fun deleteUser(userId: Long) {
         val user = userRepository.findById(userId)
             .orElseThrow { throw CoreException(AuthErrorCode.USER_NOT_FOUND) }
-        userRoleConnectionRepository.deleteByUserId(userId)
-        userOauth2ConnectionRepository.deleteByUserId(userId)
-        user.delete(timeProvider.now())
+
+        user.isDeleted = true
+        user.deletedAt = java.time.LocalDateTime.now()
+        userRepository.save(user)
     }
 
     @Transactional(readOnly = true)

@@ -27,9 +27,6 @@ class UserController(
     fun loginUser(
         @RequestBody loginRequest: LoginRequest,
     ): UserDto {
-        print("${loginRequest.authInfo.provider} ${loginRequest.authInfo.token}")
-        print("${loginRequest.userProfile.email} ${loginRequest.userProfile.name}")
-        print("${loginRequest.userProfile.nickname} ${loginRequest.userProfile.profileImage}")
         return userService.loginUser(loginRequest)
     }
 
